@@ -1,11 +1,15 @@
 import type { NextPage } from "next";
+import Hero from "../components/Hero";
+import Layout from "../components/Layout";
 
-const Home: NextPage = () => {
+const Index: NextPage = () => {
   return (
     <div>
-      <h1 className="text-3xl font-bold underline">ManifestCTF</h1>
+      <Layout>
+        <Hero />
+      </Layout>
     </div>
   );
 };
 
-export default Home;
+export default Index;
