@@ -3,10 +3,7 @@ import Link from "next/link";
 const Header = () => (
   <header className="navbar bg-base-100 m-0">
     <div className="navbar-start">
-      <label
-        htmlFor="my-drawer"
-        className="btn btn-primary drawer-button lg:hidden"
-      >
+      <label htmlFor="side-drawer" className="btn btn-primary drawer-button">
         x
       </label>
       <Link href="/">
