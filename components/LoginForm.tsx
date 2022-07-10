@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { supabase } from "../utils/supabaseClient";
+import { supabase } from "lib/supabaseClient";
 
 export const LoginForm = () => {
   const [loading, setLoading] = useState(false);

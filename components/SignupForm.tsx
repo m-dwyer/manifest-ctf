@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { supabase } from "lib/supabaseClient";
+import { useState, MouseEvent } from "react";
+import { supabaseClient } from "@supabase/auth-helpers-nextjs";
+import { useUser } from "@supabase/auth-helpers-react";
 
 const SignupForm = () => {
   const [email, setEmail] = useState<string>("");
@@ -7,14 +8,14 @@ const SignupForm = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
 
-  const handleSignup = async (event: Event) => {
+  const handleSignup = async (event: MouseEvent) => {
     event.preventDefault();
 
     if (confirmPassword !== password) {
       alert("Passwords do not match");
     }
 
-    const { error, session } = await supabase.auth.signUp({
+    const { error, session } = await supabaseClient.auth.signUp({
       email,
       password,
     });
@@ -60,11 +61,7 @@ const SignupForm = () => {
               className="input"
               onChange={(e) => setConfirmPassword(e.target.value)}
             ></input>
-            <button
-              className="btn mt-10"
-              type="submit"
-              onClick={(e) => handleSignup(e)}
-            >
+            <button className="btn mt-10" type="submit" onClick={handleSignup}>
               submit
             </button>
           </form>
