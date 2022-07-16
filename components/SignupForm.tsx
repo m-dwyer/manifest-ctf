@@ -1,6 +1,5 @@
 import { useState, MouseEvent } from "react";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
-import { useUser } from "@supabase/auth-helpers-react";
 
 const SignupForm = () => {
   const [email, setEmail] = useState<string>("");
@@ -15,12 +14,16 @@ const SignupForm = () => {
       alert("Passwords do not match");
     }
 
-    const { error, session } = await supabaseClient.auth.signUp({
+    const { error } = await supabaseClient.auth.signUp({
       email,
       password,
     });
 
-    if (error) setError(error.message);
+    if (error) {
+      setError(error.message);
+    } else {
+      console.log("signed up!");
+    }
   };
 
   return (

@@ -1,18 +1,26 @@
-import { useState } from "react";
-import { supabase } from "lib/supabaseClient";
+import { useState, MouseEvent } from "react";
+import { supabaseClient } from "@supabase/auth-helpers-nextjs";
+// import { useUser } from "@supabase/auth-helpers-react";
+import { useRouter } from "next/router";
 
-export const LoginForm = () => {
-  const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
+const LoginForm = () => {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
-  const handleLogin = async (email: string) => {
-    try {
-      setLoading(true);
-      const { error } = await supabase.auth.signIn({ email });
-      if (error) throw error;
-      alert("Check your email for the login link!");
-    } catch (error) {
-      if (error instanceof Error) alert(error.message);
+  const handleLogin = async (e: MouseEvent) => {
+    e.preventDefault();
+    const { error } = await supabaseClient.auth.signIn({
+      email,
+      password,
+    });
+
+    if (error) {
+      setError(error.message);
+    } else {
+      router.push("/");
     }
   };
 
@@ -20,16 +28,18 @@ export const LoginForm = () => {
     <div className="container mx-auto">
       <div className="card w-96 bg-primary text-primary-content mx-auto">
         <div className="card-body">
-          <div className="card-title">Log in</div>
+          <div className="card-title">Log in </div>
+          {error != null && <div>{error}</div>}
           <form className="form-control">
-            <label className="label" htmlFor="username">
+            <label className="label" htmlFor="email">
               email
             </label>
             <input
               className="input"
-              type="text"
-              id="username"
-              name="username"
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Your email"
               onChange={(e) => setEmail(e.target.value)}
             ></input>
             <label className="label" htmlFor="password">
@@ -40,17 +50,9 @@ export const LoginForm = () => {
               type="password"
               id="password"
               name="password"
+              onChange={(e) => setPassword(e.target.value)}
             ></input>
-            <label className="label" htmlFor="confirmPassword">
-              confirm
-            </label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              className="input"
-            ></input>
-            <button className="btn mt-10" type="submit">
+            <button className="btn mt-10" type="submit" onClick={handleLogin}>
               submit
             </button>
           </form>
