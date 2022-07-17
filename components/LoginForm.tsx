@@ -1,6 +1,5 @@
 import { useState, MouseEvent } from "react";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
-// import { useUser } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/router";
 
 const LoginForm = () => {
@@ -20,7 +19,7 @@ const LoginForm = () => {
     if (error) {
       setError(error.message);
     } else {
-      router.push("/");
+      router.push("/home");
     }
   };
 
