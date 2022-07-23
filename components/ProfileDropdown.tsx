@@ -5,8 +5,7 @@ import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 const ProfileDropdown = () => {
   const { user } = useUser();
 
-  const handleLogout = (e) => {
-    console.log("logging out ..");
+  const handleLogout = () => {
     supabaseClient.auth.signOut();
   };
 
