@@ -13,9 +13,9 @@ const Challenges: NextPage = () => {
   const fetchChallenges = async () => {
     const { data: challenges } = await supabaseClient
       .from<Challenge>("challenges")
-      .select("*");
+      .select("*")
+      .order("id", { ascending: true });
 
-    console.log("challenges: ", challenges);
     setChallenges(challenges);
   };
 

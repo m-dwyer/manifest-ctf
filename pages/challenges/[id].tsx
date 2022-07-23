@@ -2,24 +2,44 @@ import { supabase } from "lib/supabaseClient";
 
 import { supabaseServerClient } from "@supabase/auth-helpers-nextjs";
 
-import {
-  GetServerSideProps,
-  GetServerSidePropsContext,
-  GetStaticPropsContext,
-} from "next/types";
+import { GetServerSidePropsContext } from "next/types";
 import { Challenge } from "types/Challenge";
-
-// interface Props {
-//   challenge: Challenge;
-// }
+import { SyntheticEvent, useState } from "react";
 
 const ChallengePage = ({ challenge }: { challenge: Challenge }) => {
-  console.log("props: ", challenge);
+  const [flag, setFlag] = useState<string | null>(null);
+
+  const handleSubmitFlag = async (e: SyntheticEvent) => {
+    e.preventDefault();
+
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ challenge: challenge.id, flag: flag }),
+    };
+
+    const result = await fetch(`/api/submission`, options);
+  };
 
   return (
     <div>
       <h1>{challenge.name}</h1>
       <p>{challenge.description}</p>
+      <form className="form-control" onSubmit={handleSubmitFlag}>
+        <input
+          className="input"
+          type="text"
+          placeholder="Enter flag"
+          id="flag"
+          name="flag"
+          onChange={(e) => setFlag(e.target.value)}
+        ></input>
+        <button className="btn mt-10" type="submit">
+          Submit flag
+        </button>
+      </form>
     </div>
   );
 };
@@ -38,12 +58,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const { data } = await supabaseServerClient(context)
     .from<Challenge>("challenges")
-    .select("name, description")
-    .eq("id", challengeId);
+    .select("id, name, description")
+    .eq("id", challengeId)
+    .limit(1)
+    .single();
 
-  console.log("found", data);
-
-  if (data == null || data.length == 0) {
+  if (data == null) {
     context.res.setHeader("Location", "/");
     context.res.statusCode = 302;
     context.res.end();
@@ -53,7 +73,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   return {
-    props: { challenge: data[0] },
+    props: { challenge: data },
   };
 }
 

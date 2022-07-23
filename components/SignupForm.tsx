@@ -21,8 +21,6 @@ const SignupForm = () => {
 
     if (error) {
       setError(error.message);
-    } else {
-      console.log("signed up!");
     }
   };
 

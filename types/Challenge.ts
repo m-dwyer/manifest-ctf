@@ -3,4 +3,5 @@ export type Challenge = {
     name: string;
     category: string;
     description: string;
+    flag: string;
   };
