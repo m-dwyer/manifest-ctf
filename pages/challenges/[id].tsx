@@ -24,21 +24,23 @@ const ChallengePage = ({ challenge }: { challenge: Challenge }) => {
   };
 
   return (
-    <div>
+    <div className="prose lg:prose-sm mx-auto">
       <h1>{challenge.name}</h1>
       <p>{challenge.description}</p>
       <form className="form-control" onSubmit={handleSubmitFlag}>
-        <input
-          className="input"
-          type="text"
-          placeholder="Enter flag"
-          id="flag"
-          name="flag"
-          onChange={(e) => setFlag(e.target.value)}
-        ></input>
-        <button className="btn mt-10" type="submit">
-          Submit flag
-        </button>
+        <div className="flex gap-1">
+          <input
+            className="input"
+            type="text"
+            placeholder="Enter flag"
+            id="flag"
+            name="flag"
+            onChange={(e) => setFlag(e.target.value)}
+          ></input>
+          <button className="btn" type="submit">
+            Submit flag
+          </button>
+        </div>
       </form>
     </div>
   );
