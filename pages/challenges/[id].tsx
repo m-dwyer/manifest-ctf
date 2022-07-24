@@ -1,13 +1,13 @@
-import { supabase } from "lib/supabaseClient";
-
 import { supabaseServerClient } from "@supabase/auth-helpers-nextjs";
 
 import { GetServerSidePropsContext } from "next/types";
 import { Challenge } from "types/Challenge";
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useContext, useState } from "react";
+import { ModalContext } from "components/ModalProvider";
 
 const ChallengePage = ({ challenge }: { challenge: Challenge }) => {
   const [flag, setFlag] = useState<string | null>(null);
+  const { setModalState } = useContext(ModalContext);
 
   const handleSubmitFlag = async (e: SyntheticEvent) => {
     e.preventDefault();
@@ -21,6 +21,21 @@ const ChallengePage = ({ challenge }: { challenge: Challenge }) => {
     };
 
     const result = await fetch(`/api/submission`, options);
+    const json = await result.json();
+
+    if (json.correct) {
+      setModalState({
+        modal: true,
+        title: "Correct!",
+        text: "That flag is correct!",
+      });
+    } else {
+      setModalState({
+        modal: true,
+        title: "Incorrect",
+        text: "Sorry, that is not the correct flag",
+      });
+    }
   };
 
   return (
@@ -30,7 +45,7 @@ const ChallengePage = ({ challenge }: { challenge: Challenge }) => {
       <form className="form-control" onSubmit={handleSubmitFlag}>
         <div className="flex gap-1">
           <input
-            className="input"
+            className="input bg-base-300"
             type="text"
             placeholder="Enter flag"
             id="flag"
