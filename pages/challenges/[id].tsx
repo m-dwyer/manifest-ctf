@@ -80,7 +80,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     .limit(1)
     .single();
 
-  if (data == null) {
+  if (data === null) {
     context.res.setHeader("Location", "/");
     context.res.statusCode = 302;
     context.res.end();
