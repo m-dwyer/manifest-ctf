@@ -5,3 +5,7 @@ export type Challenge = {
   description: string;
   flag: string;
 };
+
+export type ChallengeCompleted = Challenge & {
+  challenge_attempts: [{completed: boolean}]
+}
