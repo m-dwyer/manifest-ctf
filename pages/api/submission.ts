@@ -1,6 +1,6 @@
 import { NextApiResponse, NextApiRequest } from "next";
 import { getUser, withApiAuth } from "@supabase/auth-helpers-nextjs";
-import { supabaseServerClient } from "@supabase/auth-helpers-nextjs";
+import { supabaseServiceClient } from "lib/supabaseServiceClient";
 
 export default withApiAuth(async function handler(
   req: NextApiRequest,
@@ -14,7 +14,7 @@ export default withApiAuth(async function handler(
   const challenge = req.body.challenge;
   const submittedFlag = req.body.flag;
 
-  const { data: challengeData } = await supabaseServerClient({ req, res })
+  const { data: challengeData } = await supabaseServiceClient
     .from("challenges")
     .select(
       `
@@ -40,9 +40,7 @@ export default withApiAuth(async function handler(
 
   if (shouldLogAttempt) {
     const flagCorrect = challengeData?.flag === submittedFlag
-    const { data: upsertData, error: upsertError } = await supabaseServerClient(
-      { req, res }
-    )
+    const { data: upsertData, error: upsertError } = await supabaseServiceClient
       .from("challenge_attempts")
       .upsert({
         user_id: user.id,
