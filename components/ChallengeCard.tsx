@@ -27,9 +27,7 @@ const ChallengeCard = ({ challenge }: { challenge: ChallengeCompleted }) => {
               </span>
             </div>
             <p>{challenge.description}</p>
-            <button onClick={() => router.push(`/challenges/${challenge.id}`)}>
-              open
-            </button>
+            <div>{challenge.points} points</div>
           </div>
         </div>
       </a>

@@ -4,6 +4,7 @@ export type Challenge = {
   category: string;
   description: string;
   flag: string;
+  points: number;
 };
 
 export type ChallengeCompleted = Challenge & {

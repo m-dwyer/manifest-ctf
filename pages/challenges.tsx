@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Challenge, ChallengeCompleted } from "types/Challenge";
+import { ChallengeCompleted } from "types/Challenge";
 import ChallengeCard from "components/ChallengeCard";
 
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
