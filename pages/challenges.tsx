@@ -25,8 +25,6 @@ const Challenges: NextPage = () => {
       )
       .order("id", { ascending: true });
 
-    console.log("chall completed; ", challenges);
-
     setChallenges(challenges);
   };
 

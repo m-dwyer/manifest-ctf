@@ -31,8 +31,6 @@ export default withApiAuth(async function handler(
 
   const { user } = await getUser({ req, res });
 
-  console.log("challengeData: ", challengeData)
-
   const existingAttempts = challengeData?.challenge_attempts[0]?.attempts || 0
   const shouldLogAttempt =
     challengeData?.challenge_attempts[0] === undefined ||
