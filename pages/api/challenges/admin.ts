@@ -18,9 +18,6 @@ export default withApiAuth(async function handler(
       .delete()
       .match({id: challenge})
 
-      console.log("data: ", data)
-      console.log("error: ", error)
-
       if (error) return res.status(500).json({ error: error.message });
 
       return res
