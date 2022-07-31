@@ -2,12 +2,19 @@ import { supabaseServerClient } from "@supabase/auth-helpers-nextjs";
 
 import { GetServerSidePropsContext } from "next/types";
 import { Challenge } from "types/Challenge";
-import { SyntheticEvent, useContext, useState } from "react";
-import { ModalContext } from "components/ModalProvider";
+import { SyntheticEvent, useState } from "react";
+
+import Modal from "components/Modal";
 
 const ChallengePage = ({ challenge }: { challenge: Challenge }) => {
   const [flag, setFlag] = useState<string | null>(null);
-  const { setModalState } = useContext(ModalContext);
+
+  const [modalState, setModalState] = useState<{
+    title?: string;
+    text?: string | null;
+  }>({});
+  const [modal, setModal] = useState(false);
+  const handleDismiss = () => setModal(false);
 
   const handleSubmitFlag = async (e: SyntheticEvent) => {
     e.preventDefault();
@@ -25,16 +32,16 @@ const ChallengePage = ({ challenge }: { challenge: Challenge }) => {
 
     if (json.correct) {
       setModalState({
-        modal: true,
         title: "Correct!",
         text: "That flag is correct!",
       });
+      setModal(true);
     } else {
       setModalState({
-        modal: true,
         title: "Incorrect",
         text: "Sorry, that is not the correct flag",
       });
+      setModal(true);
     }
   };
 
@@ -57,6 +64,12 @@ const ChallengePage = ({ challenge }: { challenge: Challenge }) => {
           </button>
         </div>
       </form>
+      {modal ? (
+        <Modal handleDismiss={handleDismiss}>
+          <h3 className="font-bold text-lg">{modalState.title}</h3>
+          <p className="py-4">{modalState.text}</p>
+        </Modal>
+      ) : null}
     </div>
   );
 };

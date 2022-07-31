@@ -1,11 +1,12 @@
 import * as React from "react";
 import Header from "./Header";
-import { ModalProvider } from "./ModalProvider";
+import { ModalRoot } from "./Modal";
 import NavBar from "./NavBar";
 
 const Layout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   return (
-    <ModalProvider>
+    <>
+      <ModalRoot />
       <div className="drawer">
         <input id="side-drawer" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content">
@@ -18,7 +19,7 @@ const Layout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
           <NavBar />
         </div>
       </div>
-    </ModalProvider>
+    </>
   );
 };
 

@@ -1,13 +1,19 @@
 import { faEdit, faRemove } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
-import { ModalContext } from "components/ModalProvider";
-import { useContext, useEffect, useState } from "react";
+import Modal from "components/Modal";
+
+import { useEffect, useState } from "react";
 import { Challenge } from "types/Challenge";
 
 const ChallengesAdminPage = () => {
-  const { setModalState } = useContext(ModalContext);
   const [challenges, setChallenges] = useState<Challenge[] | null>([]);
+  const [modalState, setModalState] = useState<{
+    title?: string;
+    text?: string | null;
+  }>({});
+  const [modal, setModal] = useState(false);
+  const handleDismiss = () => setModal(false);
 
   const fetchChallenges = async () => {
     const { data: challenges } = await supabaseClient
@@ -32,20 +38,20 @@ const ChallengesAdminPage = () => {
 
     if (json.deleted) {
       setModalState({
-        modal: true,
         title: "Deleted",
         text: "Challenge deleted",
       });
+      setModal(true);
 
       if (challenges) {
         setChallenges(challenges.filter((c) => c.id != challenge));
       }
     } else {
       setModalState({
-        modal: true,
         title: "Error",
         text: "Error deleting challenge",
       });
+      setModal(true);
     }
   };
 
@@ -89,6 +95,12 @@ const ChallengesAdminPage = () => {
             ))}
         </tbody>
       </table>
+      {modal ? (
+        <Modal handleDismiss={handleDismiss}>
+          <h3 className="font-bold text-lg">{modalState.title}</h3>
+          <p className="py-4">{modalState.text}</p>
+        </Modal>
+      ) : null}
     </>
   );
 };

@@ -1,27 +1,42 @@
-import { useContext } from "react";
-import { ModalContext } from "./ModalProvider";
+import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 
-const Modal = () => {
-  const { modalState, setModalState } = useContext(ModalContext);
+// The root under which modals will be mounted in the DOM
+export const ModalRoot = ({ wrapperId = "modal-root" }) => {
+  return <div id={wrapperId}></div>;
+};
 
-  const { modal, title, text } = modalState;
+const Modal: React.FC<{
+  wrapperId?: string;
+  handleDismiss: () => void;
+  children: React.ReactNode;
+}> = ({ wrapperId = "modal-root", handleDismiss, children }) => {
+  const modalRef = useRef<HTMLElement | null>(null);
 
-  const handleDismiss = () => {
-    setModalState({ modal: false });
-  };
-
-  if (modal) {
-    return (
-      <div className="modal modal-open" onClick={handleDismiss}>
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">{title}</h3>
-          <p className="py-4">{text}</p>
-        </div>
-      </div>
-    );
-  } else {
-    return null;
+  if (!modalRef.current) {
+    modalRef.current = document.createElement("div");
   }
+
+  useEffect(() => {
+    // Append our ref to the modal root
+    const modalWrapper = document.getElementById(wrapperId);
+    if (modalRef.current) modalWrapper?.appendChild(modalRef.current);
+
+    // Clean up -- remove out ref  from modal root
+    return () => {
+      if (modalRef.current) modalWrapper?.removeChild(modalRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return modalRef.current
+    ? createPortal(
+        <div className="modal modal-open" onClick={handleDismiss}>
+          <div className="modal-box">{children}</div>
+        </div>,
+        modalRef.current
+      )
+    : null;
 };
 
 export default Modal;
