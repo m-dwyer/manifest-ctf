@@ -8,7 +8,7 @@ export const ModalRoot = ({ wrapperId = "modal-root" }) => {
 
 const Modal: React.FC<{
   wrapperId?: string;
-  handleDismiss: () => void;
+  handleDismiss?: () => void;
   children: React.ReactNode;
 }> = ({ wrapperId = "modal-root", handleDismiss, children }) => {
   const modalRef = useRef<HTMLElement | null>(null);

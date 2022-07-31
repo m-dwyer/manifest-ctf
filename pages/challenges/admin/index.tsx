@@ -1,16 +1,25 @@
 import { faEdit, faRemove } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
+import AddChallengeForm from "components/AddChallengeForm";
 import Modal from "components/Modal";
 
 import { useEffect, useState } from "react";
 import { Challenge } from "types/Challenge";
 
+enum ModalType {
+  TEXT,
+  CHALLENGE_FORM,
+}
+
 const ChallengesAdminPage = () => {
   const [challenges, setChallenges] = useState<Challenge[] | null>([]);
+
+  const [modalType, setModalType] = useState<ModalType>(ModalType.TEXT);
   const [modalState, setModalState] = useState<{
+    modalType?: MODAL_TYPE;
     title?: string;
-    text?: string | null;
+    text?: string;
   }>({});
   const [modal, setModal] = useState(false);
   const handleDismiss = () => setModal(false);
@@ -22,6 +31,11 @@ const ChallengesAdminPage = () => {
       .order("id", { ascending: true });
 
     setChallenges(challenges);
+  };
+
+  const handleAdd = async () => {
+    setModalType(ModalType.CHALLENGE_FORM);
+    setModal(true);
   };
 
   const handleDelete = async (challenge: number) => {
@@ -36,6 +50,7 @@ const ChallengesAdminPage = () => {
     const result = await fetch(`/api/challenges/admin`, options);
     const json = await result.json();
 
+    setModalType(ModalType.TEXT);
     if (json.deleted) {
       setModalState({
         title: "Deleted",
@@ -43,9 +58,7 @@ const ChallengesAdminPage = () => {
       });
       setModal(true);
 
-      if (challenges) {
-        setChallenges(challenges.filter((c) => c.id != challenge));
-      }
+      setChallenges(challenges?.filter((c) => c.id != challenge) || []);
     } else {
       setModalState({
         title: "Error",
@@ -61,6 +74,9 @@ const ChallengesAdminPage = () => {
 
   return (
     <>
+      <button className="btn" onClick={handleAdd}>
+        Add
+      </button>
       <table className="table w-full">
         <thead>
           <tr>
@@ -95,10 +111,19 @@ const ChallengesAdminPage = () => {
             ))}
         </tbody>
       </table>
-      {modal ? (
+      {modal && modalType == ModalType.TEXT ? (
         <Modal handleDismiss={handleDismiss}>
           <h3 className="font-bold text-lg">{modalState.title}</h3>
           <p className="py-4">{modalState.text}</p>
+        </Modal>
+      ) : null}
+
+      {modal && modalType == ModalType.CHALLENGE_FORM ? (
+        <Modal>
+          <h3 className="font-bold text-lg">Add Challenge</h3>
+          <p className="py-4">
+            <AddChallengeForm />
+          </p>
         </Modal>
       ) : null}
     </>
