@@ -8,6 +8,11 @@ const SideBar = () => (
           <a>Challenges</a>
         </Link>
       </li>
+      <li>
+        <Link href="/challenges/admin">
+          <a>Challenges Admin</a>
+        </Link>
+      </li>
     </ul>
   </nav>
 );
