@@ -4,9 +4,14 @@ import { Challenge } from "types/Challenge";
 type ChallengeFormProps = {
   challenge?: Challenge | null;
   handleDismiss: () => void;
+  handleSave: (c: Challenge) => void;
 };
 
-const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
+const ChallengeForm = ({
+  challenge,
+  handleDismiss,
+  handleSave,
+}: ChallengeFormProps) => {
   const [challengeId, setChallengeId] = useState<number | null>(
     challenge?.id || null
   );
@@ -60,6 +65,7 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
     if (json.error) {
       showError(json.error);
     } else {
+      handleSave(json.result as Challenge);
       handleDismiss();
     }
   };

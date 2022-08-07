@@ -29,6 +29,12 @@ const ChallengesAdminPage = () => {
 
   const handleDismiss = () => setModal(false);
 
+  const handleSave = (challenge: Challenge) => {
+    const savedChallenges =
+      challenges?.map((c) => (c.id == challenge.id ? challenge : c)) || [];
+    setChallenges(savedChallenges);
+  };
+
   const fetchChallenges = async () => {
     const { data: challenges } = await supabaseClient
       .from<Challenge>("challenges")
@@ -137,7 +143,10 @@ const ChallengesAdminPage = () => {
         <Modal>
           <h3 className="font-bold text-lg">Add Challenge</h3>
           <p className="py-4">
-            <ChallengeForm handleDismiss={handleDismiss} />
+            <ChallengeForm
+              handleSave={handleSave}
+              handleDismiss={handleDismiss}
+            />
           </p>
         </Modal>
       ) : null}
@@ -153,6 +162,7 @@ const ChallengesAdminPage = () => {
           <p className="py-4">
             <ChallengeForm
               handleDismiss={handleDismiss}
+              handleSave={handleSave}
               challenge={editingChallenge}
             />
           </p>

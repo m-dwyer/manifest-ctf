@@ -48,7 +48,7 @@ export default withApiAuth(nc<NextApiRequest, NextApiResponse>({
 
   return res
   .status(201)
-  .json({created: true})
+  .json({success: true, result: data ? data[0] : null})
 })
 .put(async (req, res) => {
   const { name, description, flag, points } = req.body;
@@ -58,6 +58,6 @@ export default withApiAuth(nc<NextApiRequest, NextApiResponse>({
 
   return res
   .status(201)
-  .json({created: true})
+  .json({success: true, result: data ? data[0] : null})
 })
 )
