@@ -1,5 +1,4 @@
-import { faEdit, faRemove } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 import ChallengeForm from "components/ChallengeForm";
 import Modal from "components/Modal";
@@ -114,14 +113,14 @@ const ChallengesAdminPage = () => {
                     data-tip="Edit"
                     onClick={() => handleUpdate(c)}
                   >
-                    <FontAwesomeIcon icon={faEdit} />
+                    <FaEdit />
                   </span>
                   <span
                     className="tooltip"
                     data-tip="Delete"
                     onClick={() => handleDelete(c.id)}
                   >
-                    <FontAwesomeIcon icon={faRemove} />
+                    <FaTrash />
                   </span>
                 </th>
                 <th>{c.name}</th>

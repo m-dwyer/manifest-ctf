@@ -10,17 +10,14 @@
     "format": "prettier --write \"./**/*.{js,jsx,ts,tsx}\""
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.1.2",
-    "@fortawesome/free-regular-svg-icons": "^6.1.2",
-    "@fortawesome/free-solid-svg-icons": "^6.1.2",
-    "@fortawesome/react-fontawesome": "^0.2.0",
     "@supabase/auth-helpers-nextjs": "^0.2.3",
     "@supabase/auth-helpers-react": "^0.2.2",
     "@supabase/supabase-js": "^1.35.4",
     "next": "12.2.0",
     "next-connect": "^0.13.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-icons": "^4.4.0"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.4",
