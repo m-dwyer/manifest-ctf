@@ -34,7 +34,7 @@ const Challenges: NextPage = () => {
 
   return (
     <>
-      <div className="flex gap-6">
+      <div className="flex gap-6 flex-wrap justify-center mx-auto">
         {challenges &&
           challenges.map((c) => <ChallengeCard key={c.id} challenge={c} />)}
       </div>
