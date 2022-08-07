@@ -5,8 +5,13 @@ import { Challenge } from "types/Challenge";
 import { SyntheticEvent, useState } from "react";
 
 import Modal from "components/Modal";
+import Link from "next/link";
 
-const ChallengePage = ({ challenge }: { challenge: Challenge }) => {
+type ChallengeWithFiles = Challenge & {
+  files: [{ fileName: string; publicUrl: string }];
+};
+
+const ChallengePage = ({ challenge }: { challenge: ChallengeWithFiles }) => {
   const [flag, setFlag] = useState<string | null>(null);
 
   const [modalState, setModalState] = useState<{
@@ -49,6 +54,16 @@ const ChallengePage = ({ challenge }: { challenge: Challenge }) => {
     <div className="prose lg:prose-sm mx-auto">
       <h1>{challenge.name}</h1>
       <p>{challenge.description}</p>
+      <div>
+        <p>Files</p>
+        <ul>
+          {(challenge.files || []).map((f) => (
+            <li key={f.fileName}>
+              <Link href={f.publicUrl}>{f.fileName}</Link>
+            </li>
+          ))}
+        </ul>
+      </div>
       <form className="form-control" onSubmit={handleSubmitFlag}>
         <div className="flex gap-1">
           <input
@@ -102,8 +117,26 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
+  const { data: fileList, error } = await supabaseServerClient(context)
+    .storage.from("challenge_files")
+    // .list("/", {
+    .list(`${data.name.replace(/\s/g, "_")}`, {
+      sortBy: { column: "name", order: "asc" },
+    });
+
+  const publicUrlPromises = Array.from(fileList || []).map(async (f) => {
+    const file = await supabaseServerClient(context)
+      .storage.from("challenge_files")
+      .getPublicUrl(`${data.name.replace(/\s/g, "_")}/${f.name}`);
+    return { fileName: f.name, publicUrl: file.data?.publicURL };
+  });
+
+  const fileUrls = await (
+    await Promise.all(publicUrlPromises)
+  ).map((r) => ({ fileName: r.fileName, publicUrl: r.publicUrl }));
+
   return {
-    props: { challenge: data },
+    props: { challenge: { files: fileUrls, ...data } },
   };
 }
 

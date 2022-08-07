@@ -1,5 +1,7 @@
+import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 import React, { useState } from "react";
 import { Challenge } from "types/Challenge";
+import FileUpload from "./FileUpload";
 
 type ChallengeFormProps = {
   challenge?: Challenge | null;
@@ -12,10 +14,6 @@ const ChallengeForm = ({
   handleDismiss,
   handleSave,
 }: ChallengeFormProps) => {
-  const [challengeId, setChallengeId] = useState<number | null>(
-    challenge?.id || null
-  );
-
   const [challengeName, setChallengeName] = useState<string>(
     challenge?.name || ""
   );
@@ -30,6 +28,8 @@ const ChallengeForm = ({
     challenge?.points || 0
   );
 
+  const [files, setFiles] = useState<File[]>([]);
+
   const [submitError, setSubmitError] = useState<string | null>();
 
   const showError = (error: string) => {
@@ -40,10 +40,26 @@ const ChallengeForm = ({
     }, 5000);
   };
 
+  const uploadFiles = () => {
+    files.forEach(async (f) => {
+      const filePath = `${challengeName.replace(/\s/g, "_")}/${f.name}`;
+
+      const { error } = await supabaseClient.storage
+        .from("challenge_files")
+        .upload(filePath, f);
+
+      if (error) {
+        showError(error.message);
+      }
+    });
+  };
+
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     const method = challenge ? "PUT" : "POST";
+
+    uploadFiles();
 
     const options = {
       method: method,
@@ -51,7 +67,6 @@ const ChallengeForm = ({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        id: challengeId,
         name: challengeName,
         description: challengeDescription,
         flag: challengeFlag,
@@ -97,8 +112,12 @@ const ChallengeForm = ({
         value={challengeDescription}
         onChange={(e) => setChallengeDescription(e.target.value)}
       />
+      <label className="file" htmlFor="challenge-file">
+        File
+      </label>
+      <FileUpload files={[files, setFiles]} />
       <label className="label" htmlFor="challenge-name">
-        flag
+        Flag
       </label>
       <input
         className="input bg-base-200"
