@@ -140,7 +140,13 @@ const ChallengesAdminPage = () => {
 
       {modal && modalType == ModalType.ADD_CHALLENGE_FORM ? (
         <Modal>
-          <h3 className="font-bold text-lg">Add Challenge</h3>
+          <span className="flex justify-between">
+            <h3 className="font-bold text-lg inline-block">Add Challenge</h3>
+            <div className="btn" onClick={handleDismiss}>
+              X
+            </div>
+          </span>
+
           <p className="py-4">
             <ChallengeForm
               handleSave={handleSave}
