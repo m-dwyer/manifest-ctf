@@ -1,7 +1,7 @@
 import { faEdit, faRemove } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
-import AddChallengeForm from "components/AddChallengeForm";
+import ChallengeForm from "components/ChallengeForm";
 import Modal from "components/Modal";
 
 import { useEffect, useState } from "react";
@@ -9,19 +9,24 @@ import { Challenge } from "types/Challenge";
 
 enum ModalType {
   TEXT,
-  CHALLENGE_FORM,
+  ADD_CHALLENGE_FORM,
+  EDIT_CHALLENGE_FORM,
 }
 
 const ChallengesAdminPage = () => {
   const [challenges, setChallenges] = useState<Challenge[] | null>([]);
+  const [editingChallenge, setEditingChallenge] = useState<Challenge | null>(
+    null
+  );
 
   const [modalType, setModalType] = useState<ModalType>(ModalType.TEXT);
   const [modalState, setModalState] = useState<{
-    modalType?: MODAL_TYPE;
+    modalType?: ModalType;
     title?: string;
     text?: string;
   }>({});
   const [modal, setModal] = useState(false);
+
   const handleDismiss = () => setModal(false);
 
   const fetchChallenges = async () => {
@@ -33,8 +38,14 @@ const ChallengesAdminPage = () => {
     setChallenges(challenges);
   };
 
+  const handleUpdate = (c: Challenge) => {
+    setModalType(ModalType.EDIT_CHALLENGE_FORM);
+    setEditingChallenge(c);
+    setModal(true);
+  };
+
   const handleAdd = async () => {
-    setModalType(ModalType.CHALLENGE_FORM);
+    setModalType(ModalType.ADD_CHALLENGE_FORM);
     setModal(true);
   };
 
@@ -92,7 +103,11 @@ const ChallengesAdminPage = () => {
             challenges.map((c) => (
               <tr key={c.id}>
                 <th className="flex gap-4">
-                  <span className="tooltip" data-tip="Edit">
+                  <span
+                    className="tooltip"
+                    data-tip="Edit"
+                    onClick={() => handleUpdate(c)}
+                  >
                     <FontAwesomeIcon icon={faEdit} />
                   </span>
                   <span
@@ -118,11 +133,28 @@ const ChallengesAdminPage = () => {
         </Modal>
       ) : null}
 
-      {modal && modalType == ModalType.CHALLENGE_FORM ? (
+      {modal && modalType == ModalType.ADD_CHALLENGE_FORM ? (
         <Modal>
           <h3 className="font-bold text-lg">Add Challenge</h3>
           <p className="py-4">
-            <AddChallengeForm />
+            <ChallengeForm handleDismiss={handleDismiss} />
+          </p>
+        </Modal>
+      ) : null}
+
+      {modal && modalType == ModalType.EDIT_CHALLENGE_FORM ? (
+        <Modal>
+          <span className="flex justify-between">
+            <h3 className="font-bold text-lg inline-block">Edit Challenge</h3>
+            <div className="btn" onClick={handleDismiss}>
+              X
+            </div>
+          </span>
+          <p className="py-4">
+            <ChallengeForm
+              handleDismiss={handleDismiss}
+              challenge={editingChallenge}
+            />
           </p>
         </Modal>
       ) : null}

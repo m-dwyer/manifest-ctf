@@ -1,12 +1,29 @@
 import React, { useState } from "react";
-import Modal from "./Modal";
+import { Challenge } from "types/Challenge";
 
-const AddChallengeForm = () => {
-  const [challengeName, setChallengeName] = useState<string>("");
-  const [challengeDescription, setChallengeDescription] = useState<string>("");
-  const [challengeFlag, setChallengeFlag] = useState<string>("");
+type ChallengeFormProps = {
+  challenge?: Challenge | null;
+  handleDismiss: () => void;
+};
 
-  const [challengePoints, setChallengePoints] = useState<number>(0);
+const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
+  const [challengeId, setChallengeId] = useState<number | null>(
+    challenge?.id || null
+  );
+
+  const [challengeName, setChallengeName] = useState<string>(
+    challenge?.name || ""
+  );
+  const [challengeDescription, setChallengeDescription] = useState<string>(
+    challenge?.description || ""
+  );
+  const [challengeFlag, setChallengeFlag] = useState<string>(
+    challenge?.flag || ""
+  );
+
+  const [challengePoints, setChallengePoints] = useState<number>(
+    challenge?.points || 0
+  );
 
   const [submitError, setSubmitError] = useState<string | null>();
 
@@ -21,12 +38,15 @@ const AddChallengeForm = () => {
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
+    const method = challenge ? "PUT" : "POST";
+
     const options = {
-      method: "POST",
+      method: method,
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        id: challengeId,
         name: challengeName,
         description: challengeDescription,
         flag: challengeFlag,
@@ -39,6 +59,8 @@ const AddChallengeForm = () => {
 
     if (json.error) {
       showError(json.error);
+    } else {
+      handleDismiss();
     }
   };
 
@@ -96,10 +118,10 @@ const AddChallengeForm = () => {
       />
       {submitError != null && <span className="mt-5">{submitError}</span>}
       <button className="btn mt-10" type="submit">
-        add
+        {challenge ? "edit" : "add"}
       </button>
     </form>
   );
 };
 
-export default AddChallengeForm;
+export default ChallengeForm;
