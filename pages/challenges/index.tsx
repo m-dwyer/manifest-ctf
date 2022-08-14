@@ -17,14 +17,14 @@ const Challenges: NextPage = () => {
     null
   );
 
-  const page: number = Number(query.page) || 1;
+  const currentPage: number = Number(query.page) || 1;
+
+  const [rangeBegin, setRangeBegin] = useState(0);
+  const [rangeEnd, setRangeEnd] = useState(PAGE_LIMIT - 1);
 
   const [challengeCount, setChallengeCount] = useState<number>(0);
 
   const fetchChallenges = async () => {
-    const rangeBegin = (page - 1) * PAGE_LIMIT;
-    const rangeEnd = rangeBegin + (PAGE_LIMIT - 1);
-
     const { data: challenges, count } = await supabaseClient
       .from<ChallengeCompleted>("challenges")
       .select(
@@ -47,9 +47,7 @@ const Challenges: NextPage = () => {
   useEffect(() => {
     fetchChallenges();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
-
-  const pageCount = Math.ceil(challengeCount / PAGE_LIMIT);
+  }, [currentPage, rangeBegin, rangeEnd]);
 
   return (
     <div className="flex flex-col mx-auto items-center">
@@ -58,10 +56,12 @@ const Challenges: NextPage = () => {
           challenges.map((c) => <ChallengeCard key={c.id} challenge={c} />)}
       </div>
       <Pagination
-        current={page}
+        current={currentPage}
+        setFrom={setRangeBegin}
+        setTo={setRangeEnd}
         pathName="/challenges"
-        total={pageCount}
-        className="mt-10"
+        total={challengeCount}
+        perPage={PAGE_LIMIT}
       />
     </div>
   );
