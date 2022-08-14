@@ -1,5 +1,6 @@
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 import React, { useState } from "react";
+import { Category } from "types/Category";
 import { Challenge } from "types/Challenge";
 import FileUpload from "./FileUpload";
 
@@ -20,16 +21,16 @@ const ChallengeForm = ({
   const [challengeDescription, setChallengeDescription] = useState<string>(
     challenge?.description || ""
   );
+  const [challengeCategory, setChallengeCategory] = useState<Category | null>(
+    challenge?.challenge_categories?.[0].category || null
+  );
   const [challengeFlag, setChallengeFlag] = useState<string>(
     challenge?.flag || ""
   );
-
   const [challengePoints, setChallengePoints] = useState<number>(
     challenge?.points || 0
   );
-
   const [files, setFiles] = useState<File[]>([]);
-
   const [submitError, setSubmitError] = useState<string | null>();
 
   const showError = (error: string) => {
@@ -69,6 +70,7 @@ const ChallengeForm = ({
       body: JSON.stringify({
         name: challengeName,
         description: challengeDescription,
+        category: challengeCategory?.id,
         flag: challengeFlag,
         points: challengePoints,
       }),
@@ -112,6 +114,16 @@ const ChallengeForm = ({
         value={challengeDescription}
         onChange={(e) => setChallengeDescription(e.target.value)}
       />
+      <label className="label" htmlFor="challenge-category">
+        Category
+      </label>
+      <select className="select bg-base-200">
+        {challengeCategory && (
+          <option disabled selected value={challengeCategory.id}>
+            {challengeCategory.name}
+          </option>
+        )}
+      </select>
       <label className="file" htmlFor="challenge-file">
         File
       </label>

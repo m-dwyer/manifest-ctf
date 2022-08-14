@@ -1,5 +1,4 @@
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 import ChallengeForm from "components/ChallengeForm";
 import Modal from "components/Modal";
 
@@ -35,12 +34,10 @@ const ChallengesAdminPage = () => {
   };
 
   const fetchChallenges = async () => {
-    const { data: challenges } = await supabaseClient
-      .from<Challenge>("challenges")
-      .select("*")
-      .order("id", { ascending: true });
+    const result = await fetch(`/api/challenges/admin`);
+    const json = await result.json();
 
-    setChallenges(challenges);
+    setChallenges(json.data as Challenge[]);
   };
 
   const handleUpdate = (c: Challenge) => {
@@ -99,6 +96,7 @@ const ChallengesAdminPage = () => {
             <th></th>
             <th>Name</th>
             <th>Description</th>
+            <th>Category</th>
             <th>Flag</th>
             <th>Points</th>
           </tr>
@@ -125,6 +123,7 @@ const ChallengesAdminPage = () => {
                 </th>
                 <th>{c.name}</th>
                 <th>{c.description}</th>
+                <th>{c.challenge_categories?.[0]?.category.name}</th>
                 <th>{c.flag}</th>
                 <th>{c.points}</th>
               </tr>

@@ -1,7 +1,10 @@
+import { ChallengeCategory } from "./Category";
+
+
 export type Challenge = {
   id: number;
   name: string;
-  category: string;
+  challenge_categories: [ChallengeCategory];
   description: string;
   flag: string;
   points: number;

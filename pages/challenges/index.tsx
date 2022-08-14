@@ -51,6 +51,13 @@ const Challenges: NextPage = () => {
 
   return (
     <div className="flex flex-col mx-auto items-center">
+      <div className="container bg-base-200 w-100 p-2">
+        <select className="select max-w-ws" value={1}>
+          <option disabled selected value={1}>
+            Default
+          </option>
+        </select>
+      </div>
       <div className="flex gap-6 flex-wrap justify-center mx-auto">
         {challenges &&
           challenges.map((c) => <ChallengeCard key={c.id} challenge={c} />)}
