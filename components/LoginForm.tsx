@@ -1,19 +1,19 @@
 import { useState, MouseEvent } from "react";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/router";
+import { useMultiInputs } from "lib/hooks/useMultiInputs";
 
 const LoginForm = () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [formData, setFormData] = useMultiInputs({ email: "", password: "" });
+
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleLogin = async (e: MouseEvent) => {
     e.preventDefault();
     const { error } = await supabaseClient.auth.signIn({
-      email,
-      password,
+      email: formData.email,
+      password: formData.password,
     });
 
     if (error) {
@@ -39,7 +39,7 @@ const LoginForm = () => {
               id="email"
               name="email"
               placeholder="Your email"
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setFormData({ email: e.target.value })}
             ></input>
             <label className="label" htmlFor="password">
               password
@@ -49,7 +49,7 @@ const LoginForm = () => {
               type="password"
               id="password"
               name="password"
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => setFormData({ password: e.target.value })}
             ></input>
             <button className="btn mt-10" type="submit" onClick={handleLogin}>
               submit

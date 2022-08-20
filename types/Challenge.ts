@@ -1,6 +1,5 @@
 import { ChallengeCategory } from "./Category";
 
-
 export type Challenge = {
   id: number;
   name: string;
@@ -11,5 +10,5 @@ export type Challenge = {
 };
 
 export type ChallengeCompleted = Challenge & {
-  challenge_attempts: [{completed: boolean}]
-}
+  challenge_attempts: [{ completed: boolean }];
+};

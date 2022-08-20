@@ -1,22 +1,26 @@
 import { useState, MouseEvent } from "react";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
+import { useMultiInputs } from "lib/hooks/useMultiInputs";
 
 const SignupForm = () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [formData, setFormData] = useMultiInputs({
+    email: "",
+    password: "",
+    confirm: "",
+  });
+
   const [error, setError] = useState<string | null>(null);
 
   const handleSignup = async (event: MouseEvent) => {
     event.preventDefault();
 
-    if (confirmPassword !== password) {
+    if (formData.confirm !== formData.password) {
       alert("Passwords do not match");
     }
 
     const { error } = await supabaseClient.auth.signUp({
-      email,
-      password,
+      email: formData.email,
+      password: formData.password,
     });
 
     if (error) {
@@ -40,7 +44,8 @@ const SignupForm = () => {
               id="email"
               name="email"
               placeholder="Your email"
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={(e) => setFormData({ email: e.target.value })}
             ></input>
             <label className="label" htmlFor="password">
               password
@@ -50,7 +55,8 @@ const SignupForm = () => {
               type="password"
               id="password"
               name="password"
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={(e) => setFormData({ password: e.target.value })}
             ></input>
             <label className="label" htmlFor="confirmPassword">
               confirm
@@ -60,7 +66,8 @@ const SignupForm = () => {
               id="confirmPassword"
               name="confirmPassword"
               className="input"
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              value={formData.confirm}
+              onChange={(e) => setFormData({ confirm: e.target.value })}
             ></input>
             <button className="btn mt-10" type="submit" onClick={handleSignup}>
               submit

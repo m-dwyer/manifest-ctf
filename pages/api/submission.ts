@@ -31,13 +31,13 @@ export default withApiAuth(async function handler(
 
   const { user } = await getUser({ req, res });
 
-  const existingAttempts = challengeData?.challenge_attempts[0]?.attempts || 0
+  const existingAttempts = challengeData?.challenge_attempts[0]?.attempts || 0;
   const shouldLogAttempt =
     challengeData?.challenge_attempts[0] === undefined ||
     !challengeData?.challenge_attempts[0]?.completed;
 
   if (shouldLogAttempt) {
-    const flagCorrect = challengeData?.flag === submittedFlag
+    const flagCorrect = challengeData?.flag === submittedFlag;
     const { data: upsertData, error: upsertError } = await supabaseServiceClient
       .from("challenge_attempts")
       .upsert({
@@ -45,7 +45,7 @@ export default withApiAuth(async function handler(
         challenge_id: challenge,
         completed: flagCorrect,
         attempts: existingAttempts + 1,
-        points_scored: flagCorrect ? challengeData.points : 0
+        points_scored: flagCorrect ? challengeData.points : 0,
       });
   }
 

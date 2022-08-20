@@ -1,6 +1,6 @@
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
+import { useMultiInputs } from "lib/hooks/useMultiInputs";
 import React, { useState } from "react";
-import { Category } from "types/Category";
 import { Challenge } from "types/Challenge";
 import FileUpload from "./FileUpload";
 
@@ -15,21 +15,18 @@ const ChallengeForm = ({
   handleDismiss,
   handleSave,
 }: ChallengeFormProps) => {
-  const [challengeName, setChallengeName] = useState<string>(
-    challenge?.name || ""
-  );
-  const [challengeDescription, setChallengeDescription] = useState<string>(
-    challenge?.description || ""
-  );
-  const [challengeCategory, setChallengeCategory] = useState<Category | null>(
-    challenge?.challenge_categories?.[0].category || null
-  );
-  const [challengeFlag, setChallengeFlag] = useState<string>(
-    challenge?.flag || ""
-  );
-  const [challengePoints, setChallengePoints] = useState<number>(
-    challenge?.points || 0
-  );
+  const existingInputs = challenge
+    ? {
+        name: challenge.name,
+        category: challenge?.challenge_categories[0].category.id,
+        description: challenge.description,
+        flag: challenge.flag,
+        points: String(challenge.points),
+      }
+    : null;
+
+  const [formData, setFormData] = useMultiInputs(existingInputs);
+
   const [files, setFiles] = useState<File[]>([]);
   const [submitError, setSubmitError] = useState<string | null>();
 
@@ -42,8 +39,10 @@ const ChallengeForm = ({
   };
 
   const uploadFiles = () => {
+    const { name } = formData;
+
     files.forEach(async (f) => {
-      const filePath = `${challengeName.replace(/\s/g, "_")}/${f.name}`;
+      const filePath = `${name.replace(/\s/g, "_")}/${f.name}`;
 
       const { error } = await supabaseClient.storage
         .from("challenge_files")
@@ -68,11 +67,7 @@ const ChallengeForm = ({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: challengeName,
-        description: challengeDescription,
-        category: challengeCategory?.id,
-        flag: challengeFlag,
-        points: challengePoints,
+        ...formData,
       }),
     };
 
@@ -98,8 +93,8 @@ const ChallengeForm = ({
         id="challenge-name"
         name="challenge-name"
         placeholder="My challenge"
-        value={challengeName}
-        onChange={(e) => setChallengeName(e.target.value)}
+        value={formData.name}
+        onChange={(e) => setFormData({ name: e.target.value })}
       />
       <label className="label" htmlFor="challenge-description">
         Description
@@ -111,16 +106,24 @@ const ChallengeForm = ({
         placeholder="Describe the challenge here.."
         rows={4}
         cols={60}
-        value={challengeDescription}
-        onChange={(e) => setChallengeDescription(e.target.value)}
+        value={formData.description}
+        onChange={(e) => setFormData({ description: e.target.value })}
       />
       <label className="label" htmlFor="challenge-category">
         Category
       </label>
-      <select className="select bg-base-200">
-        {challengeCategory && (
-          <option disabled selected value={challengeCategory.id}>
-            {challengeCategory.name}
+      <select
+        className="select bg-base-200"
+        value={formData.category}
+        onChange={(e) => setFormData({ category: e.target.value })}
+      >
+        {challenge?.challenge_categories && (
+          <option
+            disabled
+            selected
+            value={challenge?.challenge_categories[0].category.id}
+          >
+            {challenge?.challenge_categories[0].category.name}
           </option>
         )}
       </select>
@@ -137,8 +140,8 @@ const ChallengeForm = ({
         id="challenge-flag"
         name="challenge-flag"
         placeholder="flag"
-        value={challengeFlag}
-        onChange={(e) => setChallengeFlag(e.target.value)}
+        value={formData.flag}
+        onChange={(e) => setFormData({ flag: e.target.value })}
       />
       <label className="label" htmlFor="challenge-points">
         Points
@@ -150,8 +153,8 @@ const ChallengeForm = ({
         name="challenge-points"
         min={0}
         max={10000}
-        value={challengePoints}
-        onChange={(e) => setChallengePoints(Number(e.target.value))}
+        value={formData.points}
+        onChange={(e) => setFormData({ points: e.target.value })}
       />
       {submitError != null && <span className="mt-5">{submitError}</span>}
       <button className="btn mt-10" type="submit">
