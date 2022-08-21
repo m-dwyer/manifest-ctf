@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write \"./**/*.{js,jsx,ts,tsx}\""
+    "format": "prettier --write \"./src/**/*.{js,jsx,ts,tsx}\""
   },
   "dependencies": {
     "@supabase/auth-helpers-nextjs": "^0.2.3",
