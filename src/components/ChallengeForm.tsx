@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 
 import { useMultiInputs } from "@lib/hooks/useMultiInputs";

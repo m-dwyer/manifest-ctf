@@ -19,6 +19,9 @@
       "aspects": [ "invalidHref", "preferButton" ]
     }]
   },
+  "globals": {
+    "React": "readonly"
+  },
   "plugins": ["react", "import", "jsx-a11y", "@typescript-eslint"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
