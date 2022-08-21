@@ -1,51 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { withApiAuth } from "@supabase/auth-helpers-nextjs";
 import nc from "next-connect";
-
-import { supabaseServiceClient } from "@lib/supabaseServiceClient";
-import { Challenge } from "@type/Challenge";
-
-type ChallengeUpsertProps = {
-  name: string;
-  description: string;
-  category: number;
-  flag: string;
-  points: number;
-};
-
-const upsertChallenge = async ({
-  name,
-  description,
-  category,
-  flag,
-  points,
-}: ChallengeUpsertProps) => {
-  const { data: challengeData, error: challengeError } =
-    await supabaseServiceClient
-      .from("challenges")
-      .upsert([{ name, description, flag, points }], { onConflict: "name" })
-      .select(`
-        id,
-        name,
-        description,
-        flag,
-        points,
-        category(id, name)
-      `);
-
-  if (challengeError) {
-    return { error: challengeError };
-  }
-
-  const upsertedChallenge = challengeData[0] as Challenge;
-
-  const { data: categoryData, error: categoryError } =
-    await supabaseServiceClient
-      .from("challenge_categories")
-      .upsert([{ challenge: upsertedChallenge.id, category: category }]);
-
-  return { data: challengeData, error: challengeError };
-};
+import {
+  deleteChallenge,
+  fetchChallenges,
+  upsertChallenge,
+} from "@services/challenge-admin";
 
 export default withApiAuth(
   nc<NextApiRequest, NextApiResponse>({
@@ -55,15 +15,7 @@ export default withApiAuth(
     },
   })
     .get(async (req, res) => {
-      const { data: challengeData, error } = await supabaseServiceClient
-        .from("challenges")
-        .select(
-          `
-        *,
-        category(id, name)
-          `
-        )
-        .order("id", { ascending: true });
+      const { challengeData, error } = await fetchChallenges();
 
       if (error) return res.status(500).json({ error: error.message });
 
@@ -71,10 +23,7 @@ export default withApiAuth(
     })
     .delete(async (req, res) => {
       const { challenge } = req.body;
-      const { data, error } = await supabaseServiceClient
-        .from("challenges")
-        .delete()
-        .match({ id: challenge });
+      const { data, error } = await deleteChallenge(challenge);
 
       if (error) return res.status(500).json({ error: error.message });
 
