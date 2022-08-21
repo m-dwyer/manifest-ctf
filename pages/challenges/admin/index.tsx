@@ -3,7 +3,7 @@ import ChallengeForm from "components/ChallengeForm";
 import Modal from "components/Modal";
 
 import { useEffect, useState } from "react";
-import { Challenge } from "types/Challenge";
+import { Challenge, ChallengeWithCategories } from "types/Challenge";
 
 enum ModalType {
   TEXT,
@@ -12,7 +12,9 @@ enum ModalType {
 }
 
 const ChallengesAdminPage = () => {
-  const [challenges, setChallenges] = useState<Challenge[] | null>([]);
+  const [challenges, setChallenges] = useState<
+    ChallengeWithCategories[] | null
+  >([]);
   const [editingChallenge, setEditingChallenge] = useState<Challenge | null>(
     null
   );
@@ -27,7 +29,7 @@ const ChallengesAdminPage = () => {
 
   const handleDismiss = () => setModal(false);
 
-  const handleSave = (challenge: Challenge) => {
+  const handleSave = (challenge: ChallengeWithCategories) => {
     const savedChallenges =
       challenges?.map((c) => (c.id == challenge.id ? challenge : c)) || [];
     setChallenges(savedChallenges);
@@ -37,7 +39,7 @@ const ChallengesAdminPage = () => {
     const result = await fetch(`/api/challenges/admin`);
     const json = await result.json();
 
-    setChallenges(json.data as Challenge[]);
+    setChallenges(json.data as ChallengeWithCategories[]);
   };
 
   const handleUpdate = (c: Challenge) => {
@@ -103,31 +105,33 @@ const ChallengesAdminPage = () => {
         </thead>
         <tbody>
           {challenges &&
-            challenges.map((c) => (
-              <tr key={c.id}>
-                <th className="flex gap-4">
-                  <span
-                    className="tooltip"
-                    data-tip="Edit"
-                    onClick={() => handleUpdate(c)}
-                  >
-                    <FaEdit />
-                  </span>
-                  <span
-                    className="tooltip"
-                    data-tip="Delete"
-                    onClick={() => handleDelete(c.id)}
-                  >
-                    <FaTrash />
-                  </span>
-                </th>
-                <th>{c.name}</th>
-                <th>{c.description}</th>
-                <th>{c.challenge_categories?.[0]?.category.name}</th>
-                <th>{c.flag}</th>
-                <th>{c.points}</th>
-              </tr>
-            ))}
+            challenges.map((c) => {
+              return (
+                <tr key={c.id}>
+                  <th className="flex gap-4">
+                    <span
+                      className="tooltip"
+                      data-tip="Edit"
+                      onClick={() => handleUpdate(c)}
+                    >
+                      <FaEdit />
+                    </span>
+                    <span
+                      className="tooltip"
+                      data-tip="Delete"
+                      onClick={() => handleDelete(c.id)}
+                    >
+                      <FaTrash />
+                    </span>
+                  </th>
+                  <th>{c.name}</th>
+                  <th>{c.description}</th>
+                  <th>{c.category?.name}</th>
+                  <th>{c.flag}</th>
+                  <th>{c.points}</th>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
       {modal && modalType == ModalType.TEXT ? (
