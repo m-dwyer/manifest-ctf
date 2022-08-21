@@ -19,7 +19,7 @@ const SignupForm = () => {
       alert("Passwords do not match");
     }
 
-    const { user, session, error } = await signup(
+    const { user, session, error } = await signUp(
       formData.email,
       formData.password
     );
