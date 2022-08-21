@@ -1,6 +1,19 @@
 do $$
 begin
 
+-- create challenge files bucket
+insert into storage.buckets(
+    id,
+    name,
+    created_at,
+    public
+) values (
+    'challenge_files',
+    'challenge_files',
+    now(),
+    true
+);
+
 -- seed categories
 insert into public.categories(
     id,
