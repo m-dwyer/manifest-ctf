@@ -6,6 +6,7 @@ import { SyntheticEvent, useState } from "react";
 
 import Modal from "components/Modal";
 import Link from "next/link";
+import { submitAttempt } from "services/submissions";
 
 type ChallengeWithFiles = Challenge & {
   files: [{ fileName: string; publicUrl: string }];
@@ -24,18 +25,10 @@ const ChallengePage = ({ challenge }: { challenge: ChallengeWithFiles }) => {
   const handleSubmitFlag = async (e: SyntheticEvent) => {
     e.preventDefault();
 
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ challenge: challenge.id, flag: flag }),
-    };
+    if (!challenge || !challenge.id || !flag) return;
 
-    const result = await fetch(`/api/submission`, options);
-    const json = await result.json();
-
-    if (json.correct) {
+    const submissionResult = await submitAttempt(challenge.id, flag);
+    if (submissionResult.correct) {
       setModalState({
         title: "Correct!",
         text: "That flag is correct!",
