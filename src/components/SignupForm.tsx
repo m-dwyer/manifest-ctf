@@ -1,6 +1,6 @@
 import { useState, MouseEvent } from "react";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
-import { useMultiInputs } from "lib/hooks/useMultiInputs";
+import { useMultiInputs } from "@lib/hooks/useMultiInputs";
 
 const SignupForm = () => {
   const [formData, setFormData] = useMultiInputs({

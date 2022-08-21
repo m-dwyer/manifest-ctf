@@ -1,9 +1,10 @@
-import { supabaseClient } from "@supabase/auth-helpers-nextjs";
-import { useMultiInputs } from "lib/hooks/useMultiInputs";
 import React, { useState } from "react";
-import { createChallenge, updateChallenge } from "services/challenges";
-import { Challenge, ChallengeWithCategories } from "types/Challenge";
-import FileUpload from "./FileUpload";
+import { supabaseClient } from "@supabase/auth-helpers-nextjs";
+
+import { useMultiInputs } from "@lib/hooks/useMultiInputs";
+import { createChallenge, updateChallenge } from "@services/challenges";
+import { Challenge, ChallengeWithCategories } from "@type/Challenge";
+import FileUpload from "@components/FileUpload";
 
 type ChallengeFormProps = {
   challenge?: ChallengeWithCategories | null;

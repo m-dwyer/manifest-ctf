@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { supabaseServiceClient } from "lib/supabaseServiceClient";
 import { withApiAuth } from "@supabase/auth-helpers-nextjs";
 import nc from "next-connect";
-import { Challenge } from "types/Challenge";
+
+import { supabaseServiceClient } from "@lib/supabaseServiceClient";
+import { Challenge } from "@type/Challenge";
 
 type ChallengeUpsertProps = {
   name: string;

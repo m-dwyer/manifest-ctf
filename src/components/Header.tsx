@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useUser } from "@supabase/auth-helpers-react";
 
-import ProfileDropdown from "./ProfileDropdown";
+import ProfileDropdown from "@components/ProfileDropdown";
 
 const Header = () => {
   const { user } = useUser();

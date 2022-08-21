@@ -1,9 +1,9 @@
 import { FaEdit, FaTrash } from "react-icons/fa";
-import ChallengeForm from "components/ChallengeForm";
-import Modal from "components/Modal";
-
 import { useEffect, useState } from "react";
-import { Challenge, ChallengeWithCategories } from "types/Challenge";
+
+import { Challenge, ChallengeWithCategories } from "@type/Challenge";
+import ChallengeForm from "@components/ChallengeForm";
+import Modal from "@components/Modal";
 
 enum ModalType {
   TEXT,

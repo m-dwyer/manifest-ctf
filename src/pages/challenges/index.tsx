@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-
-import { ChallengeWithCompletion } from "types/Challenge";
-import ChallengeCard from "components/ChallengeCard";
-
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import Pagination from "components/Pagination";
-import { fetchChallengesByRange } from "services/challenges";
+
+import { ChallengeWithCompletion } from "@type/Challenge";
+import ChallengeCard from "@components/ChallengeCard";
+import Pagination from "@components/Pagination";
+import { fetchChallengesByRange } from "@services/challenges";
 
 const PAGE_LIMIT = 5;
 
