@@ -2,9 +2,13 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { FaCheck } from "react-icons/fa";
 
-import { ChallengeCompleted } from "types/Challenge";
+import { ChallengeWithCompletion } from "types/Challenge";
 
-const ChallengeCard = ({ challenge }: { challenge: ChallengeCompleted }) => {
+const ChallengeCard = ({
+  challenge,
+}: {
+  challenge: ChallengeWithCompletion;
+}) => {
   return (
     <Link
       key={challenge.id}

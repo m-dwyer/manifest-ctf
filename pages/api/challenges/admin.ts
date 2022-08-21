@@ -22,7 +22,15 @@ const upsertChallenge = async ({
   const { data: challengeData, error: challengeError } =
     await supabaseServiceClient
       .from("challenges")
-      .upsert([{ name, description, flag, points }], { onConflict: "name" });
+      .upsert([{ name, description, flag, points }], { onConflict: "name" })
+      .select(`
+        id,
+        name,
+        description,
+        flag,
+        points,
+        category(id, name)
+      `);
 
   if (challengeError) {
     return { error: challengeError };
@@ -51,10 +59,8 @@ export default withApiAuth(
         .select(
           `
         *,
-        challenge_categories (
-          category (id, name)
-        )
-    `
+        category(id, name)
+          `
         )
         .order("id", { ascending: true });
 

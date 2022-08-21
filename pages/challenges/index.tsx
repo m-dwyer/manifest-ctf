@@ -1,21 +1,20 @@
 import { useEffect, useState } from "react";
 
-import { ChallengeCompleted } from "types/Challenge";
+import { ChallengeWithCompletion } from "types/Challenge";
 import ChallengeCard from "components/ChallengeCard";
-
-import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import Pagination from "components/Pagination";
+import { fetchChallengesByRange } from "services/challenges";
 
 const PAGE_LIMIT = 5;
 
 const Challenges: NextPage = () => {
   const { query } = useRouter();
-  const [challenges, setChallenges] = useState<ChallengeCompleted[] | null>(
-    null
-  );
+  const [challenges, setChallenges] = useState<
+    ChallengeWithCompletion[] | null
+  >(null);
 
   const currentPage: number = Number(query.page) || 1;
 
@@ -25,22 +24,12 @@ const Challenges: NextPage = () => {
   const [challengeCount, setChallengeCount] = useState<number>(0);
 
   const fetchChallenges = async () => {
-    const { data: challenges, count } = await supabaseClient
-      .from<ChallengeCompleted>("challenges")
-      .select(
-        `
-          *,
-          challenge_attempts(
-            completed
-          )
-        `,
-        { count: "exact" }
-      )
-      .order("id", { ascending: true })
-      .range(rangeBegin, rangeEnd);
+    const { challenges, count } = await fetchChallengesByRange(
+      rangeBegin,
+      rangeEnd
+    );
 
     setChallengeCount(count || 0);
-
     setChallenges(challenges);
   };
 

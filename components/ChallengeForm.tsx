@@ -1,11 +1,12 @@
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 import { useMultiInputs } from "lib/hooks/useMultiInputs";
 import React, { useState } from "react";
-import { Challenge } from "types/Challenge";
+import { createChallenge, updateChallenge } from "services/challenges";
+import { Challenge, ChallengeWithCategories } from "types/Challenge";
 import FileUpload from "./FileUpload";
 
 type ChallengeFormProps = {
-  challenge?: Challenge | null;
+  challenge?: ChallengeWithCategories | null;
   handleDismiss: () => void;
   handleSave: (c: Challenge) => void;
 };
@@ -18,10 +19,10 @@ const ChallengeForm = ({
   const existingInputs = challenge
     ? {
         name: challenge.name,
-        category: challenge?.challenge_categories[0].category.id,
+        category_id: challenge?.category?.id,
         description: challenge.description,
         flag: challenge.flag,
-        points: String(challenge.points),
+        points: challenge.points,
       }
     : null;
 
@@ -57,22 +58,11 @@ const ChallengeForm = ({
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    const method = challenge ? "PUT" : "POST";
-
     uploadFiles();
 
-    const options = {
-      method: method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...formData,
-      }),
-    };
-
-    const result = await fetch(`/api/challenges/admin`, options);
-    const json = await result.json();
+    const json = (await challenge?.id)
+      ? await createChallenge(formData)
+      : await updateChallenge(formData);
 
     if (json.error) {
       showError(json.error);
@@ -114,16 +104,12 @@ const ChallengeForm = ({
       </label>
       <select
         className="select bg-base-200"
-        value={formData.category}
+        value={formData.category_id}
         onChange={(e) => setFormData({ category: e.target.value })}
       >
-        {challenge?.challenge_categories && (
-          <option
-            disabled
-            selected
-            value={challenge?.challenge_categories[0].category.id}
-          >
-            {challenge?.challenge_categories[0].category.name}
+        {challenge?.category && (
+          <option disabled selected value={challenge.category.id}>
+            {challenge.category.name}
           </option>
         )}
       </select>
