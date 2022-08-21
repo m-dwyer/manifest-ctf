@@ -1,6 +1,7 @@
 import { useState, MouseEvent } from "react";
-import { supabaseClient } from "@supabase/auth-helpers-nextjs";
+
 import { useMultiInputs } from "@lib/hooks/useMultiInputs";
+import { signUp } from "@services/authentication";
 
 const SignupForm = () => {
   const [formData, setFormData] = useMultiInputs({
@@ -18,10 +19,10 @@ const SignupForm = () => {
       alert("Passwords do not match");
     }
 
-    const { error } = await supabaseClient.auth.signUp({
-      email: formData.email,
-      password: formData.password,
-    });
+    const { user, session, error } = await signup(
+      formData.email,
+      formData.password
+    );
 
     if (error) {
       setError(error.message);

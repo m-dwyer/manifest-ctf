@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 
 import { useMultiInputs } from "@lib/hooks/useMultiInputs";
 import { createChallenge, updateChallenge } from "@services/challenges";
+import { uploadFileToBucket } from "@services/storage";
 import { Challenge, ChallengeWithCategories } from "@type/Challenge";
 import FileUpload from "@components/FileUpload";
 
@@ -46,9 +46,11 @@ const ChallengeForm = ({
     files.forEach(async (f) => {
       const filePath = `${name.replace(/\s/g, "_")}/${f.name}`;
 
-      const { error } = await supabaseClient.storage
-        .from("challenge_files")
-        .upload(filePath, f);
+      const { error } = await uploadFileToBucket(
+        "challenge_files",
+        filePath,
+        f
+      );
 
       if (error) {
         showError(error.message);

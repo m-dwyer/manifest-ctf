@@ -1,7 +1,8 @@
 import { useState, MouseEvent } from "react";
-import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/router";
+
 import { useMultiInputs } from "@lib/hooks/useMultiInputs";
+import { login } from "@services/authentication";
 
 const LoginForm = () => {
   const [formData, setFormData] = useMultiInputs({ email: "", password: "" });
@@ -11,11 +12,8 @@ const LoginForm = () => {
 
   const handleLogin = async (e: MouseEvent) => {
     e.preventDefault();
-    const { error } = await supabaseClient.auth.signIn({
-      email: formData.email,
-      password: formData.password,
-    });
 
+    const { error } = await login(formData.email, formData.password);
     if (error) {
       setError(error.message);
     } else {
