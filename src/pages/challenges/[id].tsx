@@ -3,7 +3,7 @@ import { supabaseServerClient } from "@supabase/auth-helpers-nextjs";
 import { GetServerSidePropsContext } from "next/types";
 import Link from "next/link";
 
-import { Challenge } from "@/type/Challenge";
+import { Challenge } from "@/types/Challenge";
 import Modal from "@/components/Modal";
 import { submitAttempt } from "@/services/submissions";
 

@@ -1,6 +1,6 @@
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 
-import { Challenge, ChallengeWithCompletion } from "@/type/Challenge";
+import { Challenge, ChallengeWithCompletion } from "@/types/Challenge";
 
 export const createChallenge = (challenge: Challenge) => {
   return createOrUpdateChallenge(Operation.CREATE, challenge);

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
-import { ChallengeWithCompletion } from "@/type/Challenge";
+import { ChallengeWithCompletion } from "@/types/Challenge";
 import ChallengeCard from "@/components/ChallengeCard";
 import Pagination from "@/components/Pagination";
 import { fetchChallengesByRange } from "@/services/challenges";
