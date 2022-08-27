@@ -15,9 +15,8 @@ const ChallengesAdminPage = () => {
   const [challenges, setChallenges] = useState<
     ChallengeWithCategories[] | null
   >([]);
-  const [editingChallenge, setEditingChallenge] = useState<Challenge | null>(
-    null
-  );
+  const [editingChallenge, setEditingChallenge] =
+    useState<ChallengeWithCategories | null>(null);
 
   const [modalType, setModalType] = useState<ModalType>(ModalType.TEXT);
   const [modalState, setModalState] = useState<{
@@ -42,7 +41,7 @@ const ChallengesAdminPage = () => {
     setChallenges(json.data as ChallengeWithCategories[]);
   };
 
-  const handleUpdate = (c: Challenge) => {
+  const handleUpdate = (c: ChallengeWithCategories) => {
     setModalType(ModalType.EDIT_CHALLENGE_FORM);
     setEditingChallenge(c);
     setModal(true);
@@ -119,7 +118,7 @@ const ChallengesAdminPage = () => {
                     <span
                       className="tooltip"
                       data-tip="Delete"
-                      onClick={() => handleDelete(c.id)}
+                      onClick={() => c.id && handleDelete(c.id)}
                     >
                       <FaTrash />
                     </span>

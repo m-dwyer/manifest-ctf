@@ -3,13 +3,12 @@ import { useState } from "react";
 import { useMultiInputs } from "@lib/hooks/useMultiInputs";
 import { createChallenge, updateChallenge } from "@services/challenges";
 import { uploadFileToBucket } from "@services/storage";
-import { Challenge, ChallengeWithCategories } from "@type/Challenge";
+import { ChallengeWithCategories } from "@type/Challenge";
 import FileUpload from "@components/FileUpload";
-
 type ChallengeFormProps = {
   challenge?: ChallengeWithCategories | null;
   handleDismiss: () => void;
-  handleSave: (c: Challenge) => void;
+  handleSave: (c: ChallengeWithCategories) => void;
 };
 
 const ChallengeForm = ({
@@ -63,14 +62,14 @@ const ChallengeForm = ({
 
     uploadFiles();
 
-    const json = (await challenge?.id)
-      ? await createChallenge(formData)
-      : await updateChallenge(formData);
+    const json = challenge?.id
+      ? await updateChallenge({ id: challenge.id, ...formData })
+      : await createChallenge(formData);
 
     if (json.error) {
       showError(json.error);
     } else {
-      handleSave(json.result as Challenge);
+      handleSave(json.result as ChallengeWithCategories);
       handleDismiss();
     }
   };

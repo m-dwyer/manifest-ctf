@@ -3,6 +3,7 @@ import { supabaseServiceClient } from "@lib/supabaseServiceClient";
 import { Challenge } from "@type/Challenge";
 
 type ChallengeUpsertProps = {
+  id?: number;
   name: string;
   description: string;
   category: number;
@@ -11,6 +12,7 @@ type ChallengeUpsertProps = {
 };
 
 export const upsertChallenge = async ({
+  id,
   name,
   description,
   category,
@@ -20,8 +22,7 @@ export const upsertChallenge = async ({
   const { data: challengeData, error: challengeError } =
     await supabaseServiceClient
       .from("challenges")
-      .upsert([{ name, description, flag, points }], { onConflict: "name" })
-      .select(`
+      .upsert([{ id, name, description, flag, points, category }]).select(`
           id,
           name,
           description,

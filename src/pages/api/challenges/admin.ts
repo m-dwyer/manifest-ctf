@@ -46,8 +46,9 @@ export default withApiAuth(
         .json({ success: true, result: data ? data[0] : null });
     })
     .put(async (req, res) => {
-      const { name, description, category, flag, points } = req.body;
+      const { id, name, description, category, flag, points } = req.body;
       const { data, error } = await upsertChallenge({
+        id,
         name,
         description,
         category,

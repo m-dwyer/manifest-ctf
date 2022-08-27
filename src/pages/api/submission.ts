@@ -1,7 +1,9 @@
 import { NextApiResponse, NextApiRequest } from "next";
 import { getUser, withApiAuth } from "@supabase/auth-helpers-nextjs";
-
-import { supabaseServiceClient } from "@lib/supabaseServiceClient";
+import {
+  fetchChallengeWithAttempts,
+  upsertChallengeAttempt,
+} from "@services/server-submission";
 
 export default withApiAuth(async function handler(
   req: NextApiRequest,
@@ -15,22 +17,10 @@ export default withApiAuth(async function handler(
   const challenge = req.body.challenge;
   const submittedFlag = req.body.flag;
 
-  const { data: challengeData } = await supabaseServiceClient
-    .from("challenges")
-    .select(
-      `
-        *,
-        challenge_attempts(
-            completed,
-            attempts
-        )
-    `
-    )
-    .eq("id", challenge)
-    .limit(1)
-    .single();
+  const { challengeData } = await fetchChallengeWithAttempts(challenge);
 
   const { user } = await getUser({ req, res });
+  const userId = user.id;
 
   const existingAttempts = challengeData?.challenge_attempts[0]?.attempts || 0;
   const shouldLogAttempt =
@@ -39,15 +29,13 @@ export default withApiAuth(async function handler(
 
   if (shouldLogAttempt) {
     const flagCorrect = challengeData?.flag === submittedFlag;
-    const { data: upsertData, error: upsertError } = await supabaseServiceClient
-      .from("challenge_attempts")
-      .upsert({
-        user_id: user.id,
-        challenge_id: challenge,
-        completed: flagCorrect,
-        attempts: existingAttempts + 1,
-        points_scored: flagCorrect ? challengeData.points : 0,
-      });
+    const { upsertData, upsertError } = await upsertChallengeAttempt(
+      userId,
+      challengeData?.id,
+      flagCorrect,
+      existingAttempts,
+      challengeData.points
+    );
   }
 
   const correct = challengeData?.flag == submittedFlag;
