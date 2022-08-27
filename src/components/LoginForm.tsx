@@ -1,8 +1,8 @@
 import { useState, MouseEvent } from "react";
 import { useRouter } from "next/router";
 
-import { useMultiInputs } from "@lib/hooks/useMultiInputs";
-import { login } from "@services/authentication";
+import { useMultiInputs } from "@/lib/hooks/useMultiInputs";
+import { login } from "@/services/authentication";
 
 const LoginForm = () => {
   const [formData, setFormData] = useMultiInputs({ email: "", password: "" });

@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { FaCheck } from "react-icons/fa";
 
-import { ChallengeWithCompletion } from "@type/Challenge";
+import { ChallengeWithCompletion } from "@/type/Challenge";
 
 const ChallengeCard = ({
   challenge,

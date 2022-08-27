@@ -3,9 +3,9 @@ import { supabaseServerClient } from "@supabase/auth-helpers-nextjs";
 import { GetServerSidePropsContext } from "next/types";
 import Link from "next/link";
 
-import { Challenge } from "@type/Challenge";
-import Modal from "@components/Modal";
-import { submitAttempt } from "@services/submissions";
+import { Challenge } from "@/type/Challenge";
+import Modal from "@/components/Modal";
+import { submitAttempt } from "@/services/submissions";
 
 type ChallengeWithFiles = Challenge & {
   files: [{ fileName: string; publicUrl: string }];

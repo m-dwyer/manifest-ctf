@@ -3,7 +3,7 @@ import { getUser, withApiAuth } from "@supabase/auth-helpers-nextjs";
 import {
   fetchChallengeWithAttempts,
   upsertChallengeAttempt,
-} from "@services/server-submission";
+} from "@/services/server-submission";
 
 export default withApiAuth(async function handler(
   req: NextApiRequest,

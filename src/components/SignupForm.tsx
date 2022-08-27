@@ -1,7 +1,7 @@
 import { useState, MouseEvent } from "react";
 
-import { useMultiInputs } from "@lib/hooks/useMultiInputs";
-import { signUp } from "@services/authentication";
+import { useMultiInputs } from "@/lib/hooks/useMultiInputs";
+import { signUp } from "@/services/authentication";
 
 const SignupForm = () => {
   const [formData, setFormData] = useMultiInputs({

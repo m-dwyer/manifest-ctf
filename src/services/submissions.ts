@@ -1,4 +1,4 @@
-import { SubmissionResult } from "@type/Submission";
+import { SubmissionResult } from "@/type/Submission";
 
 export const submitAttempt = async (
   challengeId: number,

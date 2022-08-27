@@ -1,10 +1,10 @@
 import { useState } from "react";
 
-import { useMultiInputs } from "@lib/hooks/useMultiInputs";
-import { createChallenge, updateChallenge } from "@services/challenges";
-import { uploadFileToBucket } from "@services/storage";
-import { ChallengeWithCategories } from "@type/Challenge";
-import FileUpload from "@components/FileUpload";
+import { useMultiInputs } from "@/lib/hooks/useMultiInputs";
+import { createChallenge, updateChallenge } from "@/services/challenges";
+import { uploadFileToBucket } from "@/services/storage";
+import { ChallengeWithCategories } from "@/type/Challenge";
+import FileUpload from "@/components/FileUpload";
 type ChallengeFormProps = {
   challenge?: ChallengeWithCategories | null;
   handleDismiss: () => void;
