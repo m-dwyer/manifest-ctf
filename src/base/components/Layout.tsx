@@ -1,7 +1,7 @@
 import * as React from "react";
-import Header from "@/components/Header";
+import Header from "@/base/components/Header";
 import { ModalRoot } from "@/common/components/Modal";
-import NavBar from "@/components/NavBar";
+import NavBar from "@/base/components/NavBar";
 
 const Layout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   return (

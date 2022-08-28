@@ -1,7 +1,7 @@
 import { withPageAuth } from "@supabase/auth-helpers-nextjs";
 import type { NextPage } from "next";
 
-import HomePage from "@/components/HomePage";
+import HomePage from "@/base/components/HomePage";
 
 const Home: NextPage = () => {
   return (
