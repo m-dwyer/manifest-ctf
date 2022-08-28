@@ -47,8 +47,10 @@ const ChallengeForm = ({
     }, 5000);
   };
 
-  const uploadFiles = () => {
+  const uploadFiles = (formData: InputState) => {
     const { name } = formData;
+
+    console.log("formData: ", formData);
 
     files.forEach(async (f) => {
       const filePath = `${name.replace(/\s/g, "_")}/${f.name}`;
@@ -71,7 +73,7 @@ const ChallengeForm = ({
   ) => {
     e.preventDefault();
 
-    uploadFiles();
+    uploadFiles(formData);
 
     const json = challenge?.id
       ? await updateChallenge({ id: challenge.id, ...(formData as Challenge) })
