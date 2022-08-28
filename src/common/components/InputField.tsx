@@ -1,4 +1,5 @@
 import { InputHTMLAttributes } from "react";
+import { LabelledField } from "@/common/components/LabelledField";
 
 type InputFieldProps = {
   name: string;
@@ -15,10 +16,7 @@ export const InputField = ({
   ...props
 }: InputFieldProps) => {
   return (
-    <>
-      <label className="label" htmlFor={name}>
-        {label}
-      </label>
+    <LabelledField name={name} label={label}>
       <input
         className="input bg-base-200"
         type={type}
@@ -27,6 +25,6 @@ export const InputField = ({
         value={value}
         {...props}
       ></input>
-    </>
+    </LabelledField>
   );
 };

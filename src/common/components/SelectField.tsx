@@ -1,4 +1,5 @@
 import { SelectHTMLAttributes } from "react";
+import { LabelledField } from "@/common/components/LabelledField";
 
 type SelectFieldProps = {
   name: string;
@@ -15,10 +16,7 @@ export const SelectField = ({
   ...props
 }: SelectFieldProps) => {
   return (
-    <>
-      <label className="label" htmlFor={name}>
-        {label}
-      </label>
+    <LabelledField name={name} label={label}>
       <select
         name={name}
         id={name}
@@ -39,6 +37,6 @@ export const SelectField = ({
           );
         })}
       </select>
-    </>
+    </LabelledField>
   );
 };

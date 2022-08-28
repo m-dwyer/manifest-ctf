@@ -1,4 +1,5 @@
 import { TextareaHTMLAttributes } from "react";
+import { LabelledField } from "@/common/components/LabelledField";
 
 type TextAreaFieldProps = {
   name: string;
@@ -13,10 +14,7 @@ export const TextAreaField = ({
   ...props
 }: TextAreaFieldProps) => {
   return (
-    <>
-      <label className="label" htmlFor={name}>
-        {label}
-      </label>
+    <LabelledField name={name} label={label}>
       <textarea
         className="input bg-base-200"
         id={name}
@@ -24,6 +22,6 @@ export const TextAreaField = ({
         value={value}
         {...props}
       />
-    </>
+    </LabelledField>
   );
 };
