@@ -1,7 +1,7 @@
 import { useState, SyntheticEvent } from "react";
 
 import { InputState } from "@/common/hooks/useMultiInputs";
-import { signUp } from "@/services/authentication";
+import { signUp } from "@/base/services/authentication";
 import { Form } from "@/common/components/Form";
 import { InputField } from "@/common/components/InputField";
 

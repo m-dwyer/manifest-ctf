@@ -5,7 +5,7 @@ import {
   deleteChallenge,
   fetchChallenges,
   upsertChallenge,
-} from "@/services/challenge-admin";
+} from "@/challenges/services/challenge-admin";
 
 export default withApiAuth(
   nc<NextApiRequest, NextApiResponse>({

@@ -1,8 +1,11 @@
 import { useState } from "react";
 
 import { InputState, useMultiInputs } from "@/common/hooks/useMultiInputs";
-import { createChallenge, updateChallenge } from "@/services/challenges";
-import { uploadFileToBucket } from "@/services/storage";
+import {
+  createChallenge,
+  updateChallenge,
+} from "@/challenges/services/challenges";
+import { uploadFileToBucket } from "@/base/services/storage";
 import { Challenge, ChallengeWithCategories } from "@/types/Challenge";
 import FileUpload from "@/common/components/FileUpload";
 import { Form } from "@/common/components/Form";
