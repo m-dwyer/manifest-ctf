@@ -50,8 +50,6 @@ const ChallengeForm = ({
   const uploadFiles = (formData: InputState) => {
     const { name } = formData;
 
-    console.log("formData: ", formData);
-
     files.forEach(async (f) => {
       const filePath = `${name.replace(/\s/g, "_")}/${f.name}`;
 
