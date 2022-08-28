@@ -3,6 +3,7 @@
     "baseUrl": "./src",
     "paths": {
       "@/common/*": ["common/*"],
+      "@/challenges/*": ["challenges/*"],
       "@/components/*": ["components/*"],
       "@/lib/*": ["lib/*"],
       "@/services/*": ["services/*"],

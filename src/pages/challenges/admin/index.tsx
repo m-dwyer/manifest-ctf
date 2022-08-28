@@ -2,7 +2,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { useEffect, useState } from "react";
 
 import { ChallengeWithCategories } from "@/types/Challenge";
-import ChallengeForm from "@/components/ChallengeForm";
+import ChallengeForm from "@/challenges/components/ChallengeForm";
 import Modal from "@/common/components/Modal";
 
 enum ModalType {

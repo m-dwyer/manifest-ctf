@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
 import { ChallengeWithCompletion } from "@/types/Challenge";
-import ChallengeCard from "@/components/ChallengeCard";
+import ChallengeCard from "@/challenges/components/ChallengeCard";
 import Pagination from "@/common/components/Pagination";
 import { fetchChallengesByRange } from "@/services/challenges";
 
