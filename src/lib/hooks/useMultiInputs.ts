@@ -1,10 +1,10 @@
 import { Reducer, useReducer } from "react";
 
-type InputState = {
+export type InputState = {
   [key: string]: any;
 };
 
-type InputAction = {
+export type InputAction = {
   [key: string]: string;
 };
 

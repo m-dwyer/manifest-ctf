@@ -1,22 +1,19 @@
-import { useState, MouseEvent } from "react";
+import { useState, SyntheticEvent } from "react";
 
-import { useMultiInputs } from "@/lib/hooks/useMultiInputs";
+import { InputState } from "@/lib/hooks/useMultiInputs";
 import { signUp } from "@/services/authentication";
+import { Form } from "./Form";
+import { InputField } from "@/components/InputField";
 
 const SignupForm = () => {
-  const [formData, setFormData] = useMultiInputs({
-    email: "",
-    password: "",
-    confirm: "",
-  });
-
   const [error, setError] = useState<string | null>(null);
 
-  const handleSignup = async (event: MouseEvent) => {
+  const handleSignup = async (event: SyntheticEvent, formData: InputState) => {
     event.preventDefault();
 
     if (formData.confirm !== formData.password) {
       alert("Passwords do not match");
+      return;
     }
 
     const { user, session, error } = await signUp(
@@ -35,45 +32,39 @@ const SignupForm = () => {
         <div className="card-body">
           <div className="card-title">Sign up</div>
           {error != null && <div>{error}</div>}
-          <form className="form-control">
-            <label className="label" htmlFor="email">
-              email
-            </label>
-            <input
-              className="input"
-              type="email"
-              id="email"
-              name="email"
-              placeholder="Your email"
-              value={formData.email}
-              onChange={(e) => setFormData({ email: e.target.value })}
-            ></input>
-            <label className="label" htmlFor="password">
-              password
-            </label>
-            <input
-              className="input"
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={(e) => setFormData({ password: e.target.value })}
-            ></input>
-            <label className="label" htmlFor="confirmPassword">
-              confirm
-            </label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              className="input"
-              value={formData.confirm}
-              onChange={(e) => setFormData({ confirm: e.target.value })}
-            ></input>
-            <button className="btn mt-10" type="submit" onClick={handleSignup}>
-              submit
-            </button>
-          </form>
+          <Form submitHandler={handleSignup}>
+            {(formData, setFormData) => (
+              <>
+                <div>foo</div>
+                <InputField
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => {
+                    setFormData({ email: e.target.value });
+                  }}
+                />
+                <InputField
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => {
+                    setFormData({ password: e.target.value });
+                  }}
+                />
+                <InputField
+                  name="confirmPassword"
+                  label="confirm"
+                  type="password"
+                  value={formData.confirm}
+                  onChange={(e) => setFormData({ confirm: e.target.value })}
+                />
+                <button className="btn mt-10" type="submit">
+                  submit
+                </button>
+              </>
+            )}
+          </Form>
         </div>
       </div>
     </div>
