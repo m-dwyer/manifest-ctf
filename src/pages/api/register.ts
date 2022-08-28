@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/common/providers/supabaseClient";
 
 export default async function registerUser(
   req: NextApiRequest,

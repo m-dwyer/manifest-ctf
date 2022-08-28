@@ -2,7 +2,7 @@ import {
   InputAction,
   InputState,
   useMultiInputs,
-} from "@/lib/hooks/useMultiInputs";
+} from "@/common/hooks/useMultiInputs";
 import { Dispatch, FormEvent } from "react";
 
 type FormProps = {

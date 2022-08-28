@@ -1,4 +1,4 @@
-import { supabaseServiceClient } from "@/lib/supabaseServiceClient";
+import { supabaseServiceClient } from "@/common/providers/supabaseServiceClient";
 
 export const fetchChallengeWithAttempts = async (challenge: string) => {
   const { data: challengeData } = await supabaseServiceClient

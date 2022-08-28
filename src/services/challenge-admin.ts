@@ -1,4 +1,4 @@
-import { supabaseServiceClient } from "@/lib/supabaseServiceClient";
+import { supabaseServiceClient } from "@/common/providers/supabaseServiceClient";
 
 import { Challenge } from "@/types/Challenge";
 

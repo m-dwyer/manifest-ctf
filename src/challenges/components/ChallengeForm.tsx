@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { InputState, useMultiInputs } from "@/lib/hooks/useMultiInputs";
+import { InputState, useMultiInputs } from "@/common/hooks/useMultiInputs";
 import { createChallenge, updateChallenge } from "@/services/challenges";
 import { uploadFileToBucket } from "@/services/storage";
 import { Challenge, ChallengeWithCategories } from "@/types/Challenge";

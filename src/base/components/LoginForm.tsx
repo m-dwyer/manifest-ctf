@@ -1,7 +1,7 @@
 import { useState, MouseEvent, SyntheticEvent } from "react";
 import { useRouter } from "next/router";
 
-import { InputState, useMultiInputs } from "@/lib/hooks/useMultiInputs";
+import { InputState, useMultiInputs } from "@/common/hooks/useMultiInputs";
 import { login } from "@/services/authentication";
 import { Form } from "@/common/components/Form";
 import { InputField } from "@/common/components/InputField";
