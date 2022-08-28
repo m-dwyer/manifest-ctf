@@ -13,6 +13,8 @@ import {
 import FileUpload from "@/common/components/FileUpload";
 import { Form } from "@/common/components/Form";
 import { InputField } from "@/common/components/InputField";
+import { TextAreaField } from "@/common/components/TextAreaField";
+import { SelectField } from "@/common/components/SelectField";
 type ChallengeFormProps = {
   challenge?: ChallengeWithCategories | null;
   handleDismiss: () => void;
@@ -28,6 +30,7 @@ const ChallengeForm = ({
     ? {
         name: challenge.name,
         category_id: challenge?.category?.id,
+        category_name: challenge?.category?.name,
         description: challenge.description,
         flag: challenge.flag,
         points: challenge.points,
@@ -91,32 +94,34 @@ const ChallengeForm = ({
         <>
           <InputField
             name="challenge-name"
+            label="name"
             type="text"
             value={formData.name}
             onChange={(e) => {
               setFormData({ name: e.target.value });
             }}
           />
-          <textarea
+          <TextAreaField
             className="input bg-base-200"
-            id="challenge-description"
-            name="challenge-description"
+            name="description"
+            label="description"
             rows={4}
             cols={60}
             value={formData.description}
             onChange={(e) => setFormData({ description: e.target.value })}
           />
-          <select
-            className="select bg-base-200"
-            value={formData.category_id}
-            onChange={(e) => setFormData({ category: e.target.value })}
-          >
-            {challenge?.category && (
-              <option disabled selected value={challenge.category.id}>
-                {challenge.category.name}
-              </option>
-            )}
-          </select>
+          <SelectField
+            name="category"
+            selected={{
+              label: formData.category_name,
+              value: formData.category_id,
+            }}
+            options={[{ label: "Default", value: "1" }]}
+            onChange={(e) => {
+              console.log("e: ", e);
+              setFormData({ category: e.target.value });
+            }}
+          />
           <label className="file" htmlFor="challenge-file">
             File
           </label>
