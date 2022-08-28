@@ -4,7 +4,7 @@ import { GetServerSidePropsContext } from "next/types";
 import Link from "next/link";
 
 import { Challenge } from "@/types/Challenge";
-import Modal from "@/components/Modal";
+import Modal from "@/common/components/Modal";
 import { submitAttempt } from "@/services/submissions";
 
 type ChallengeWithFiles = Challenge & {

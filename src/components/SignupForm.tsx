@@ -2,8 +2,8 @@ import { useState, SyntheticEvent } from "react";
 
 import { InputState } from "@/lib/hooks/useMultiInputs";
 import { signUp } from "@/services/authentication";
-import { Form } from "@/components/Form";
-import { InputField } from "@/components/InputField";
+import { Form } from "@/common/components/Form";
+import { InputField } from "@/common/components/InputField";
 
 const SignupForm = () => {
   const [error, setError] = useState<string | null>(null);

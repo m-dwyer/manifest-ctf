@@ -3,8 +3,8 @@ import { useRouter } from "next/router";
 
 import { InputState, useMultiInputs } from "@/lib/hooks/useMultiInputs";
 import { login } from "@/services/authentication";
-import { Form } from "@/components/Form";
-import { InputField } from "./InputField";
+import { Form } from "@/common/components/Form";
+import { InputField } from "@/common/components/InputField";
 
 const LoginForm = () => {
   const [error, setError] = useState<string | null>(null);

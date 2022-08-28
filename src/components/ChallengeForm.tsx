@@ -4,9 +4,9 @@ import { InputState, useMultiInputs } from "@/lib/hooks/useMultiInputs";
 import { createChallenge, updateChallenge } from "@/services/challenges";
 import { uploadFileToBucket } from "@/services/storage";
 import { Challenge, ChallengeWithCategories } from "@/types/Challenge";
-import FileUpload from "@/components/FileUpload";
-import { Form } from "@/components/Form";
-import { InputField } from "@/components/InputField";
+import FileUpload from "@/common/components/FileUpload";
+import { Form } from "@/common/components/Form";
+import { InputField } from "@/common/components/InputField";
 type ChallengeFormProps = {
   challenge?: ChallengeWithCategories | null;
   handleDismiss: () => void;
