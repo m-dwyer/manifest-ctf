@@ -1,6 +1,6 @@
 import { supabaseServiceClient } from "@/common/providers/supabaseServiceClient";
 
-import { Challenge } from "@/types/Challenge";
+import { Challenge } from "@/challenges/types/Challenge";
 
 type ChallengeUpsertProps = {
   id?: number;

@@ -6,7 +6,10 @@ import {
   updateChallenge,
 } from "@/challenges/services/challenges";
 import { uploadFileToBucket } from "@/base/services/storage";
-import { Challenge, ChallengeWithCategories } from "@/types/Challenge";
+import {
+  Challenge,
+  ChallengeWithCategories,
+} from "@/challenges/types/Challenge";
 import FileUpload from "@/common/components/FileUpload";
 import { Form } from "@/common/components/Form";
 import { InputField } from "@/common/components/InputField";
