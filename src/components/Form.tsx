@@ -14,10 +14,11 @@ type FormProps = {
     formData: InputState,
     setFormData: Dispatch<InputAction>
   ) => React.ReactNode;
+  existingData?: InputState;
 };
 
-export const Form = ({ submitHandler, children }: FormProps) => {
-  const [formData, setFormData] = useMultiInputs({});
+export const Form = ({ existingData, submitHandler, children }: FormProps) => {
+  const [formData, setFormData] = useMultiInputs(existingData || {});
 
   return (
     <form className="form-control" onSubmit={(e) => submitHandler(e, formData)}>

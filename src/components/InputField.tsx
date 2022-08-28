@@ -20,7 +20,7 @@ export const InputField = ({
         {label}
       </label>
       <input
-        className="input"
+        className="input bg-base-200"
         type={type}
         id={name}
         name={name}

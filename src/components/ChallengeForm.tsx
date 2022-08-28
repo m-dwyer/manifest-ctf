@@ -1,10 +1,12 @@
 import { useState } from "react";
 
-import { useMultiInputs } from "@/lib/hooks/useMultiInputs";
+import { InputState, useMultiInputs } from "@/lib/hooks/useMultiInputs";
 import { createChallenge, updateChallenge } from "@/services/challenges";
 import { uploadFileToBucket } from "@/services/storage";
-import { ChallengeWithCategories } from "@/types/Challenge";
+import { Challenge, ChallengeWithCategories } from "@/types/Challenge";
 import FileUpload from "@/components/FileUpload";
+import { Form } from "@/components/Form";
+import { InputField } from "@/components/InputField";
 type ChallengeFormProps = {
   challenge?: ChallengeWithCategories | null;
   handleDismiss: () => void;
@@ -57,14 +59,17 @@ const ChallengeForm = ({
     });
   };
 
-  const handleSubmit = async (e: React.SyntheticEvent) => {
+  const handleSubmit = async (
+    e: React.SyntheticEvent,
+    formData: InputState
+  ) => {
     e.preventDefault();
 
     uploadFiles();
 
     const json = challenge?.id
-      ? await updateChallenge({ id: challenge.id, ...formData })
-      : await createChallenge(formData);
+      ? await updateChallenge({ id: challenge.id, ...(formData as Challenge) })
+      : await createChallenge(formData as Challenge);
 
     if (json.error) {
       showError(json.error);
@@ -75,80 +80,64 @@ const ChallengeForm = ({
   };
 
   return (
-    <form className="form-control" onSubmit={(e) => handleSubmit(e)}>
-      <label className="label" htmlFor="challenge-name">
-        name
-      </label>
-      <input
-        className="input bg-base-200"
-        type="text"
-        id="challenge-name"
-        name="challenge-name"
-        placeholder="My challenge"
-        value={formData.name}
-        onChange={(e) => setFormData({ name: e.target.value })}
-      />
-      <label className="label" htmlFor="challenge-description">
-        Description
-      </label>
-      <textarea
-        className="input bg-base-200"
-        id="challenge-description"
-        name="challenge-description"
-        placeholder="Describe the challenge here.."
-        rows={4}
-        cols={60}
-        value={formData.description}
-        onChange={(e) => setFormData({ description: e.target.value })}
-      />
-      <label className="label" htmlFor="challenge-category">
-        Category
-      </label>
-      <select
-        className="select bg-base-200"
-        value={formData.category_id}
-        onChange={(e) => setFormData({ category: e.target.value })}
-      >
-        {challenge?.category && (
-          <option disabled selected value={challenge.category.id}>
-            {challenge.category.name}
-          </option>
-        )}
-      </select>
-      <label className="file" htmlFor="challenge-file">
-        File
-      </label>
-      <FileUpload files={[files, setFiles]} />
-      <label className="label" htmlFor="challenge-name">
-        Flag
-      </label>
-      <input
-        className="input bg-base-200"
-        type="text"
-        id="challenge-flag"
-        name="challenge-flag"
-        placeholder="flag"
-        value={formData.flag}
-        onChange={(e) => setFormData({ flag: e.target.value })}
-      />
-      <label className="label" htmlFor="challenge-points">
-        Points
-      </label>
-      <input
-        className="input bg-base-200"
-        type="number"
-        id="challenge-points"
-        name="challenge-points"
-        min={0}
-        max={10000}
-        value={formData.points}
-        onChange={(e) => setFormData({ points: e.target.value })}
-      />
-      {submitError != null && <span className="mt-5">{submitError}</span>}
-      <button className="btn mt-10" type="submit">
-        {challenge ? "edit" : "add"}
-      </button>
-    </form>
+    <Form existingData={formData} submitHandler={handleSubmit}>
+      {(formData, setFormData) => (
+        <>
+          <InputField
+            name="challenge-name"
+            type="text"
+            value={formData.name}
+            onChange={(e) => {
+              setFormData({ name: e.target.value });
+            }}
+          />
+          <textarea
+            className="input bg-base-200"
+            id="challenge-description"
+            name="challenge-description"
+            rows={4}
+            cols={60}
+            value={formData.description}
+            onChange={(e) => setFormData({ description: e.target.value })}
+          />
+          <select
+            className="select bg-base-200"
+            value={formData.category_id}
+            onChange={(e) => setFormData({ category: e.target.value })}
+          >
+            {challenge?.category && (
+              <option disabled selected value={challenge.category.id}>
+                {challenge.category.name}
+              </option>
+            )}
+          </select>
+          <label className="file" htmlFor="challenge-file">
+            File
+          </label>
+          <FileUpload files={[files, setFiles]} />
+          <InputField
+            name="flag"
+            type="text"
+            value={formData.flag}
+            onChange={(e) => {
+              setFormData({ flag: e.target.value });
+            }}
+          />
+          <InputField
+            name="challenge-points"
+            type="number"
+            min={0}
+            max={10000}
+            value={formData.points}
+            onChange={(e) => setFormData({ points: e.target.value })}
+          />
+          {submitError != null && <span className="mt-5">{submitError}</span>}
+          <button className="btn mt-10" type="submit">
+            {challenge ? "edit" : "add"}
+          </button>
+        </>
+      )}
+    </Form>
   );
 };
 

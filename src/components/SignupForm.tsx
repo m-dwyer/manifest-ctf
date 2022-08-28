@@ -2,7 +2,7 @@ import { useState, SyntheticEvent } from "react";
 
 import { InputState } from "@/lib/hooks/useMultiInputs";
 import { signUp } from "@/services/authentication";
-import { Form } from "./Form";
+import { Form } from "@/components/Form";
 import { InputField } from "@/components/InputField";
 
 const SignupForm = () => {
@@ -35,7 +35,6 @@ const SignupForm = () => {
           <Form submitHandler={handleSignup}>
             {(formData, setFormData) => (
               <>
-                <div>foo</div>
                 <InputField
                   name="email"
                   type="email"

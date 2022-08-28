@@ -1,16 +1,16 @@
-import { useState, MouseEvent } from "react";
+import { useState, MouseEvent, SyntheticEvent } from "react";
 import { useRouter } from "next/router";
 
-import { useMultiInputs } from "@/lib/hooks/useMultiInputs";
+import { InputState, useMultiInputs } from "@/lib/hooks/useMultiInputs";
 import { login } from "@/services/authentication";
+import { Form } from "@/components/Form";
+import { InputField } from "./InputField";
 
 const LoginForm = () => {
-  const [formData, setFormData] = useMultiInputs({ email: "", password: "" });
-
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleLogin = async (e: MouseEvent) => {
+  const handleLogin = async (e: SyntheticEvent, formData: InputState) => {
     e.preventDefault();
 
     const { error } = await login(formData.email, formData.password);
@@ -27,32 +27,31 @@ const LoginForm = () => {
         <div className="card-body">
           <div className="card-title">Log in </div>
           {error != null && <div>{error}</div>}
-          <form className="form-control">
-            <label className="label" htmlFor="email">
-              email
-            </label>
-            <input
-              className="input"
-              type="email"
-              id="email"
-              name="email"
-              placeholder="Your email"
-              onChange={(e) => setFormData({ email: e.target.value })}
-            ></input>
-            <label className="label" htmlFor="password">
-              password
-            </label>
-            <input
-              className="input"
-              type="password"
-              id="password"
-              name="password"
-              onChange={(e) => setFormData({ password: e.target.value })}
-            ></input>
-            <button className="btn mt-10" type="submit" onClick={handleLogin}>
-              submit
-            </button>
-          </form>
+          <Form submitHandler={handleLogin}>
+            {(formData, setFormData) => (
+              <>
+                <InputField
+                  name="email"
+                  type="text"
+                  value={formData.email}
+                  onChange={(e) => {
+                    setFormData({ email: e.target.value });
+                  }}
+                />
+                <InputField
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => {
+                    setFormData({ password: e.target.value });
+                  }}
+                />
+                <button className="btn mt-10" type="submit">
+                  submit
+                </button>
+              </>
+            )}
+          </Form>
         </div>
       </div>
     </div>
