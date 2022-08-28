@@ -135,7 +135,7 @@ const ChallengeForm = ({
             }}
           />
           <InputField
-            name="challenge-points"
+            name="points"
             type="number"
             min={0}
             max={10000}
