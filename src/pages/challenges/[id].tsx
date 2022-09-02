@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import { Challenge } from "@/challenges/types/Challenge";
 import Modal from "@/common/components/Modal";
-import { submitAttempt } from "@/challenges/services/submissions";
+import { submitAttempt } from "@/challenges/queries/submissions";
 
 type ChallengeWithFiles = Challenge & {
   files: [{ fileName: string; publicUrl: string }];

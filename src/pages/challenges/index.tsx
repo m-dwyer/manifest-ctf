@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { ChallengeWithCompletion } from "@/challenges/types/Challenge";
 import ChallengeCard from "@/challenges/components/ChallengeCard";
 import Pagination from "@/common/components/Pagination";
-import { fetchChallengesByRange } from "@/challenges/services/challenges";
+import { fetchChallengesByRange } from "@/challenges/queries/challenges";
 
 const PAGE_LIMIT = 5;
 

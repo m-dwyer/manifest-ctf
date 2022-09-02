@@ -4,8 +4,8 @@ import { InputState, useMultiInputs } from "@/common/hooks/useMultiInputs";
 import {
   createChallenge,
   updateChallenge,
-} from "@/challenges/services/challenges";
-import { uploadFileToBucket } from "@/base/services/storage";
+} from "@/challenges/queries/challenges";
+import { uploadFileToBucket } from "@/base/queries/storage";
 import {
   Challenge,
   ChallengeWithCategories,
@@ -117,10 +117,7 @@ const ChallengeForm = ({
               value: formData.category_id,
             }}
             options={[{ label: "Default", value: "1" }]}
-            onChange={(e) => {
-              console.log("e: ", e);
-              setFormData({ category: e.target.value });
-            }}
+            onChange={(e) => setFormData({ category: e.target.value })}
           />
           <label className="file" htmlFor="challenge-file">
             File

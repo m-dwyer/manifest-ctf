@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useUser } from "@supabase/auth-helpers-react";
 
-import { logout } from "@/base/services/authentication";
+import { logout } from "@/base/queries/authentication";
 
 const ProfileDropdown = () => {
   const { user } = useUser();
