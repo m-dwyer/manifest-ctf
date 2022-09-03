@@ -12,17 +12,13 @@ import { Form } from "@/common/components/Form";
 import { InputField } from "@/common/components/InputField";
 import { TextAreaField } from "@/common/components/TextAreaField";
 import { SelectField } from "@/common/components/SelectField";
+import { useQueryClient } from "@tanstack/react-query";
 type ChallengeFormProps = {
   challenge?: ChallengeWithCategories | null;
   handleDismiss: () => void;
-  handleSave: (c: ChallengeWithCategories) => void;
 };
 
-const ChallengeForm = ({
-  challenge,
-  handleDismiss,
-  handleSave,
-}: ChallengeFormProps) => {
+const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
   const existingInputs = challenge
     ? {
         name: challenge.name,
@@ -39,6 +35,7 @@ const ChallengeForm = ({
   const [files, setFiles] = useState<File[]>([]);
   const [submitError, setSubmitError] = useState<string | null>();
 
+  const queryClient = useQueryClient();
   const upsertMutation = useUpsertChallenge();
 
   const showError = (error: string) => {
@@ -86,8 +83,8 @@ const ChallengeForm = ({
             showError(error.message);
           }
         },
-        onSuccess: (data, variables, context) => {
-          handleSave(data.result as ChallengeWithCategories);
+        onSuccess: () => {
+          queryClient.invalidateQueries(["challengesForAdmin"]);
           handleDismiss();
         },
       }

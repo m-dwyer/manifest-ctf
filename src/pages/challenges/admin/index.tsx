@@ -1,5 +1,5 @@
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { ChallengeWithCategories } from "@/challenges/types/Challenge";
 import ChallengeForm from "@/challenges/components/ChallengeForm";
@@ -8,6 +8,7 @@ import {
   useDeleteChallenge,
   useFetchChallengesForAdmin,
 } from "@/challenges/queries/challenges";
+import { useQueryClient } from "@tanstack/react-query";
 
 enum ModalType {
   TEXT,
@@ -16,9 +17,6 @@ enum ModalType {
 }
 
 const ChallengesAdminPage = () => {
-  const [challenges, setChallenges] = useState<
-    ChallengeWithCategories[] | null
-  >([]);
   const [editingChallenge, setEditingChallenge] =
     useState<ChallengeWithCategories | null>(null);
 
@@ -32,19 +30,9 @@ const ChallengesAdminPage = () => {
 
   const handleDismiss = () => setModal(false);
 
-  const handleSave = (challenge: ChallengeWithCategories) => {
-    const savedChallenges =
-      challenges?.map((c) => (c.id == challenge.id ? challenge : c)) || [];
-    setChallenges(savedChallenges);
-  };
-
+  const queryClient = useQueryClient();
   const fetchChallengesForAdminQuery = useFetchChallengesForAdmin();
   const deleteChallengeMutation = useDeleteChallenge();
-
-  useEffect(() => {
-    if (fetchChallengesForAdminQuery.data)
-      setChallenges(fetchChallengesForAdminQuery.data);
-  }, [fetchChallengesForAdminQuery.data]);
 
   const handleUpdate = (c: ChallengeWithCategories) => {
     setModalType(ModalType.EDIT_CHALLENGE_FORM);
@@ -58,7 +46,11 @@ const ChallengesAdminPage = () => {
   };
 
   const handleDelete = async (challenge: number) => {
-    const result = await deleteChallengeMutation.mutateAsync(challenge);
+    const result = await deleteChallengeMutation.mutateAsync(challenge, {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["challengesForAdmin"]);
+      },
+    });
 
     setModalType(ModalType.TEXT);
     if (result.success) {
@@ -67,8 +59,6 @@ const ChallengesAdminPage = () => {
         text: "Challenge deleted",
       });
       setModal(true);
-
-      setChallenges(challenges?.filter((c) => c.id != challenge) || []);
     } else {
       setModalState({
         title: "Error",
@@ -95,34 +85,33 @@ const ChallengesAdminPage = () => {
           </tr>
         </thead>
         <tbody>
-          {challenges &&
-            challenges.map((c) => {
-              return (
-                <tr key={c.id}>
-                  <th className="flex gap-4">
-                    <span
-                      className="tooltip"
-                      data-tip="Edit"
-                      onClick={() => handleUpdate(c)}
-                    >
-                      <FaEdit />
-                    </span>
-                    <span
-                      className="tooltip"
-                      data-tip="Delete"
-                      onClick={() => c.id && handleDelete(c.id)}
-                    >
-                      <FaTrash />
-                    </span>
-                  </th>
-                  <th>{c.name}</th>
-                  <th>{c.description}</th>
-                  <th>{c.category?.name}</th>
-                  <th>{c.flag}</th>
-                  <th>{c.points}</th>
-                </tr>
-              );
-            })}
+          {fetchChallengesForAdminQuery.data?.map((c) => {
+            return (
+              <tr key={c.id}>
+                <th className="flex gap-4">
+                  <span
+                    className="tooltip"
+                    data-tip="Edit"
+                    onClick={() => handleUpdate(c)}
+                  >
+                    <FaEdit />
+                  </span>
+                  <span
+                    className="tooltip"
+                    data-tip="Delete"
+                    onClick={() => c.id && handleDelete(c.id)}
+                  >
+                    <FaTrash />
+                  </span>
+                </th>
+                <th>{c.name}</th>
+                <th>{c.description}</th>
+                <th>{c.category?.name}</th>
+                <th>{c.flag}</th>
+                <th>{c.points}</th>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
       {modal && modalType == ModalType.TEXT ? (
@@ -142,10 +131,7 @@ const ChallengesAdminPage = () => {
           </span>
 
           <p className="py-4">
-            <ChallengeForm
-              handleSave={handleSave}
-              handleDismiss={handleDismiss}
-            />
+            <ChallengeForm handleDismiss={handleDismiss} />
           </p>
         </Modal>
       ) : null}
@@ -161,7 +147,6 @@ const ChallengesAdminPage = () => {
           <p className="py-4">
             <ChallengeForm
               handleDismiss={handleDismiss}
-              handleSave={handleSave}
               challenge={editingChallenge}
             />
           </p>
