@@ -1,41 +1,28 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
-import { ChallengeWithCompletion } from "@/challenges/types/Challenge";
 import ChallengeCard from "@/challenges/components/ChallengeCard";
 import Pagination from "@/common/components/Pagination";
-import { fetchChallengesByRange } from "@/challenges/queries/challenges";
+import { useFetchChallengesByRange } from "@/challenges/queries/challenges";
 
 const PAGE_LIMIT = 5;
 
 const Challenges: NextPage = () => {
   const { query } = useRouter();
-  const [challenges, setChallenges] = useState<
-    ChallengeWithCompletion[] | null
-  >(null);
-
   const currentPage: number = Number(query.page) || 1;
 
   const [rangeBegin, setRangeBegin] = useState(0);
   const [rangeEnd, setRangeEnd] = useState(PAGE_LIMIT - 1);
 
-  const [challengeCount, setChallengeCount] = useState<number>(0);
+  const fetchChallengesByRangeQuery = useFetchChallengesByRange({
+    rangeBegin,
+    rangeEnd,
+  });
 
-  const fetchChallenges = async () => {
-    const { challenges, count } = await fetchChallengesByRange(
-      rangeBegin,
-      rangeEnd
-    );
-
-    setChallengeCount(count || 0);
-    setChallenges(challenges);
-  };
-
-  useEffect(() => {
-    fetchChallenges();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, rangeBegin, rangeEnd]);
+  if (fetchChallengesByRangeQuery.isLoading) {
+    return <>Loading..</>;
+  }
 
   return (
     <div className="flex flex-col mx-auto items-center">
@@ -47,15 +34,16 @@ const Challenges: NextPage = () => {
         </select>
       </div>
       <div className="flex gap-6 flex-wrap justify-center mx-auto">
-        {challenges &&
-          challenges.map((c) => <ChallengeCard key={c.id} challenge={c} />)}
+        {fetchChallengesByRangeQuery.data?.challenges.map((c) => (
+          <ChallengeCard key={c.id} challenge={c} />
+        ))}
       </div>
       <Pagination
         current={currentPage}
         setFrom={setRangeBegin}
         setTo={setRangeEnd}
         pathName="/challenges"
-        total={challengeCount}
+        total={fetchChallengesByRangeQuery.data?.count || 0}
         perPage={PAGE_LIMIT}
       />
     </div>

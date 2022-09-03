@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import { ChallengeWithCategories } from "@/challenges/types/Challenge";
 import ChallengeForm from "@/challenges/components/ChallengeForm";
 import Modal from "@/common/components/Modal";
+import {
+  useDeleteChallenge,
+  useFetchChallengesForAdmin,
+} from "@/challenges/queries/challenges";
 
 enum ModalType {
   TEXT,
@@ -34,12 +38,13 @@ const ChallengesAdminPage = () => {
     setChallenges(savedChallenges);
   };
 
-  const fetchChallenges = async () => {
-    const result = await fetch(`/api/challenges/admin`);
-    const json = await result.json();
+  const fetchChallengesForAdminQuery = useFetchChallengesForAdmin();
+  const deleteChallengeMutation = useDeleteChallenge();
 
-    setChallenges(json.data as ChallengeWithCategories[]);
-  };
+  useEffect(() => {
+    if (fetchChallengesForAdminQuery.data)
+      setChallenges(fetchChallengesForAdminQuery.data);
+  }, [fetchChallengesForAdminQuery.data]);
 
   const handleUpdate = (c: ChallengeWithCategories) => {
     setModalType(ModalType.EDIT_CHALLENGE_FORM);
@@ -53,19 +58,10 @@ const ChallengesAdminPage = () => {
   };
 
   const handleDelete = async (challenge: number) => {
-    const options = {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ challenge: challenge }),
-    };
-
-    const result = await fetch(`/api/challenges/admin`, options);
-    const json = await result.json();
+    const result = await deleteChallengeMutation.mutateAsync(challenge);
 
     setModalType(ModalType.TEXT);
-    if (json.deleted) {
+    if (result.success) {
       setModalState({
         title: "Deleted",
         text: "Challenge deleted",
@@ -81,10 +77,6 @@ const ChallengesAdminPage = () => {
       setModal(true);
     }
   };
-
-  useEffect(() => {
-    fetchChallenges();
-  }, []);
 
   return (
     <>

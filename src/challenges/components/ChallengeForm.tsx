@@ -1,10 +1,7 @@
 import { useState } from "react";
 
 import { InputState, useMultiInputs } from "@/common/hooks/useMultiInputs";
-import {
-  createChallenge,
-  updateChallenge,
-} from "@/challenges/queries/challenges";
+import { useUpsertChallenge } from "@/challenges/queries/challenges";
 import { uploadFileToBucket } from "@/base/queries/storage";
 import {
   Challenge,
@@ -42,6 +39,8 @@ const ChallengeForm = ({
   const [files, setFiles] = useState<File[]>([]);
   const [submitError, setSubmitError] = useState<string | null>();
 
+  const upsertMutation = useUpsertChallenge();
+
   const showError = (error: string) => {
     setSubmitError(error);
 
@@ -76,16 +75,23 @@ const ChallengeForm = ({
 
     uploadFiles(formData);
 
-    const json = challenge?.id
-      ? await updateChallenge({ id: challenge.id, ...(formData as Challenge) })
-      : await createChallenge(formData as Challenge);
-
-    if (json.error) {
-      showError(json.error);
-    } else {
-      handleSave(json.result as ChallengeWithCategories);
-      handleDismiss();
-    }
+    upsertMutation.mutate(
+      {
+        id: challenge?.id,
+        ...(formData as Challenge),
+      },
+      {
+        onError: (error) => {
+          if (error instanceof Error) {
+            showError(error.message);
+          }
+        },
+        onSuccess: (data, variables, context) => {
+          handleSave(data.result as ChallengeWithCategories);
+          handleDismiss();
+        },
+      }
+    );
   };
 
   return (

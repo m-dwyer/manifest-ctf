@@ -27,7 +27,7 @@ export default withApiAuth(
 
       if (error) return res.status(500).json({ error: error.message });
 
-      return res.status(201).json({ deleted: true });
+      return res.status(201).json({ success: true });
     })
     .post(async (req, res) => {
       const { name, description, category, flag, points } = req.body;
