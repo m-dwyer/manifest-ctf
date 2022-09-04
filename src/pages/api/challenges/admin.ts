@@ -5,7 +5,7 @@ import {
   deleteChallenge,
   fetchChallenges,
   upsertChallenge,
-} from "@/challenges/services/challenge-admin";
+} from "@/challenges/services/challengeAdmin";
 import { buildResponse } from "@/common/lib/ResponseBuilder";
 
 export default withApiAuth(
