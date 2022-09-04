@@ -11,13 +11,29 @@ type FetchOptions = {
 
 type QueryOptions = {
   url: string;
-  options?: FetchOptions;
+  options?: {
+    method: FetchMethod;
+    headers?: { [key: string]: string };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    body: any;
+  };
+};
+
+const defaultOptions = {
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({}),
 };
 
 export const query = async <TResultType>({ url, options }: QueryOptions) => {
-  let fetchOptions = null;
+  let fetchOptions: FetchOptions | null = null;
   if (options) {
-    fetchOptions = { ...options };
+    fetchOptions = {
+      ...defaultOptions,
+      ...options,
+    };
   }
 
   let response = null;

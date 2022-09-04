@@ -45,9 +45,6 @@ const createOrUpdateChallenge = async (
     url: "/api/challenges/admin",
     options: {
       method,
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify(challenge),
     },
   });
@@ -119,7 +116,6 @@ const deleteChallenge = async (challengeId: number) => {
     url: "/api/challenges/admin",
     options: {
       method: "DELETE",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ challenge: challengeId }),
     },
   });

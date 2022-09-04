@@ -21,9 +21,6 @@ const submitAttempt = async (challengeId: number, flag: string) => {
     url: "/api/submission",
     options: {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({ challenge: challengeId, flag: flag }),
     },
   });
