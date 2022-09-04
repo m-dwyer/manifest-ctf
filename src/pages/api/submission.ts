@@ -4,13 +4,16 @@ import {
   fetchChallengeWithAttempts,
   upsertChallengeAttempt,
 } from "@/challenges/services/server-submission";
+import { buildResponse } from "@/common/lib/ResponseBuilder";
 
 export default withApiAuth(async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method != "POST") {
-    res.status(405).json({ error: "Not allowed" });
+    res
+      .status(405)
+      .json(buildResponse({ success: false, error: "Not allowed" }));
     return;
   }
 

@@ -7,6 +7,8 @@ import {
   ChallengeWithCategories,
   ChallengeWithCompletion,
 } from "@/challenges/types/Challenge";
+import { ResponseWithData } from "@/common/types/ResponseWithData";
+import { query } from "@/common/queries/BaseQuery";
 
 export const useUpsertChallenge = () => {
   return useMutation({
@@ -33,43 +35,22 @@ enum Operation {
   UPDATE,
 }
 
-type ResponseWithResult<T> = {
-  success: boolean;
-  error?: string;
-  result?: T;
-};
-
 const createOrUpdateChallenge = async (
   operation: Operation,
   challenge: Challenge
-): Promise<ResponseWithResult<ChallengeWithCategories>> => {
+): Promise<ResponseWithData<ChallengeWithCategories>> => {
   const method = operation === Operation.UPDATE ? "PUT" : "POST";
 
-  const options = {
-    method: method,
-    headers: {
-      "Content-Type": "application/json",
+  return query<ChallengeWithCategories>({
+    url: "/api/challenges/admin",
+    options: {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(challenge),
     },
-    body: JSON.stringify({
-      ...challenge,
-    }),
-  };
-
-  let response = null;
-  try {
-    response = await fetch(`/api/challenges/admin`, options);
-  } catch (error) {
-    throw new Error(`Network request error`);
-  }
-
-  if (!response.ok) {
-    throw new Error("Network response was not okay");
-  }
-
-  const result: ResponseWithResult<ChallengeWithCategories> =
-    await response.json();
-
-  return result;
+  });
 };
 
 export const useFetchChallengesByRange = ({
@@ -95,10 +76,11 @@ export const useFetchChallengesForAdmin = () => {
 };
 
 const fetchChallengesForAdmin = async () => {
-  const result = await fetch(`/api/challenges/admin`);
-  const json = await result.json();
+  const result = await query<ChallengeWithCategories[]>({
+    url: "/api/challenges/admin",
+  });
 
-  return json.data as ChallengeWithCategories[];
+  return result.data;
 };
 
 const fetchChallengesByRange = async ({
@@ -133,17 +115,14 @@ export const useDeleteChallenge = () => {
 };
 
 const deleteChallenge = async (challengeId: number) => {
-  const options = {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
+  const result = await query<Record<string, never>>({
+    url: "/api/challenges/admin",
+    options: {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ challenge: challengeId }),
     },
-    body: JSON.stringify({ challenge: challengeId }),
-  };
-
-  const response = await fetch(`/api/challenges/admin`, options);
-  const result: ResponseWithResult<Record<string, never>> =
-    await response.json();
+  });
 
   return result;
 };
