@@ -1,9 +1,21 @@
 import { SubmissionResult } from "@/challenges/types/Submission";
+import { useMutation } from "@tanstack/react-query";
 
-export const submitAttempt = async (
-  challengeId: number,
-  flag: string
-): Promise<SubmissionResult> => {
+export const useSubmitAttempt = () => {
+  return useMutation({
+    mutationFn: ({
+      challengeId,
+      flag,
+    }: {
+      challengeId: number;
+      flag: string;
+    }) => {
+      return submitAttempt(challengeId, flag);
+    },
+  });
+};
+
+const submitAttempt = async (challengeId: number, flag: string) => {
   const options = {
     method: "POST",
     headers: {
@@ -12,8 +24,8 @@ export const submitAttempt = async (
     body: JSON.stringify({ challenge: challengeId, flag: flag }),
   };
 
-  const result = await fetch(`/api/submission`, options);
-  const json = await result.json();
+  const response = await fetch(`/api/submission`, options);
+  const result: SubmissionResult = await response.json();
 
-  return json;
+  return result;
 };

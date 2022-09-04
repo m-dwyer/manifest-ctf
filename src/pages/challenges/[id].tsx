@@ -5,7 +5,8 @@ import Link from "next/link";
 
 import { Challenge } from "@/challenges/types/Challenge";
 import Modal from "@/common/components/Modal";
-import { submitAttempt } from "@/challenges/queries/submissions";
+import { useSubmitAttempt } from "@/challenges/queries/submissions";
+import { useQueryClient } from "@tanstack/react-query";
 
 type ChallengeWithFiles = Challenge & {
   files: [{ fileName: string; publicUrl: string }];
@@ -21,13 +22,21 @@ const ChallengePage = ({ challenge }: { challenge: ChallengeWithFiles }) => {
   const [modal, setModal] = useState(false);
   const handleDismiss = () => setModal(false);
 
+  const queryClient = useQueryClient();
+  const submitAttemptMutation = useSubmitAttempt();
+
   const handleSubmitFlag = async (e: SyntheticEvent) => {
     e.preventDefault();
 
     if (!challenge || !challenge.id || !flag) return;
 
-    const submissionResult = await submitAttempt(challenge.id, flag);
+    const submissionResult = await submitAttemptMutation.mutateAsync({
+      challengeId: challenge.id,
+      flag: flag,
+    });
+
     if (submissionResult.correct) {
+      queryClient.invalidateQueries(["challenges"]);
       setModalState({
         title: "Correct!",
         text: "That flag is correct!",
@@ -111,7 +120,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const { data: fileList, error } = await supabaseServerClient(context)
     .storage.from("challenge_files")
-    // .list("/", {
     .list(`${data.name.replace(/\s/g, "_")}`, {
       sortBy: { column: "name", order: "asc" },
     });
