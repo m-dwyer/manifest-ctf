@@ -8,7 +8,7 @@ import {
   ChallengeWithCompletion,
 } from "@/challenges/types/Challenge";
 import { ResponseWithData } from "@/common/types/ResponseWithData";
-import { query } from "@/common/queries/BaseQuery";
+import { apiClient } from "@/common/providers/apiClient";
 
 export const useUpsertChallenge = () => {
   return useMutation({
@@ -39,15 +39,18 @@ const createOrUpdateChallenge = async (
   operation: Operation,
   challenge: Challenge
 ): Promise<ResponseWithData<ChallengeWithCategories>> => {
-  const method = operation === Operation.UPDATE ? "PUT" : "POST";
+  const result =
+    operation === Operation.UPDATE
+      ? await apiClient.put<ChallengeWithCategories>({
+          url: "/api/challenges/admin",
+          body: JSON.stringify(challenge),
+        })
+      : await apiClient.post<ChallengeWithCategories>({
+          url: "/api/challenges/admin",
+          body: JSON.stringify(challenge),
+        });
 
-  return query<ChallengeWithCategories>({
-    url: "/api/challenges/admin",
-    options: {
-      method,
-      body: JSON.stringify(challenge),
-    },
-  });
+  return result;
 };
 
 export const useFetchChallengesByRange = ({
@@ -73,7 +76,7 @@ export const useFetchChallengesForAdmin = () => {
 };
 
 const fetchChallengesForAdmin = async () => {
-  const result = await query<ChallengeWithCategories[]>({
+  const result = await apiClient.get<ChallengeWithCategories[]>({
     url: "/api/challenges/admin",
   });
 
@@ -112,12 +115,9 @@ export const useDeleteChallenge = () => {
 };
 
 const deleteChallenge = async (challengeId: number) => {
-  const result = await query<Record<string, never>>({
+  const result = await apiClient.delete<Record<string, never>>({
     url: "/api/challenges/admin",
-    options: {
-      method: "DELETE",
-      body: JSON.stringify({ challenge: challengeId }),
-    },
+    body: JSON.stringify({ challenge: challengeId }),
   });
 
   return result;

@@ -6,7 +6,7 @@ type FetchOptions = {
   method: FetchMethod;
   headers: { [key: string]: string };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  body: any;
+  body?: any;
 };
 
 type QueryOptions = {
@@ -15,7 +15,7 @@ type QueryOptions = {
     method: FetchMethod;
     headers?: { [key: string]: string };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    body: any;
+    body?: any;
   };
 };
 
@@ -24,10 +24,9 @@ const defaultOptions = {
   headers: {
     "Content-Type": "application/json",
   },
-  body: JSON.stringify({}),
 };
 
-export const query = async <TResultType>({ url, options }: QueryOptions) => {
+export const request = async <TResultType>({ url, options }: QueryOptions) => {
   let fetchOptions: FetchOptions | null = null;
   if (options) {
     fetchOptions = {
