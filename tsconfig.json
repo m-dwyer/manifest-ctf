@@ -9,6 +9,7 @@
       "@/lib/*": ["lib/*"],
       "@/services/*": ["services/*"],
       "@/styles/*": ["styles/*"],
+      "@/test/*": ["test/*"],
       "@/types/*": ["types/*"]
     },
     "target": "es5",
