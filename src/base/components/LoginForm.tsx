@@ -33,7 +33,7 @@ const LoginForm = () => {
                 <InputField
                   name="email"
                   type="text"
-                  value={formData.email}
+                  value={formData.email || ""}
                   onChange={(e) => {
                     setFormData({ email: e.target.value });
                   }}
@@ -41,7 +41,7 @@ const LoginForm = () => {
                 <InputField
                   name="password"
                   type="password"
-                  value={formData.password}
+                  value={formData.password || ""}
                   onChange={(e) => {
                     setFormData({ password: e.target.value });
                   }}
