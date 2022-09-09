@@ -14,7 +14,7 @@ const customJestConfig = {
     "^@/challenges/(.*)$": "<rootDir>/src/challenges/$1",
     "^@/common/(.*)$": "<rootDir>/src/common/$1",
   },
-  setupFiles: ["<rootDir>/.jest/setEnvVars.ts"],
+  setupFiles: ["<rootDir>/.jest/setEnvVars.ts", "<rootDir>/.jest/setMocks.ts"],
 };
 
 module.exports = createJestConfig(customJestConfig);
