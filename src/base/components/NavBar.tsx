@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const SideBar = () => (
+const NavBar = () => (
   <nav className="menu p-4 overflow-y-auto w-80 bg-base-100 text-base-content">
     <ul>
       <li>
@@ -17,4 +17,4 @@ const SideBar = () => (
   </nav>
 );
 
-export default SideBar;
+export default NavBar;
