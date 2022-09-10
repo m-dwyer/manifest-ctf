@@ -1,4 +1,3 @@
-import "@/challenges/components/ChallengeCard";
 import ChallengeCard from "@/challenges/components/ChallengeCard";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
