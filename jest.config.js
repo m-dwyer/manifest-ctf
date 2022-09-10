@@ -18,6 +18,7 @@ const customJestConfig = {
   collectCoverage: false,
   coverageReporters: ["json", "html"],
   coverageDirectory: "coverage",
+  collectCoverageFrom: ["src/**/*.{js,jsx,ts,tsx}"],
 };
 
 module.exports = createJestConfig(customJestConfig);
