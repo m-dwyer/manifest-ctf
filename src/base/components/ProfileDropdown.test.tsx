@@ -27,7 +27,7 @@ describe("ProfileDropdown", () => {
     expect(userEmailText).toBeInTheDocument();
   });
 
-  it("successfully logs out", () => {
+  it("successfully logs out", async () => {
     const mockLogout = auth as { logout: unknown };
     mockLogout.logout = jest.fn();
 
@@ -39,7 +39,7 @@ describe("ProfileDropdown", () => {
       fireEvent.click(logoutLink);
     });
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(mockLogout.logout).toBeCalled();
       expect(singletonRouter).toMatchObject({ asPath: "/" });
     });
