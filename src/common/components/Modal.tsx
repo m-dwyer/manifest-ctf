@@ -31,7 +31,7 @@ const Modal: React.FC<{
 
   return modalRef.current
     ? createPortal(
-        <div className="modal modal-open" onClick={handleDismiss}>
+        <div id="modal" className="modal modal-open" onClick={handleDismiss}>
           <div className="modal-box">{children}</div>
         </div>,
         modalRef.current
