@@ -12,7 +12,7 @@ const SignupForm = () => {
     event.preventDefault();
 
     if (formData.confirm !== formData.password) {
-      alert("Passwords do not match");
+      setError("Passwords do not match");
       return;
     }
 
@@ -38,7 +38,7 @@ const SignupForm = () => {
                 <InputField
                   name="email"
                   type="email"
-                  value={formData.email}
+                  value={formData.email || ""}
                   onChange={(e) => {
                     setFormData({ email: e.target.value });
                   }}
@@ -46,7 +46,7 @@ const SignupForm = () => {
                 <InputField
                   name="password"
                   type="password"
-                  value={formData.password}
+                  value={formData.password || ""}
                   onChange={(e) => {
                     setFormData({ password: e.target.value });
                   }}
@@ -55,7 +55,7 @@ const SignupForm = () => {
                   name="confirmPassword"
                   label="confirm"
                   type="password"
-                  value={formData.confirm}
+                  value={formData.confirm || ""}
                   onChange={(e) => setFormData({ confirm: e.target.value })}
                 />
                 <button className="btn mt-10" type="submit">
