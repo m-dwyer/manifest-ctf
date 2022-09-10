@@ -20,7 +20,9 @@ const ChallengeCard = ({
             <div className="card-title">
               {challenge.name}
               <span className="tooltip" data-tip="Completed!">
-                {challenge.challenge_attempts[0]?.completed && <FaCheck />}
+                {challenge.challenge_attempts[0]?.completed && (
+                  <FaCheck title="completed" />
+                )}
               </span>
             </div>
             <p>{challenge.description}</p>
