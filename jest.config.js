@@ -15,6 +15,9 @@ const customJestConfig = {
     "^@/common/(.*)$": "<rootDir>/src/common/$1",
   },
   setupFiles: ["<rootDir>/.jest/setEnvVars.ts", "<rootDir>/.jest/setMocks.ts"],
+  collectCoverage: false,
+  coverageReporters: ["json", "html"],
+  coverageDirectory: "coverage",
 };
 
 module.exports = createJestConfig(customJestConfig);
