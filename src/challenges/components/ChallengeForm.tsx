@@ -99,7 +99,7 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
             name="challenge-name"
             label="name"
             type="text"
-            value={formData.name}
+            value={formData.name || ""}
             onChange={(e) => {
               setFormData({ name: e.target.value });
             }}
@@ -110,7 +110,7 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
             label="description"
             rows={4}
             cols={60}
-            value={formData.description}
+            value={formData.description || ""}
             onChange={(e) => setFormData({ description: e.target.value })}
           />
           <SelectField
@@ -122,14 +122,14 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
             options={[{ label: "Default", value: "1" }]}
             onChange={(e) => setFormData({ category: e.target.value })}
           />
-          <label className="file" htmlFor="challenge-file">
-            File
+          <label className="file" htmlFor="challenge-files[]">
+            file
           </label>
           <FileUpload files={[files, setFiles]} />
           <InputField
             name="flag"
             type="text"
-            value={formData.flag}
+            value={formData.flag || ""}
             onChange={(e) => {
               setFormData({ flag: e.target.value });
             }}
@@ -139,7 +139,7 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
             type="number"
             min={0}
             max={10000}
-            value={formData.points}
+            value={formData.points || ""}
             onChange={(e) => setFormData({ points: e.target.value })}
           />
           {submitError != null && <span className="mt-5">{submitError}</span>}
