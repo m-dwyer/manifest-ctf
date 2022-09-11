@@ -19,16 +19,16 @@ type ChallengeFormProps = {
 };
 
 const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
+  console.log("category: ", challenge?.category?.id);
   const existingInputs = challenge
     ? {
         name: challenge.name,
-        category_id: challenge?.category?.id,
-        category_name: challenge?.category?.name,
+        category: challenge?.category?.id,
         description: challenge.description,
         flag: challenge.flag,
         points: challenge.points,
       }
-    : null;
+    : { category: "1" };
 
   const [formData, setFormData] = useMultiInputs(existingInputs);
 
@@ -115,12 +115,9 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
           />
           <SelectField
             name="category"
-            selected={{
-              label: formData.category_name,
-              value: formData.category_id,
-            }}
             options={[{ label: "Default", value: "1" }]}
             onChange={(e) => setFormData({ category: e.target.value })}
+            defaultValue={formData.category}
           />
           <label className="file" htmlFor="challenge-files[]">
             file

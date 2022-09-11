@@ -42,7 +42,7 @@ describe("ChallengeForm", () => {
       description: "Can you decipher the text?",
       flag: "7h3_fl4g_15_h3r3",
       points: 123,
-      category: { id: 3, name: "Cryptography" },
+      category: { id: 1, name: "Default" },
     };
 
     render(<ChallengeForm challenge={challenge} handleDismiss={() => {}} />);
@@ -65,7 +65,7 @@ describe("ChallengeForm", () => {
 
     expect(nameInput.value).toBe("My cool crypto challenge");
     expect(descriptionInput.value).toBe("Can you decipher the text?");
-    expect(categoryInput.value).toBe("3");
+    expect(categoryInput.value).toBe("1");
     expect(flagInput.value).toBe("7h3_fl4g_15_h3r3");
     expect(pointsInput.value).toBe("123");
   });
@@ -99,7 +99,7 @@ describe("ChallengeForm", () => {
 
     expect(nameInput.value).toBe("");
     expect(descriptionInput.value).toBe("");
-    expect(categoryInput.value).toBe("");
+    expect(categoryInput.value).toBe("1");
     expect(flagInput.value).toBe("");
     expect(pointsInput.value).toBe("");
   });
