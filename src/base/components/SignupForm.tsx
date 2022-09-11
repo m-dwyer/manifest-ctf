@@ -4,9 +4,11 @@ import { InputState } from "@/common/hooks/useMultiInputs";
 import { signUp } from "@/base/queries/authentication";
 import { Form } from "@/common/components/Form";
 import { InputField } from "@/common/components/InputField";
+import { useRouter } from "next/router";
 
 const SignupForm = () => {
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleSignup = async (event: SyntheticEvent, formData: InputState) => {
     event.preventDefault();
@@ -23,6 +25,8 @@ const SignupForm = () => {
 
     if (error) {
       setError(error.message);
+    } else {
+      router.push("/");
     }
   };
 
