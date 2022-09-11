@@ -1,20 +1,21 @@
 import { ChangeEvent, SyntheticEvent, useRef } from "react";
 
-type setFilesProp = [File[], React.Dispatch<React.SetStateAction<File[]>>];
+type SetFilesProp = {
+  files: File[];
+  setFiles: React.Dispatch<React.SetStateAction<File[]>>;
+};
 
-const FileUpload = ({ files }: { files: setFilesProp }) => {
-  const [fileList, setFileList] = files;
-
+const FileUpload = ({ files, setFiles }: SetFilesProp) => {
   const hiddenFileInput = useRef<HTMLInputElement>(null);
 
   const handleAddFile = (e: ChangeEvent<HTMLInputElement>) => {
     Array.from(e.target.files || []).forEach((f) => {
-      setFileList([f, ...fileList]);
+      setFiles([f, ...files]);
     });
   };
 
   const handleDeleteFile = (file: File) => {
-    setFileList(fileList.filter((f) => f.name != file.name));
+    setFiles(files.filter((f) => f.name != file.name));
   };
 
   const handleFileSelect = (e: SyntheticEvent<HTMLButtonElement>): void => {
@@ -32,12 +33,13 @@ const FileUpload = ({ files }: { files: setFilesProp }) => {
         multiple={true}
         ref={hiddenFileInput}
         onChange={handleAddFile}
+        data-testid="file-uploader"
       />
       <button className="btn" onClick={handleFileSelect}>
         Upload file
       </button>
       <ul>
-        {fileList.map((f) => (
+        {files.map((f) => (
           <li key={f.name}>
             <span>{f.name}</span>
             <span className="btn" onClick={() => handleDeleteFile(f)}>

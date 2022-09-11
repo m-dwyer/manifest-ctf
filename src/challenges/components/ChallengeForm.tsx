@@ -125,7 +125,7 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
           <label className="file" htmlFor="challenge-files[]">
             file
           </label>
-          <FileUpload files={[files, setFiles]} />
+          <FileUpload files={files} setFiles={setFiles} />
           <InputField
             name="flag"
             type="text"
