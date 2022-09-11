@@ -15,8 +15,8 @@ const Pagination = ({
   setFrom: Dispatch<SetStateAction<number>>;
   setTo: Dispatch<SetStateAction<number>>;
   total: number;
-  current: number;
-  perPage: number;
+  current?: number;
+  perPage?: number;
 }) => {
   const pageCount = Math.ceil(total / perPage);
 
