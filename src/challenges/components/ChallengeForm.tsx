@@ -19,7 +19,6 @@ type ChallengeFormProps = {
 };
 
 const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
-  console.log("category: ", challenge?.category?.id);
   const existingInputs = challenge
     ? {
         name: challenge.name,
