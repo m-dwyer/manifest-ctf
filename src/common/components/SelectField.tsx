@@ -18,7 +18,7 @@ export const SelectField = ({
       <select name={name} id={name} className="select bg-base-200" {...props}>
         {options.map((o) => {
           return (
-            <option key={o.value} value={o.value}>
+            <option data-testid="select-option" key={o.value} value={o.value}>
               {o.label}
             </option>
           );
