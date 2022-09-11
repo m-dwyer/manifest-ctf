@@ -16,6 +16,10 @@ jest.mock("@supabase/auth-helpers-react", () => ({
 }));
 import * as authHelper from "@supabase/auth-helpers-react";
 
+/**
+ * @group unit
+ * @group components
+ */
 describe("ProfileDropdown", () => {
   it("renders", () => {
     const mockUseUser = authHelper as { useUser: unknown };

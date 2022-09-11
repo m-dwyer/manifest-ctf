@@ -4,6 +4,10 @@ import "@testing-library/jest-dom";
 import singletonRouter from "next/router";
 import { act } from "react-test-renderer";
 
+/**
+ * @group unit
+ * @group components
+ */
 describe("NavBar", () => {
   it("renders", () => {
     render(<NavBar />);

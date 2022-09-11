@@ -9,6 +9,10 @@ jest.mock("@/base/queries/authentication", () => ({
 }));
 import * as auth from "@/base/queries/authentication";
 
+/**
+ * @group unit
+ * @group components
+ */
 describe("SignupForm", () => {
   it("renders", () => {
     render(<SignupForm />);

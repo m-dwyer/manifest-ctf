@@ -23,6 +23,10 @@ import * as storageQuery from "@/base/queries/storage";
 
 import { act } from "react-test-renderer";
 
+/**
+ * @group unit
+ * @group components
+ */
 describe("ChallengeForm", () => {
   it("renders existing challenge", () => {
     const mockUseQueryClient = reactQuery as { useQueryClient: unknown };

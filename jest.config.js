@@ -19,6 +19,7 @@ const customJestConfig = {
   coverageReporters: ["json", "html"],
   coverageDirectory: "coverage",
   collectCoverageFrom: ["src/**/*.{js,jsx,ts,tsx}"],
+  runner: "groups",
 };
 
 module.exports = createJestConfig(customJestConfig);

@@ -3,6 +3,10 @@ import Modal from "@/common/components/Modal";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { act } from "react-test-renderer";
 
+/**
+ * @group unit
+ * @group components
+ */
 describe("Modal", () => {
   it("renders", () => {
     const result = render(

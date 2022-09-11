@@ -4,6 +4,10 @@ import "@testing-library/jest-dom/extend-expect";
 import { act } from "react-test-renderer";
 import singletonRouter from "next/router";
 
+/**
+ * @group unit
+ * @group components
+ */
 describe("Pagination", () => {
   it("renders", () => {
     const mockSetFrom = jest.fn();

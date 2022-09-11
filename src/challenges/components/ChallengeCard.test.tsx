@@ -3,6 +3,10 @@ import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { ChallengeWithCompletion } from "../types/Challenge";
 
+/**
+ * @group unit
+ * @group components
+ */
 describe("ChallengeCard", () => {
   it("renders", () => {
     const challenge: ChallengeWithCompletion = {

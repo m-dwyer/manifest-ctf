@@ -3,6 +3,10 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import { act } from "react-test-renderer";
 
+/**
+ * @group unit
+ * @group components
+ */
 describe("FileUpload", () => {
   it("renders", () => {
     const mockExistingFiles: File[] = [

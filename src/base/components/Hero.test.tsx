@@ -3,6 +3,10 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import singletonRouter from "next/router";
 
+/**
+ * @group unit
+ * @group components
+ */
 describe("Hero", () => {
   it("renders a signup button", async () => {
     render(<Hero />);
