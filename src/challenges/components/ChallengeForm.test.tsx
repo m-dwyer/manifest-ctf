@@ -1,7 +1,8 @@
 import ChallengeForm from "@/challenges/components/ChallengeForm";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { ChallengeWithCategories } from "../types/Challenge";
+import "@testing-library/jest-dom/extend-expect";
+import { ChallengeWithCategories } from "@/challenges/types/Challenge";
 
 jest.mock("@tanstack/react-query", () => ({
   __esModule: true,
@@ -14,6 +15,12 @@ jest.mock("@/challenges/queries/challenges", () => ({
   useUpsertChallenge: null,
 }));
 import * as challengesQuery from "@/challenges/queries/challenges";
+
+jest.mock("@/challenges/queries/categories", () => ({
+  __esModule: true,
+  useFetchAllCategories: null,
+}));
+import * as categoriesQuery from "@/challenges/queries/categories";
 
 jest.mock("@/base/queries/storage", () => ({
   __esModule: true,
@@ -31,6 +38,15 @@ describe("ChallengeForm", () => {
   it("renders existing challenge", () => {
     const mockUseQueryClient = reactQuery as { useQueryClient: unknown };
     mockUseQueryClient.useQueryClient = () => ({ invalidateQuery: jest.fn() });
+
+    const mockCategoriesQuery = categoriesQuery as {
+      useFetchAllCategories: unknown;
+    };
+    mockCategoriesQuery.useFetchAllCategories = () => ({
+      data: {
+        data: [{ id: 1, name: "Default" }],
+      },
+    });
 
     const mockChallengesQuery = challengesQuery as {
       useUpsertChallenge: unknown;
@@ -73,6 +89,15 @@ describe("ChallengeForm", () => {
   it("renders an empty form when no challenge", () => {
     const mockUseQueryClient = reactQuery as { useQueryClient: unknown };
     mockUseQueryClient.useQueryClient = () => ({ invalidateQuery: jest.fn() });
+
+    const mockCategoriesQuery = categoriesQuery as {
+      useFetchAllCategories: unknown;
+    };
+    mockCategoriesQuery.useFetchAllCategories = () => ({
+      data: {
+        data: [{ id: 1, name: "Default" }],
+      },
+    });
 
     const mockChallengesQuery = challengesQuery as {
       useUpsertChallenge: unknown;

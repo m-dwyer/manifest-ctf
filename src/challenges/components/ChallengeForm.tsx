@@ -13,6 +13,9 @@ import { InputField } from "@/common/components/InputField";
 import { TextAreaField } from "@/common/components/TextAreaField";
 import { SelectField } from "@/common/components/SelectField";
 import { useQueryClient } from "@tanstack/react-query";
+import { useFetchAllCategories } from "@/challenges/queries/categories";
+import { Category } from "@/challenges/types/Category";
+import { useEffect } from "react";
 type ChallengeFormProps = {
   challenge?: ChallengeWithCategories | null;
   handleDismiss: () => void;
@@ -33,9 +36,27 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
 
   const [files, setFiles] = useState<File[]>([]);
   const [submitError, setSubmitError] = useState<string | null>();
+  const [categoryOptions, setCategoryOptions] = useState<
+    {
+      label: string;
+      value: string;
+    }[]
+  >([{ label: "Default", value: "1" }]);
 
   const queryClient = useQueryClient();
   const upsertMutation = useUpsertChallenge();
+
+  const fetchAllCategoriesQuery = useFetchAllCategories();
+  useEffect(() => {
+    if (fetchAllCategoriesQuery.data?.data) {
+      setCategoryOptions(
+        fetchAllCategoriesQuery.data.data.map((c) => ({
+          label: c.name,
+          value: String(c.id),
+        }))
+      );
+    }
+  }, []);
 
   const showError = (error: string) => {
     setSubmitError(error);
@@ -114,7 +135,7 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
           />
           <SelectField
             name="category"
-            options={[{ label: "Default", value: "1" }]}
+            options={categoryOptions}
             onChange={(e) => setFormData({ category: e.target.value })}
             defaultValue={formData.category}
           />
