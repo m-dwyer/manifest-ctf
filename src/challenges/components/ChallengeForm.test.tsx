@@ -139,6 +139,15 @@ describe("ChallengeForm", () => {
     const mockMutate = jest.fn(() => {});
     mockChallengesQuery.useUpsertChallenge = () => ({ mutate: mockMutate });
 
+    const mockCategoriesQuery = categoriesQuery as {
+      useFetchAllCategories: unknown;
+    };
+    mockCategoriesQuery.useFetchAllCategories = () => ({
+      data: {
+        data: [{ id: 1, name: "Default" }],
+      },
+    });
+
     const mockuploadFileToBucket = storageQuery as {
       uploadFileToBucket: unknown;
     };

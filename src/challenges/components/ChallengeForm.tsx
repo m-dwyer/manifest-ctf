@@ -1,6 +1,4 @@
 import { useState } from "react";
-
-import { InputState, useMultiInputs } from "@/common/hooks/useMultiInputs";
 import { useUpsertChallenge } from "@/challenges/queries/challenges";
 import { uploadFileToBucket } from "@/base/queries/storage";
 import {
@@ -14,8 +12,8 @@ import { TextAreaField } from "@/common/components/TextAreaField";
 import { SelectField } from "@/common/components/SelectField";
 import { useQueryClient } from "@tanstack/react-query";
 import { useFetchAllCategories } from "@/challenges/queries/categories";
-import { Category } from "@/challenges/types/Category";
 import { useEffect } from "react";
+import { FieldValues } from "react-hook-form";
 type ChallengeFormProps = {
   challenge?: ChallengeWithCategories | null;
   handleDismiss: () => void;
@@ -31,8 +29,6 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
         points: challenge.points,
       }
     : { category: "1" };
-
-  const [formData, setFormData] = useMultiInputs(existingInputs);
 
   const [files, setFiles] = useState<File[]>([]);
   const [submitError, setSubmitError] = useState<string | null>();
@@ -66,8 +62,8 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
     }, 5000);
   };
 
-  const uploadFiles = (formData: InputState) => {
-    const { name } = formData;
+  const uploadFiles = (data: FieldValues) => {
+    const { name } = data;
 
     files.forEach(async (f) => {
       const filePath = `${name.replace(/\s/g, "_")}/${f.name}`;
@@ -84,18 +80,13 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
     });
   };
 
-  const handleSubmit = async (
-    e: React.SyntheticEvent,
-    formData: InputState
-  ) => {
-    e.preventDefault();
-
-    uploadFiles(formData);
+  const handleSubmit = async (data: FieldValues) => {
+    uploadFiles(data);
 
     upsertMutation.mutate(
       {
         id: challenge?.id,
-        ...(formData as Challenge),
+        ...(data as Challenge),
       },
       {
         onError: (error) => {
@@ -112,59 +103,48 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
   };
 
   return (
-    <Form existingData={formData} submitHandler={handleSubmit}>
-      {(formData, setFormData) => (
-        <>
-          <InputField
-            name="challenge-name"
-            label="name"
-            type="text"
-            value={formData.name || ""}
-            onChange={(e) => {
-              setFormData({ name: e.target.value });
-            }}
-          />
-          <TextAreaField
-            className="input bg-base-200"
-            name="description"
-            label="description"
-            rows={4}
-            cols={60}
-            value={formData.description || ""}
-            onChange={(e) => setFormData({ description: e.target.value })}
-          />
-          <SelectField
-            name="category"
-            options={categoryOptions}
-            onChange={(e) => setFormData({ category: e.target.value })}
-            defaultValue={formData.category}
-          />
-          <label className="file" htmlFor="challenge-files[]">
-            file
-          </label>
-          <FileUpload files={files} setFiles={setFiles} />
-          <InputField
-            name="flag"
-            type="text"
-            value={formData.flag || ""}
-            onChange={(e) => {
-              setFormData({ flag: e.target.value });
-            }}
-          />
-          <InputField
-            name="points"
-            type="number"
-            min={0}
-            max={10000}
-            value={formData.points || ""}
-            onChange={(e) => setFormData({ points: e.target.value })}
-          />
-          {submitError != null && <span className="mt-5">{submitError}</span>}
-          <button className="btn mt-10" type="submit">
-            {challenge ? "edit" : "add"}
-          </button>
-        </>
-      )}
+    <Form submitHandler={handleSubmit}>
+      <>
+        <InputField
+          defaultValue={existingInputs.name}
+          name="name"
+          label="name"
+          type="text"
+        />
+        <TextAreaField
+          defaultValue={existingInputs.description}
+          className="input bg-base-200"
+          name="description"
+          label="description"
+          rows={4}
+          cols={60}
+        />
+        <SelectField
+          name="category"
+          options={categoryOptions}
+          defaultValue={1}
+        />
+        <label className="file" htmlFor="challenge-files[]">
+          file
+        </label>
+        <FileUpload files={files} setFiles={setFiles} />
+        <InputField
+          name="flag"
+          type="text"
+          defaultValue={existingInputs.flag}
+        />
+        <InputField
+          name="points"
+          type="number"
+          min={0}
+          max={10000}
+          defaultValue={existingInputs.points}
+        />
+        {submitError != null && <span className="mt-5">{submitError}</span>}
+        <button className="btn mt-10" type="submit">
+          {challenge ? "edit" : "add"}
+        </button>
+      </>
     </Form>
   );
 };

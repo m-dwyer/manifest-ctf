@@ -1,19 +1,17 @@
-import { useState, SyntheticEvent } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 
-import { InputState } from "@/common/hooks/useMultiInputs";
-import { login } from "@/base/queries/authentication";
 import { Form } from "@/common/components/Form";
 import { InputField } from "@/common/components/InputField";
+import { FieldValues } from "react-hook-form";
+import { login } from "@/base/queries/authentication";
 
 const LoginForm = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleLogin = async (e: SyntheticEvent, formData: InputState) => {
-    e.preventDefault();
-
-    const { error } = await login(formData.email, formData.password);
+  const handleLogin = async (data: FieldValues) => {
+    const { error } = await login(data.email, data.password);
     if (error) {
       setError(error.message);
     } else {
@@ -28,29 +26,13 @@ const LoginForm = () => {
           <div className="card-title">Log in </div>
           {error != null && <div data-testid="login-error">{error}</div>}
           <Form submitHandler={handleLogin}>
-            {(formData, setFormData) => (
-              <>
-                <InputField
-                  name="email"
-                  type="text"
-                  value={formData.email || ""}
-                  onChange={(e) => {
-                    setFormData({ email: e.target.value });
-                  }}
-                />
-                <InputField
-                  name="password"
-                  type="password"
-                  value={formData.password || ""}
-                  onChange={(e) => {
-                    setFormData({ password: e.target.value });
-                  }}
-                />
-                <button className="btn mt-10" type="submit">
-                  submit
-                </button>
-              </>
-            )}
+            <>
+              <InputField type="text" name="email" />
+              <InputField type="password" name="password" />
+              <button className="btn mt-10" type="submit">
+                submit
+              </button>
+            </>
           </Form>
         </div>
       </div>

@@ -1,28 +1,26 @@
 import {
-  InputAction,
-  InputState,
-  useMultiInputs,
-} from "@/common/hooks/useMultiInputs";
-import { Dispatch, FormEvent } from "react";
+  useForm,
+  FormProvider,
+  SubmitHandler,
+  FieldValues,
+} from "react-hook-form";
 
 type FormProps = {
-  submitHandler: (
-    event: FormEvent<HTMLFormElement>,
-    formData: InputState
-  ) => void;
-  children: (
-    formData: InputState,
-    setFormData: Dispatch<InputAction>
-  ) => React.ReactNode;
-  existingData?: InputState;
+  submitHandler: SubmitHandler<FieldValues>;
+  children: React.ReactNode;
 };
 
-export const Form = ({ existingData, submitHandler, children }: FormProps) => {
-  const [formData, setFormData] = useMultiInputs(existingData || {});
+export const Form = ({ submitHandler, children }: FormProps) => {
+  const methods = useForm();
 
   return (
-    <form className="form-control" onSubmit={(e) => submitHandler(e, formData)}>
-      {children(formData, setFormData)}
-    </form>
+    <FormProvider {...methods}>
+      <form
+        className="form-control"
+        onSubmit={methods.handleSubmit(submitHandler)}
+      >
+        {children}
+      </form>
+    </FormProvider>
   );
 };
