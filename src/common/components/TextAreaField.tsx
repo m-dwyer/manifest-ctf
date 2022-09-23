@@ -17,7 +17,7 @@ export const TextAreaField = ({
   return (
     <LabelledField name={name} label={label}>
       <textarea
-        className="input bg-base-200"
+        className="textarea textarea-primary bg-base-200"
         id={name}
         {...register(name)}
         {...props}

@@ -19,7 +19,7 @@ export const SelectField = ({
   return (
     <LabelledField name={name} label={label}>
       <select
-        className="select bg-base-200"
+        className="select select-primary bg-base-200"
         id={name}
         {...register(name)}
         {...props}

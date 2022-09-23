@@ -14,6 +14,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useFetchAllCategories } from "@/challenges/queries/categories";
 import { useEffect } from "react";
 import { FieldValues } from "react-hook-form";
+import { challengeSchema } from "@/base/schemas/challenge";
 type ChallengeFormProps = {
   challenge?: ChallengeWithCategories | null;
   handleDismiss: () => void;
@@ -103,7 +104,7 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
   };
 
   return (
-    <Form submitHandler={handleSubmit}>
+    <Form schema={challengeSchema} submitHandler={handleSubmit}>
       <>
         <InputField
           defaultValue={existingInputs.name}
@@ -113,7 +114,6 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
         />
         <TextAreaField
           defaultValue={existingInputs.description}
-          className="input bg-base-200"
           name="description"
           label="description"
           rows={4}

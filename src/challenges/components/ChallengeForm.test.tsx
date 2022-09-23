@@ -186,7 +186,7 @@ describe("ChallengeForm", () => {
         target: { value: "7h15_15_my_fl4g" },
       });
       fireEvent.change(pointsInput, {
-        target: { value: "100" },
+        target: { valueAsNumber: 100 },
       });
       fireEvent.click(submitButton);
     });
@@ -205,7 +205,7 @@ describe("ChallengeForm", () => {
           description: "My challenge description",
           category: "1",
           flag: "7h15_15_my_fl4g",
-          points: "100",
+          points: 100,
         },
         expect.anything()
       );
