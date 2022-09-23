@@ -5,6 +5,7 @@ import { Form } from "@/common/components/Form";
 import { InputField } from "@/common/components/InputField";
 import { FieldValues } from "react-hook-form";
 import { login } from "@/base/queries/authentication";
+import { loginSchema } from "@/base/schemas/login";
 
 const LoginForm = () => {
   const [error, setError] = useState<string | null>(null);
@@ -25,7 +26,7 @@ const LoginForm = () => {
         <div className="card-body">
           <div className="card-title">Log in </div>
           {error != null && <div data-testid="login-error">{error}</div>}
-          <Form submitHandler={handleLogin}>
+          <Form schema={loginSchema} submitHandler={handleLogin}>
             <>
               <InputField type="text" name="email" />
               <InputField type="password" name="password" />

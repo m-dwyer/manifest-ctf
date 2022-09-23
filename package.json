@@ -16,6 +16,7 @@
     "test:group:components": "jest --group=components"
   },
   "dependencies": {
+    "@hookform/resolvers": "^2.9.8",
     "@supabase/auth-helpers-nextjs": "^0.2.3",
     "@supabase/auth-helpers-react": "^0.2.2",
     "@supabase/supabase-js": "^1.35.4",

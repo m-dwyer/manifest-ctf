@@ -14,17 +14,25 @@ export const InputField = ({
   type,
   ...props
 }: InputFieldProps) => {
-  const { register } = useFormContext();
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext<any>();
 
   return (
     <LabelledField name={name} label={label}>
-      <input
-        className="input bg-base-200"
-        type={type}
-        id={name}
-        {...register(name)}
-        {...props}
-      ></input>
+      <>
+        <input
+          className={`input input-primary bg-base-200 ${
+            errors[name] ? "input-error" : ""
+          } `}
+          type={type}
+          id={name}
+          {...register(name)}
+          {...props}
+        ></input>
+        {errors[name] && <span>{errors[name]?.message as string}</span>}
+      </>
     </LabelledField>
   );
 };
