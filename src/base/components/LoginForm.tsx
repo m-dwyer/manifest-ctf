@@ -24,7 +24,7 @@ const LoginForm = () => {
     <div className="container mx-auto">
       <div className="card w-96 bg-primary text-primary-content mx-auto">
         <div className="card-body">
-          <div className="card-title">Log in </div>
+          <div className="card-title">Log in</div>
           {error != null && <div data-testid="login-error">{error}</div>}
           <Form schema={loginSchema} submitHandler={handleLogin}>
             <>
