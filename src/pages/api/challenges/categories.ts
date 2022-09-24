@@ -3,6 +3,7 @@ import { withApiAuth } from "@supabase/auth-helpers-nextjs";
 import nc from "next-connect";
 import { fetchAllCategories } from "@/challenges/services/categoryAdmin";
 import { buildResponse } from "@/common/lib/ResponseBuilder";
+import type { ChallengeCategory } from "@/challenges/schemas/challenge";
 
 export default withApiAuth(
   nc<NextApiRequest, NextApiResponse>({
@@ -15,6 +16,11 @@ export default withApiAuth(
   }).get(async (req, res) => {
     const { data: categoryData, error } = await fetchAllCategories();
 
-    res.status(200).json(buildResponse({ success: true, data: categoryData }));
+    res.status(200).json(
+      buildResponse<ChallengeCategory[]>({
+        success: true,
+        data: categoryData || [],
+      })
+    );
   })
 );
