@@ -12,7 +12,6 @@ import { TextAreaField } from "@/common/components/TextAreaField";
 import { SelectField } from "@/common/components/SelectField";
 import { useQueryClient } from "@tanstack/react-query";
 import { useFetchAllCategories } from "@/challenges/queries/categories";
-import { useEffect } from "react";
 import { FieldValues } from "react-hook-form";
 import { challengeSchema } from "@/base/schemas/challenge";
 type ChallengeFormProps = {
@@ -23,37 +22,18 @@ type ChallengeFormProps = {
 const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
   const existingInputs = challenge
     ? {
-        name: challenge.name,
+        ...challenge,
         category: challenge?.category?.id,
-        description: challenge.description,
-        flag: challenge.flag,
-        points: challenge.points,
       }
     : { category: "1" };
 
   const [files, setFiles] = useState<File[]>([]);
   const [submitError, setSubmitError] = useState<string | null>();
-  const [categoryOptions, setCategoryOptions] = useState<
-    {
-      label: string;
-      value: string;
-    }[]
-  >([{ label: "Default", value: "1" }]);
 
   const queryClient = useQueryClient();
   const upsertMutation = useUpsertChallenge();
 
   const fetchAllCategoriesQuery = useFetchAllCategories();
-  useEffect(() => {
-    if (fetchAllCategoriesQuery.data?.data) {
-      setCategoryOptions(
-        fetchAllCategoriesQuery.data.data.map((c) => ({
-          label: c.name,
-          value: String(c.id),
-        }))
-      );
-    }
-  }, []);
 
   const showError = (error: string) => {
     setSubmitError(error);
@@ -121,8 +101,15 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
         />
         <SelectField
           name="category"
-          options={categoryOptions}
-          defaultValue={1}
+          options={fetchAllCategoriesQuery.data?.data?.map((c) => ({
+            label: c.name,
+            value: String(c.id),
+          }))}
+          defaultValue={
+            fetchAllCategoriesQuery.data?.data?.find(
+              (c) => c.id === Number(existingInputs.category)
+            )?.id || "1"
+          }
         />
         <label className="file" htmlFor="challenge-files[]">
           file

@@ -5,7 +5,7 @@ import { useFormContext } from "react-hook-form";
 type SelectFieldProps = {
   name: string;
   label?: string;
-  options: { label: string; value: string }[];
+  options: { label: string; value: string }[] | undefined;
 } & SelectHTMLAttributes<HTMLSelectElement>;
 
 export const SelectField = ({
@@ -24,7 +24,7 @@ export const SelectField = ({
         {...register(name)}
         {...props}
       >
-        {options.map((o) => {
+        {options?.map((o) => {
           return (
             <option data-testid="select-option" key={o.value} value={o.value}>
               {o.label}
