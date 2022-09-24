@@ -1,7 +1,7 @@
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { useState } from "react";
 
-import { ChallengeWithCategories } from "@/challenges/types/Challenge";
+import { ChallengeWithCategories } from "@/challenges/schemas/challenge";
 import ChallengeForm from "@/challenges/components/ChallengeForm";
 import Modal from "@/common/components/Modal";
 import {

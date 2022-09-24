@@ -59,7 +59,11 @@ describe("SignupForm", () => {
     });
 
     await waitFor(() => {
-      expect(mockAuth.signUp).toBeCalledWith("my@user.com", "MyPassword1");
+      expect(mockAuth.signUp).toBeCalledWith({
+        email: "my@user.com",
+        password: "MyPassword1",
+        confirmPassword: "MyPassword1",
+      });
     });
   });
 

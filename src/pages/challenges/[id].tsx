@@ -3,12 +3,12 @@ import { supabaseServerClient } from "@supabase/auth-helpers-nextjs";
 import { GetServerSidePropsContext } from "next/types";
 import Link from "next/link";
 
-import { Challenge } from "@/challenges/types/Challenge";
+import { ChallengeWithCategories } from "@/challenges/schemas/challenge";
 import Modal from "@/common/components/Modal";
 import { useSubmitAttempt } from "@/challenges/queries/submissions";
 import { useQueryClient } from "@tanstack/react-query";
 
-type ChallengeWithFiles = Challenge & {
+type ChallengeWithFiles = ChallengeWithCategories & {
   files: [{ fileName: string; publicUrl: string }];
 };
 
@@ -103,7 +103,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   const { data } = await supabaseServerClient(context)
-    .from<Challenge>("challenges")
+    .from<{ id: string; name: string; description: string }>("challenges")
     .select("id, name, description")
     .eq("id", challengeId)
     .limit(1)

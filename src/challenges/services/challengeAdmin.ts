@@ -1,6 +1,6 @@
 import { supabaseServiceClient } from "@/common/providers/supabaseServiceClient";
 
-import { Challenge } from "@/challenges/types/Challenge";
+import { ChallengeWithCategories } from "@/challenges/schemas/challenge";
 
 type ChallengeUpsertProps = {
   id?: number;
@@ -35,7 +35,7 @@ export const upsertChallenge = async ({
     return { error: challengeError };
   }
 
-  const upsertedChallenge = challengeData[0] as Challenge;
+  const upsertedChallenge = challengeData[0] as ChallengeWithCategories;
 
   const { data: categoryData, error: categoryError } =
     await supabaseServiceClient

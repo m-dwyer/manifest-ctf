@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FaCheck } from "react-icons/fa";
 
-import { ChallengeWithCompletion } from "@/challenges/types/Challenge";
+import { ChallengeWithCompletion } from "@/challenges/schemas/challenge";
 
 const ChallengeCard = ({
   challenge,

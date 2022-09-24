@@ -6,13 +6,14 @@ import { InputField } from "@/common/components/InputField";
 import { FieldValues } from "react-hook-form";
 import { login } from "@/base/queries/authentication";
 import { loginSchema } from "@/base/schemas/login";
+import type { Login } from "@/base/schemas/login";
 
 const LoginForm = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleLogin = async (data: FieldValues) => {
-    const { error } = await login(data.email, data.password);
+    const { error } = await login(data as Login);
     if (error) {
       setError(error.message);
     } else {

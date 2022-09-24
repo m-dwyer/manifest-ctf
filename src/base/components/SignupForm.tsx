@@ -6,13 +6,14 @@ import { InputField } from "@/common/components/InputField";
 import { useRouter } from "next/router";
 import { FieldValues } from "react-hook-form";
 import { signupSchema } from "@/base/schemas/signup";
+import type { Signup } from "@/base/schemas/signup";
 
 const SignupForm = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleSignup = async (data: FieldValues) => {
-    const { user, session, error } = await signUp(data.email, data.password);
+    const { user, session, error } = await signUp(data as Signup);
 
     if (error) {
       setError(error.message);

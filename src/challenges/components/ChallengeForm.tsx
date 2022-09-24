@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { useUpsertChallenge } from "@/challenges/queries/challenges";
 import { uploadFileToBucket } from "@/base/queries/storage";
-import {
-  Challenge,
-  ChallengeWithCategories,
-} from "@/challenges/types/Challenge";
+import type { ChallengeWithCategories } from "@/challenges/schemas/challenge";
 import FileUpload from "@/common/components/FileUpload";
 import { Form } from "@/common/components/Form";
 import { InputField } from "@/common/components/InputField";
@@ -13,19 +10,15 @@ import { SelectField } from "@/common/components/SelectField";
 import { useQueryClient } from "@tanstack/react-query";
 import { useFetchAllCategories } from "@/challenges/queries/categories";
 import { FieldValues } from "react-hook-form";
-import { challengeSchema } from "@/base/schemas/challenge";
+import { challengeToUpsertSchema } from "@/challenges/schemas/challenge";
+import type { ChallengeToUpsert } from "@/challenges/schemas/challenge";
 type ChallengeFormProps = {
   challenge?: ChallengeWithCategories | null;
   handleDismiss: () => void;
 };
 
 const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
-  const existingInputs = challenge
-    ? {
-        ...challenge,
-        category: challenge?.category?.id,
-      }
-    : { category: "1" };
+  const existingChallenge = { ...challenge, category: challenge?.category?.id };
 
   const [files, setFiles] = useState<File[]>([]);
   const [submitError, setSubmitError] = useState<string | null>();
@@ -67,7 +60,7 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
     upsertMutation.mutate(
       {
         id: challenge?.id,
-        ...(data as Challenge),
+        ...(data as ChallengeToUpsert),
       },
       {
         onError: (error) => {
@@ -84,16 +77,16 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
   };
 
   return (
-    <Form schema={challengeSchema} submitHandler={handleSubmit}>
+    <Form schema={challengeToUpsertSchema} submitHandler={handleSubmit}>
       <>
         <InputField
-          defaultValue={existingInputs.name}
+          defaultValue={existingChallenge.name}
           name="name"
           label="name"
           type="text"
         />
         <TextAreaField
-          defaultValue={existingInputs.description}
+          defaultValue={existingChallenge.description}
           name="description"
           label="description"
           rows={4}
@@ -107,7 +100,7 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
           }))}
           defaultValue={
             fetchAllCategoriesQuery.data?.data?.find(
-              (c) => c.id === Number(existingInputs.category)
+              (c) => c.id === Number(existingChallenge.category)
             )?.id || "1"
           }
         />
@@ -118,14 +111,14 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
         <InputField
           name="flag"
           type="text"
-          defaultValue={existingInputs.flag}
+          defaultValue={existingChallenge.flag}
         />
         <InputField
           name="points"
           type="number"
           min={0}
           max={10000}
-          defaultValue={existingInputs.points}
+          defaultValue={existingChallenge.points}
         />
         {submitError != null && <span className="mt-5">{submitError}</span>}
         <button className="btn mt-10" type="submit">

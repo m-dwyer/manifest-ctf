@@ -2,17 +2,17 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 
-import {
-  Challenge,
-  ChallengeWithCategories,
-  ChallengeWithCompletion,
-} from "@/challenges/types/Challenge";
 import { ResponseWithData } from "@/common/types/ResponseWithData";
 import { apiClient } from "@/common/providers/apiClient";
+import type {
+  ChallengeToUpsert,
+  ChallengeWithCompletion,
+  ChallengeWithCategories,
+} from "@/challenges/schemas/challenge";
 
 export const useUpsertChallenge = () => {
   return useMutation({
-    mutationFn: (challenge: Challenge) => {
+    mutationFn: (challenge: ChallengeToUpsert) => {
       if (challenge.id) {
         return updateChallenge(challenge);
       } else {
@@ -22,11 +22,11 @@ export const useUpsertChallenge = () => {
   });
 };
 
-const createChallenge = (challenge: Challenge) => {
+const createChallenge = (challenge: ChallengeToUpsert) => {
   return createOrUpdateChallenge(Operation.CREATE, challenge);
 };
 
-const updateChallenge = (challenge: Challenge) => {
+const updateChallenge = (challenge: ChallengeToUpsert) => {
   return createOrUpdateChallenge(Operation.UPDATE, challenge);
 };
 
@@ -37,15 +37,15 @@ enum Operation {
 
 const createOrUpdateChallenge = async (
   operation: Operation,
-  challenge: Challenge
-): Promise<ResponseWithData<ChallengeWithCategories>> => {
+  challenge: ChallengeToUpsert
+): Promise<ResponseWithData<ChallengeToUpsert>> => {
   const result =
     operation === Operation.UPDATE
-      ? await apiClient.put<ChallengeWithCategories>({
+      ? await apiClient.put<ChallengeToUpsert>({
           url: "/api/challenges/admin",
           body: JSON.stringify(challenge),
         })
-      : await apiClient.post<ChallengeWithCategories>({
+      : await apiClient.post<ChallengeToUpsert>({
           url: "/api/challenges/admin",
           body: JSON.stringify(challenge),
         });
