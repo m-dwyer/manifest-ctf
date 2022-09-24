@@ -1,6 +1,6 @@
 import { apiClient } from "@/common/providers/apiClient";
 import { useQuery } from "@tanstack/react-query";
-import { Category } from "@/challenges/types/Category";
+import { ChallengeCategory } from "@/challenges/schemas/challenge";
 
 export const useFetchAllCategories = () => {
   return useQuery({
@@ -11,7 +11,7 @@ export const useFetchAllCategories = () => {
 };
 
 const fetchAllCategories = async () => {
-  const result = await apiClient.get<Category[]>({
+  const result = await apiClient.get<ChallengeCategory[]>({
     url: "/api/challenges/categories",
   });
 

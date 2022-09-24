@@ -1,4 +1,4 @@
-import { request } from "../queries/baseRequest";
+import { request } from "@/common/queries/baseRequest";
 import { ResponseWithData } from "@/common/types/ResponseWithData";
 
 type BaseApiClientOptions = {

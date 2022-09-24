@@ -1,4 +1,4 @@
-import { SubmissionResult } from "@/challenges/types/Submission";
+import { SubmissionResult } from "@/challenges/schemas/submission-result";
 import { apiClient } from "@/common/providers/apiClient";
 import { useMutation } from "@tanstack/react-query";
 
