@@ -5,17 +5,13 @@ import { Form } from "@/common/components/Form";
 import { InputField } from "@/common/components/InputField";
 import { useRouter } from "next/router";
 import { FieldValues } from "react-hook-form";
+import { signupSchema } from "@/base/schemas/signup";
 
 const SignupForm = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleSignup = async (data: FieldValues) => {
-    if (data.confirmPassword !== data.password) {
-      setError("Passwords do not match");
-      return;
-    }
-
     const { user, session, error } = await signUp(data.email, data.password);
 
     if (error) {
@@ -31,7 +27,7 @@ const SignupForm = () => {
         <div className="card-body">
           <div className="card-title">Sign up</div>
           {error != null && <div>{error}</div>}
-          <Form submitHandler={handleSignup}>
+          <Form schema={signupSchema} submitHandler={handleSignup}>
             <>
               <InputField name="email" type="email" />
               <InputField name="password" type="password" />

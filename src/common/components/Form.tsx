@@ -5,10 +5,9 @@ import {
   FieldValues,
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z, ZodRawShape } from "zod";
-
+import { z } from "zod";
 type FormProps = {
-  schema?: z.ZodObject<ZodRawShape>;
+  schema?: z.ZodTypeAny;
   submitHandler: SubmitHandler<FieldValues>;
   children: React.ReactNode;
 };
