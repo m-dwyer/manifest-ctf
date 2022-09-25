@@ -24,6 +24,7 @@ export const useUpsertChallenge = () => {
         return createChallenge(challenge);
       }
     },
+    useErrorBoundary: true,
   });
 };
 const createChallenge = (challenge: ChallengeToUpsert) => {
@@ -60,6 +61,7 @@ export const useFetchChallengesByRange = ({
   return useQuery({
     queryKey: ["challenges", rangeBegin, rangeEnd],
     queryFn: () => fetchChallengesByRange({ rangeBegin, rangeEnd }),
+    useErrorBoundary: true,
     staleTime: 60000,
   });
 };
@@ -97,6 +99,7 @@ export const useFetchChallengesForAdmin = () => {
     select: (response) => {
       if (response) return response.data;
     },
+    useErrorBoundary: true,
     staleTime: 60000,
   });
 };
@@ -109,7 +112,9 @@ const fetchChallengesForAdmin = async () => {
 };
 
 export const useDeleteChallenge = () => {
-  return useMutation((challengeId: number) => deleteChallenge(challengeId), {});
+  return useMutation((challengeId: number) => deleteChallenge(challengeId), {
+    useErrorBoundary: true,
+  });
 };
 const deleteChallenge = async (challengeId: number) => {
   const result = await apiClient.delete<Record<string, never>>({

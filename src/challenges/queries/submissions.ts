@@ -13,6 +13,7 @@ export const useSubmitAttempt = () => {
     }) => {
       return submitAttempt(challengeId, flag);
     },
+    useErrorBoundary: true,
   });
 };
 const submitAttempt = async (challengeId: number, flag: string) => {

@@ -9,6 +9,7 @@ export const useFetchAllCategories = () => {
     select: (response) => {
       if (response) return response.data;
     },
+    useErrorBoundary: true,
     staleTime: 60000,
   });
 };
