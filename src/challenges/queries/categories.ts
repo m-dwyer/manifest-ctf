@@ -1,6 +1,6 @@
 import { apiClient } from "@/common/providers/apiClient";
 import { useQuery } from "@tanstack/react-query";
-import { ChallengeCategory } from "@/challenges/schemas/challenge";
+import type { ChallengeCategory } from "@/challenges/schemas/challenge-category";
 
 export const useFetchAllCategories = () => {
   return useQuery({

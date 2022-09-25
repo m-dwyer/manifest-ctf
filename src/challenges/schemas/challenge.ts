@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { challengeCategorySchema } from "@/challenges/schemas/challenge-category";
+
 export const baseChallengeSchema = z.object({
   id: z.number().optional(),
   name: z.string().min(1),
@@ -47,12 +49,6 @@ export const challengeCompletionSchema = z.object({
   points_scored: z.number(),
 });
 export type ChallengeCompletion = z.infer<typeof challengeCompletionSchema>;
-
-export const challengeCategorySchema = z.object({
-  id: z.number().positive(),
-  name: z.string().min(1),
-});
-export type ChallengeCategory = z.infer<typeof challengeCategorySchema>;
 
 export type ChallengeWithCompletion = z.infer<
   typeof challengeWithCompletionSchema
