@@ -15,7 +15,6 @@ export const useSubmitAttempt = () => {
     },
   });
 };
-
 const submitAttempt = async (challengeId: number, flag: string) => {
   const result = apiClient.post<SubmissionResult>({
     url: "/api/submission",
