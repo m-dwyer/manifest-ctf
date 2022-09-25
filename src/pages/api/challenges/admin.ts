@@ -7,6 +7,7 @@ import {
   upsertChallenge,
 } from "@/challenges/services/challengeAdmin";
 import { buildResponse } from "@/common/lib/ResponseBuilder";
+import { ChallengeWithCategories } from "@/challenges/schemas/challenge";
 
 export default withApiAuth(
   nc<NextApiRequest, NextApiResponse>({
@@ -18,16 +19,14 @@ export default withApiAuth(
     },
   })
     .get(async (req, res) => {
-      const { challengeData, error } = await fetchChallenges();
+      const { data, error } = await fetchChallenges();
 
       if (error)
         return res
           .status(500)
           .json(buildResponse({ success: false, error: error.message }));
 
-      return res
-        .status(200)
-        .json(buildResponse({ success: true, data: challengeData }));
+      return res.status(200).json(buildResponse({ success: true, data: data }));
     })
     .delete(async (req, res) => {
       const { challenge } = req.body;
@@ -50,14 +49,17 @@ export default withApiAuth(
         points,
       });
 
-      if (error)
+      if (error || data === null)
         return res
           .status(500)
-          .json(buildResponse({ success: false, error: error.message }));
+          .json(buildResponse({ success: false, error: error?.message }));
 
-      return res
-        .status(201)
-        .json(buildResponse({ success: true, data: data ? data[0] : null }));
+      return res.status(201).json(
+        buildResponse<ChallengeWithCategories>({
+          success: true,
+          data: data,
+        })
+      );
     })
     .put(async (req, res) => {
       const { id, name, description, category, flag, points } = req.body;
@@ -70,13 +72,15 @@ export default withApiAuth(
         points,
       });
 
-      if (error)
+      if (error || data === null)
         return res
           .status(500)
-          .json(buildResponse({ success: false, error: error.message }));
+          .json(buildResponse({ success: false, error: error?.message }));
 
       return res
         .status(201)
-        .json(buildResponse({ success: true, data: data ? data[0] : null }));
+        .json(
+          buildResponse<ChallengeWithCategories>({ success: true, data: data })
+        );
     })
 );

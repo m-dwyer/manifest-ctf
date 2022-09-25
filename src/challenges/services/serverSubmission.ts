@@ -1,8 +1,15 @@
 import { supabaseServiceClient } from "@/common/providers/supabaseServiceClient";
+import { ServiceResponse } from "@/common/types/ServiceResponse";
+import {
+  ChallengeCompletion,
+  ChallengeWithCompletion,
+} from "@/challenges/schemas/challenge";
 
-export const fetchChallengeWithAttempts = async (challenge: string) => {
-  const { data: challengeData } = await supabaseServiceClient
-    .from("challenges")
+export const fetchChallengeWithAttempts = async (
+  challenge: string
+): Promise<ServiceResponse<ChallengeWithCompletion>> => {
+  const { data, error } = await supabaseServiceClient
+    .from<ChallengeWithCompletion>("challenges")
     .select(
       `
         *,
@@ -16,18 +23,18 @@ export const fetchChallengeWithAttempts = async (challenge: string) => {
     .limit(1)
     .single();
 
-  return { challengeData };
+  return { data, error };
 };
 
 export const upsertChallengeAttempt = async (
   userId: string,
-  challengeId: string,
+  challengeId: number,
   correct: boolean,
   existingAttempts: number,
   points: number
-) => {
-  const { data: upsertData, error: upsertError } = await supabaseServiceClient
-    .from("challenge_attempts")
+): Promise<ServiceResponse<ChallengeCompletion>> => {
+  const { data, error } = await supabaseServiceClient
+    .from<ChallengeCompletion>("challenge_attempts")
     .upsert({
       user_id: userId,
       challenge_id: challengeId,
@@ -36,5 +43,5 @@ export const upsertChallengeAttempt = async (
       points_scored: correct ? points : 0,
     });
 
-  return { upsertData, upsertError };
+  return { data: data && data[0], error };
 };

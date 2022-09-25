@@ -18,6 +18,8 @@ export const baseChallengeSchema = z.object({
   }),
 });
 
+export type BaseChallenge = z.infer<typeof baseChallengeSchema>;
+
 export const challengeToUpsertSchema = baseChallengeSchema.and(
   z.object({
     category: z.string().min(1),
@@ -26,15 +28,25 @@ export const challengeToUpsertSchema = baseChallengeSchema.and(
 
 export type ChallengeToUpsert = z.infer<typeof challengeToUpsertSchema>;
 
-export const challengeWithCompletionSchema = challengeToUpsertSchema.and(
+export const challengeWithCompletionSchema = baseChallengeSchema.and(
   z.object({
     challenge_attempts: z.tuple([
       z.object({
         completed: z.boolean(),
+        attempts: z.number(),
       }),
     ]),
   })
 );
+
+export const challengeCompletionSchema = z.object({
+  user_id: z.string(),
+  challenge_id: z.number(),
+  completed: z.boolean(),
+  attempts: z.number().positive(),
+  points_scored: z.number(),
+});
+export type ChallengeCompletion = z.infer<typeof challengeCompletionSchema>;
 
 export const challengeCategorySchema = z.object({
   id: z.number().positive(),

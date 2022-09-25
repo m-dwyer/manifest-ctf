@@ -20,28 +20,29 @@ export default withApiAuth(async function handler(
   const challenge = req.body.challenge;
   const submittedFlag = req.body.flag;
 
-  const { challengeData } = await fetchChallengeWithAttempts(challenge);
+  const { data } = await fetchChallengeWithAttempts(challenge);
 
   const { user } = await getUser({ req, res });
   const userId = user.id;
 
-  const existingAttempts = challengeData?.challenge_attempts[0]?.attempts || 0;
+  const existingAttempts = data?.challenge_attempts[0]?.attempts || 0;
   const shouldLogAttempt =
-    challengeData?.challenge_attempts[0] === undefined ||
-    !challengeData?.challenge_attempts[0]?.completed;
+    data?.challenge_attempts[0] === undefined ||
+    !data?.challenge_attempts[0]?.completed;
 
-  if (shouldLogAttempt) {
-    const flagCorrect = challengeData?.flag === submittedFlag;
-    const { upsertData, upsertError } = await upsertChallengeAttempt(
-      userId,
-      challengeData?.id,
-      flagCorrect,
-      existingAttempts,
-      challengeData.points
-    );
+  if (shouldLogAttempt && data && data.id) {
+    const flagCorrect = data?.flag === submittedFlag;
+    const { data: upsertData, error: upsertError } =
+      await upsertChallengeAttempt(
+        userId,
+        data?.id,
+        flagCorrect,
+        existingAttempts,
+        data.points
+      );
   }
 
-  const correct = challengeData?.flag == submittedFlag;
+  const correct = data?.flag == submittedFlag;
 
   return res
     .status(201)
