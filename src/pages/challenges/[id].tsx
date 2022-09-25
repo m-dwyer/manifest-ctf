@@ -35,7 +35,7 @@ const ChallengePage = ({ challenge }: { challenge: ChallengeWithFiles }) => {
       flag: flag,
     });
 
-    if (submissionResult.correct) {
+    if (submissionResult.data?.correct) {
       queryClient.invalidateQueries(["challenges"]);
       setModalState({
         title: "Correct!",
