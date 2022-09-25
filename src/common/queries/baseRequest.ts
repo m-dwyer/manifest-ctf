@@ -36,17 +36,26 @@ export const request = async <TResultType>({ url, options }: QueryOptions) => {
   }
 
   let response = null;
+  let result: ResponseWithData<TResultType> | null = null;
   try {
     response = fetchOptions ? await fetch(url, fetchOptions) : await fetch(url);
   } catch (error) {
     throw new Error("Network request error");
   }
 
-  if (!response.ok) {
-    throw new Error("Error in response");
+  try {
+    result = await response.json();
+  } catch (error) {
+    throw new Error("Error with response");
   }
 
-  const result: ResponseWithData<TResultType> = await response.json();
+  if (!response.ok) {
+    if (result) {
+      throw new Error(result.error || "Unknown error");
+    } else {
+      throw new Error("Unknown error occurred");
+    }
+  }
 
   return result;
 };
