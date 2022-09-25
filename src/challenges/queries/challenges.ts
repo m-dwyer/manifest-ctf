@@ -10,6 +10,11 @@ import type {
   ChallengeWithCategories,
 } from "@/challenges/schemas/challenge";
 
+enum Operation {
+  CREATE,
+  UPDATE,
+}
+
 export const useUpsertChallenge = () => {
   return useMutation({
     mutationFn: (challenge: ChallengeToUpsert) => {
@@ -21,20 +26,12 @@ export const useUpsertChallenge = () => {
     },
   });
 };
-
 const createChallenge = (challenge: ChallengeToUpsert) => {
   return createOrUpdateChallenge(Operation.CREATE, challenge);
 };
-
 const updateChallenge = (challenge: ChallengeToUpsert) => {
   return createOrUpdateChallenge(Operation.UPDATE, challenge);
 };
-
-enum Operation {
-  CREATE,
-  UPDATE,
-}
-
 const createOrUpdateChallenge = async (
   operation: Operation,
   challenge: ChallengeToUpsert
@@ -66,23 +63,6 @@ export const useFetchChallengesByRange = ({
     staleTime: 60000,
   });
 };
-
-export const useFetchChallengesForAdmin = () => {
-  return useQuery({
-    queryKey: ["challengesForAdmin"],
-    queryFn: () => fetchChallengesForAdmin(),
-    staleTime: 60000,
-  });
-};
-
-const fetchChallengesForAdmin = async () => {
-  const result = await apiClient.get<ChallengeWithCategories[]>({
-    url: "/api/challenges/admin",
-  });
-
-  return result.data;
-};
-
 const fetchChallengesByRange = async ({
   rangeBegin,
   rangeEnd,
@@ -110,10 +90,24 @@ const fetchChallengesByRange = async ({
   return { challenges, count };
 };
 
+export const useFetchChallengesForAdmin = () => {
+  return useQuery({
+    queryKey: ["challengesForAdmin"],
+    queryFn: () => fetchChallengesForAdmin(),
+    staleTime: 60000,
+  });
+};
+const fetchChallengesForAdmin = async () => {
+  const result = await apiClient.get<ChallengeWithCategories[]>({
+    url: "/api/challenges/admin",
+  });
+
+  return result.data;
+};
+
 export const useDeleteChallenge = () => {
   return useMutation((challengeId: number) => deleteChallenge(challengeId), {});
 };
-
 const deleteChallenge = async (challengeId: number) => {
   const result = await apiClient.delete<Record<string, never>>({
     url: "/api/challenges/admin",
