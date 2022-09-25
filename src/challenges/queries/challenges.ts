@@ -94,6 +94,9 @@ export const useFetchChallengesForAdmin = () => {
   return useQuery({
     queryKey: ["challengesForAdmin"],
     queryFn: () => fetchChallengesForAdmin(),
+    select: (response) => {
+      if (response) return response.data;
+    },
     staleTime: 60000,
   });
 };
@@ -102,7 +105,7 @@ const fetchChallengesForAdmin = async () => {
     url: "/api/challenges/admin",
   });
 
-  return result.data;
+  return result;
 };
 
 export const useDeleteChallenge = () => {

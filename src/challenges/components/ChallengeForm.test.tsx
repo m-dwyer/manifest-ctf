@@ -43,9 +43,7 @@ describe("ChallengeForm", () => {
       useFetchAllCategories: unknown;
     };
     mockCategoriesQuery.useFetchAllCategories = () => ({
-      data: {
-        data: [{ id: 1, name: "Default" }],
-      },
+      data: [{ id: 1, name: "Default" }],
     });
 
     const mockChallengesQuery = challengesQuery as {
@@ -94,9 +92,7 @@ describe("ChallengeForm", () => {
       useFetchAllCategories: unknown;
     };
     mockCategoriesQuery.useFetchAllCategories = () => ({
-      data: {
-        data: [{ id: 1, name: "Default" }],
-      },
+      data: [{ id: 1, name: "Default" }],
     });
 
     const mockChallengesQuery = challengesQuery as {
@@ -143,9 +139,7 @@ describe("ChallengeForm", () => {
       useFetchAllCategories: unknown;
     };
     mockCategoriesQuery.useFetchAllCategories = () => ({
-      data: {
-        data: [{ id: 1, name: "Default" }],
-      },
+      data: [{ id: 1, name: "Default" }],
     });
 
     const mockuploadFileToBucket = storageQuery as {

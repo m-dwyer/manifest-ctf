@@ -6,6 +6,9 @@ export const useFetchAllCategories = () => {
   return useQuery({
     queryKey: ["categories"],
     queryFn: () => fetchAllCategories(),
+    select: (response) => {
+      if (response) return response.data;
+    },
     staleTime: 60000,
   });
 };

@@ -94,12 +94,12 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
         />
         <SelectField
           name="category"
-          options={fetchAllCategoriesQuery.data?.data?.map((c) => ({
+          options={fetchAllCategoriesQuery.data?.map((c) => ({
             label: c.name,
             value: String(c.id),
           }))}
           defaultValue={
-            fetchAllCategoriesQuery.data?.data?.find(
+            fetchAllCategoriesQuery.data?.find(
               (c) => c.id === Number(existingChallenge.category)
             )?.id || "1"
           }
