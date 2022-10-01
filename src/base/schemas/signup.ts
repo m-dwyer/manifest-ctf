@@ -1,3 +1,5 @@
+import { User } from "@supabase/auth-helpers-nextjs";
+import { ApiError, Session } from "@supabase/supabase-js";
 import { z } from "zod";
 
 export const signupSchema = z
@@ -10,5 +12,10 @@ export const signupSchema = z
     message: "Passwords do not match",
     path: ["confirmPassword"],
   });
-
 export type Signup = z.infer<typeof signupSchema>;
+
+export type SignupResponse = {
+  user: User | null;
+  session: Session | null;
+  error: ApiError | null;
+};

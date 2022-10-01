@@ -5,7 +5,6 @@ export const withValidation = (schema: z.ZodType, handler: NextApiHandler) => {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     const result = schema.safeParse(req.body);
     if (!result.success) {
-      console.log("error: ", result);
       res.status(400).json({
         error: "validation error",
       });

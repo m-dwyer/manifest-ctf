@@ -6,24 +6,42 @@ jest.mock("@supabase/auth-helpers-nextjs", () => ({
 }));
 import * as authHelper from "@supabase/auth-helpers-nextjs";
 
+jest.mock("@/common/providers/apiClient", () => ({
+  __esModule: true,
+  post: null,
+}));
+import * as apiClientHelper from "@/common/providers/apiClient";
+import { ResponseWithData } from "@/common/types/ResponseWithData";
+import { SignupResponse } from "../schemas/signup";
+
 describe("authentication", () => {
   it("successfully signs up", async () => {
-    const mockAuthHelper = authHelper as { supabaseClient: unknown };
-    mockAuthHelper.supabaseClient = {
-      auth: {
-        signUp: jest.fn(() => ({
-          user: { email: "foo@bar.com" },
-          session: {},
-          error: null,
-        })),
-      },
+    const mockApiClientHelper = apiClientHelper as { apiClient: unknown };
+
+    const mockSignUp = jest.fn(
+      () =>
+        ({
+          data: {
+            user: { email: "foo@bar.com" },
+            session: { refresh_token: "abcd" },
+            error: null,
+          },
+        } as ResponseWithData<SignupResponse>)
+    );
+
+    mockApiClientHelper.apiClient = {
+      post: mockSignUp,
     };
 
-    const result = await auth.signUp("foo@bar.com", "MyPassword1!");
+    const result = await auth.signUp({
+      email: "foo@bar.com",
+      password: "MyPassword1!",
+      confirmPassword: "MyPassword1!",
+    });
 
     expect(result).toMatchObject({
       user: { email: "foo@bar.com" },
-      session: {},
+      session: { refresh_token: "abcd" },
       error: null,
     });
   });
@@ -40,7 +58,10 @@ describe("authentication", () => {
       },
     };
 
-    const result = await auth.login("foo@bar.com", "MyPassword1!");
+    const result = await auth.login({
+      email: "foo@bar.com",
+      password: "MyPassword1!",
+    });
     expect(result).toMatchObject({ error: null });
     expect(mockSignIn).toBeCalled();
   });
