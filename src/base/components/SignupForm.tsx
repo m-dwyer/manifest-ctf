@@ -16,8 +16,6 @@ const SignupForm = () => {
   const handleSignup = async (data: FieldValues) => {
     const { user, session, error } = await signUp(data as Signup);
 
-    console.log("error: ", error);
-
     if (error) {
       setError(error);
     } else if (session && session.refresh_token) {
