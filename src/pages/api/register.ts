@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import nc from "next-connect";
 
-import { supabase } from "@/common/providers/supabaseClient";
 import { buildResponse } from "@/common/lib/ResponseBuilder";
 import { withValidation } from "@/common/lib/ApiValidator";
 import { signupSchema } from "@/base/schemas/signup";
