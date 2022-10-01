@@ -118,6 +118,9 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
           type="number"
           min={0}
           max={10000}
+          options={{
+            valueAsNumber: true,
+          }}
           defaultValue={existingChallenge.points}
         />
         {submitError != null && <span className="mt-5">{submitError}</span>}

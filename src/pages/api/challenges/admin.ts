@@ -7,7 +7,11 @@ import {
   upsertChallenge,
 } from "@/challenges/services/challengeAdmin";
 import { buildResponse } from "@/common/lib/ResponseBuilder";
-import { ChallengeWithCategories } from "@/challenges/schemas/challenge";
+import {
+  challengeToUpsertSchema,
+  ChallengeWithCategories,
+} from "@/challenges/schemas/challenge";
+import { withValidation } from "@/common/lib/ApiValidator";
 
 export default withApiAuth(
   nc<NextApiRequest, NextApiResponse>({
@@ -39,48 +43,53 @@ export default withApiAuth(
 
       return res.status(201).json(buildResponse({ success: true }));
     })
-    .post(async (req, res) => {
-      const { name, description, category, flag, points } = req.body;
-      const { data, error } = await upsertChallenge({
-        name,
-        description,
-        category,
-        flag,
-        points,
-      });
+    .post(
+      withValidation(challengeToUpsertSchema, async (req, res) => {
+        const { name, description, category, flag, points } = req.body;
+        const { data, error } = await upsertChallenge({
+          name,
+          description,
+          category,
+          flag,
+          points,
+        });
 
-      if (error || data === null)
-        return res
-          .status(500)
-          .json(buildResponse({ success: false, error: error?.message }));
+        if (error || data === null)
+          return res
+            .status(500)
+            .json(buildResponse({ success: false, error: error?.message }));
 
-      return res.status(201).json(
-        buildResponse<ChallengeWithCategories>({
-          success: true,
-          data: data,
-        })
-      );
-    })
-    .put(async (req, res) => {
-      const { id, name, description, category, flag, points } = req.body;
-      const { data, error } = await upsertChallenge({
-        id,
-        name,
-        description,
-        category,
-        flag,
-        points,
-      });
-
-      if (error || data === null)
-        return res
-          .status(500)
-          .json(buildResponse({ success: false, error: error?.message }));
-
-      return res
-        .status(201)
-        .json(
-          buildResponse<ChallengeWithCategories>({ success: true, data: data })
+        return res.status(201).json(
+          buildResponse<ChallengeWithCategories>({
+            success: true,
+            data: data,
+          })
         );
-    })
+      })
+    )
+    .put(
+      withValidation(challengeToUpsertSchema, async (req, res) => {
+        const { id, name, description, category, flag, points } = req.body;
+        const { data, error } = await upsertChallenge({
+          id,
+          name,
+          description,
+          category,
+          flag,
+          points,
+        });
+
+        if (error || data === null)
+          return res
+            .status(500)
+            .json(buildResponse({ success: false, error: error?.message }));
+
+        return res.status(201).json(
+          buildResponse<ChallengeWithCategories>({
+            success: true,
+            data: data,
+          })
+        );
+      })
+    )
 );

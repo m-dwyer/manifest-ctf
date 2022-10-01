@@ -1,17 +1,19 @@
 import { InputHTMLAttributes } from "react";
 import { LabelledField } from "@/common/components/LabelledField";
-import { useFormContext } from "react-hook-form";
+import { RegisterOptions, useFormContext } from "react-hook-form";
 
 type InputFieldProps = {
   name: string;
   label?: string;
   type: string;
+  options?: RegisterOptions;
 } & InputHTMLAttributes<HTMLInputElement>;
 
 export const InputField = ({
   name,
   label = name,
   type,
+  options,
   ...props
 }: InputFieldProps) => {
   const {
@@ -28,7 +30,7 @@ export const InputField = ({
           } `}
           type={type}
           id={name}
-          {...register(name)}
+          {...register(name, options)}
           {...props}
         ></input>
         {errors[name] && <span>{errors[name]?.message as string}</span>}
