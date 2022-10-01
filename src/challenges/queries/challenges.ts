@@ -4,10 +4,11 @@ import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 
 import { ResponseWithData } from "@/common/types/ResponseWithData";
 import { apiClient } from "@/common/providers/apiClient";
-import type {
+import {
   ChallengeToUpsert,
   ChallengeWithCompletion,
   ChallengeWithCategories,
+  DeleteChallenge,
 } from "@/challenges/schemas/challenge";
 
 enum Operation {
@@ -112,14 +113,17 @@ const fetchChallengesForAdmin = async () => {
 };
 
 export const useDeleteChallenge = () => {
-  return useMutation((challengeId: number) => deleteChallenge(challengeId), {
-    useErrorBoundary: true,
-  });
+  return useMutation(
+    (delChallenge: DeleteChallenge) => deleteChallenge(delChallenge),
+    {
+      useErrorBoundary: true,
+    }
+  );
 };
-const deleteChallenge = async (challengeId: number) => {
-  const result = await apiClient.delete<Record<string, never>>({
+const deleteChallenge = async (delChallenge: DeleteChallenge) => {
+  const result = await apiClient.delete<DeleteChallenge>({
     url: "/api/challenges/admin",
-    body: JSON.stringify({ challenge: challengeId }),
+    body: JSON.stringify(delChallenge),
   });
 
   return result;

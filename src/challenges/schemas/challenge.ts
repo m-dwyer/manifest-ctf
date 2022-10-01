@@ -50,3 +50,8 @@ export const challengeWithCategoriesSchema = baseChallengeSchema.and(
 export type ChallengeWithCategories = z.infer<
   typeof challengeWithCategoriesSchema
 >;
+
+export const deleteChallengeSchema = z.object({
+  challenge: z.number(),
+});
+export type DeleteChallenge = z.infer<typeof deleteChallengeSchema>;

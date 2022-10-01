@@ -1,7 +1,10 @@
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { useState } from "react";
 
-import { ChallengeWithCategories } from "@/challenges/schemas/challenge";
+import {
+  ChallengeWithCategories,
+  DeleteChallenge,
+} from "@/challenges/schemas/challenge";
 import ChallengeForm from "@/challenges/components/ChallengeForm";
 import Modal from "@/common/components/Modal";
 import {
@@ -45,8 +48,8 @@ const ChallengesAdminPage = () => {
     setModal(true);
   };
 
-  const handleDelete = async (challenge: number) => {
-    const result = await deleteChallengeMutation.mutateAsync(challenge, {
+  const handleDelete = async (delChallenge: DeleteChallenge) => {
+    const result = await deleteChallengeMutation.mutateAsync(delChallenge, {
       onSuccess: () => {
         queryClient.invalidateQueries(["challengesForAdmin"]);
       },
@@ -99,7 +102,7 @@ const ChallengesAdminPage = () => {
                   <span
                     className="tooltip"
                     data-tip="Delete"
-                    onClick={() => c.id && handleDelete(c.id)}
+                    onClick={() => c.id && handleDelete({ challenge: c.id })}
                   >
                     <FaTrash />
                   </span>

@@ -10,6 +10,7 @@ import { buildResponse } from "@/common/lib/ResponseBuilder";
 import {
   challengeToUpsertSchema,
   ChallengeWithCategories,
+  deleteChallengeSchema,
 } from "@/challenges/schemas/challenge";
 import { withValidation } from "@/common/lib/ApiValidator";
 
@@ -32,17 +33,19 @@ export default withApiAuth(
 
       return res.status(200).json(buildResponse({ success: true, data: data }));
     })
-    .delete(async (req, res) => {
-      const { challenge } = req.body;
-      const { data, error } = await deleteChallenge(challenge);
+    .delete(
+      withValidation(deleteChallengeSchema, async (req, res) => {
+        const { challenge } = req.body;
+        const { data, error } = await deleteChallenge(challenge);
 
-      if (error)
-        return res
-          .status(500)
-          .json(buildResponse({ success: false, error: error.message }));
+        if (error)
+          return res
+            .status(500)
+            .json(buildResponse({ success: false, error: error.message }));
 
-      return res.status(201).json(buildResponse({ success: true }));
-    })
+        return res.status(201).json(buildResponse({ success: true }));
+      })
+    )
     .post(
       withValidation(challengeToUpsertSchema, async (req, res) => {
         const { name, description, category, flag, points } = req.body;
