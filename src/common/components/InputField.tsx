@@ -6,6 +6,7 @@ type InputFieldProps = {
   name: string;
   label?: string;
   type: string;
+  hidden?: boolean;
   options?: RegisterOptions;
 } & InputHTMLAttributes<HTMLInputElement>;
 
@@ -13,6 +14,7 @@ export const InputField = ({
   name,
   label = name,
   type,
+  hidden,
   options,
   ...props
 }: InputFieldProps) => {
@@ -22,7 +24,7 @@ export const InputField = ({
   } = useFormContext<any>();
 
   return (
-    <LabelledField name={name} label={label}>
+    <LabelledField hidden={hidden} name={name} label={label}>
       <>
         <input
           className={`input input-primary bg-base-200 ${
