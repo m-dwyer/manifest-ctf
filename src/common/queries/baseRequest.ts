@@ -49,13 +49,5 @@ export const request = async <TResultType>({ url, options }: QueryOptions) => {
     throw new Error("Error with response");
   }
 
-  if (!response.ok) {
-    if (result) {
-      throw new Error(result.error || "Unknown error");
-    } else {
-      throw new Error("Unknown error occurred");
-    }
-  }
-
   return result;
 };

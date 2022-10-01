@@ -24,7 +24,6 @@ describe("authentication", () => {
           data: {
             user: { email: "foo@bar.com" },
             session: { refresh_token: "abcd" },
-            error: null,
           },
         } as ResponseWithData<SignupResponse>)
     );
@@ -42,7 +41,6 @@ describe("authentication", () => {
     expect(result).toMatchObject({
       user: { email: "foo@bar.com" },
       session: { refresh_token: "abcd" },
-      error: null,
     });
   });
 

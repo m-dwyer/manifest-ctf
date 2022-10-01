@@ -16,7 +16,7 @@ export const signUp = async (credentials: Signup) => {
   return {
     user: result.data?.user,
     session: result.data?.session,
-    error: result.data?.error,
+    error: result.error,
   };
 };
 

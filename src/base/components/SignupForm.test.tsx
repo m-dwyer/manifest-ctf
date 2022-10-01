@@ -100,7 +100,7 @@ describe("SignupForm", () => {
     mockAuth.signUp = jest.fn((email, password) => ({
       user: null,
       session: null,
-      error: { message: "something went wrong!" },
+      error: "something went wrong!",
     }));
 
     render(<SignupForm />);
