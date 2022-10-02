@@ -186,11 +186,11 @@ describe("ChallengeForm", () => {
     });
 
     await waitFor(() => {
-      expect(mockuploadFileToBucket.uploadFileToBucket).toHaveBeenCalledWith(
-        "challenge_files",
-        "My_cool_challenge/my file.exe",
-        mockFile
-      );
+      expect(mockuploadFileToBucket.uploadFileToBucket).toHaveBeenCalledWith({
+        bucket: "challenge_files",
+        filePath: "My_cool_challenge/my file.exe",
+        file: mockFile,
+      });
 
       expect(mockMutate).toHaveBeenCalledWith(
         {

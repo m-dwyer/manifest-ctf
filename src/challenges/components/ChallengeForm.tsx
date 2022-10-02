@@ -12,6 +12,8 @@ import { useFetchAllCategories } from "@/challenges/queries/categories";
 import { FieldValues } from "react-hook-form";
 import { challengeToUpsertSchema } from "@/challenges/schemas/challenge";
 import type { ChallengeToUpsert } from "@/challenges/schemas/challenge";
+import { Upload } from "@/base/schemas/upload";
+
 type ChallengeFormProps = {
   challenge?: ChallengeWithCategories | null;
   handleDismiss: () => void;
@@ -42,11 +44,12 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
     files.forEach(async (f) => {
       const filePath = `${name.replace(/\s/g, "_")}/${f.name}`;
 
-      const { error } = await uploadFileToBucket(
-        "challenge_files",
-        filePath,
-        f
-      );
+      const upload: Upload = {
+        bucket: "challenge_files",
+        filePath: filePath,
+        file: f,
+      };
+      const { error } = await uploadFileToBucket(upload);
 
       if (error) {
         showError(error.message);
