@@ -11,13 +11,13 @@ describe("ChallengeCard", () => {
   it("renders", () => {
     const challenge: ChallengeWithCompletion = {
       name: "My cool crypto challenge",
-      category: "Cryptography",
       description: "Can you decipher the text?",
       flag: "7h3_fl4g_15_h3r3",
       points: 123,
       challenge_attempts: [
         {
           completed: false,
+          attempts: 1,
         },
       ],
     };
