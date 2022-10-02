@@ -6,7 +6,7 @@ import {
 } from "@/challenges/schemas/challenge";
 
 export const fetchChallengeWithAttempts = async (
-  challenge: string
+  challenge: number
 ): Promise<ServiceResponse<ChallengeWithCompletion>> => {
   const { data, error } = await supabaseServiceClient
     .from<ChallengeWithCompletion>("challenges")
