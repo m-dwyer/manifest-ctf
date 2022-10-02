@@ -4,6 +4,7 @@ import {
   BaseChallenge,
   ChallengeToUpsert,
   ChallengeWithCategories,
+  DeleteChallenge,
 } from "@/challenges/schemas/challenge";
 import { ServiceResponse } from "@/common/types/ServiceResponse";
 
@@ -38,12 +39,12 @@ export const upsertChallenge = async (
 };
 
 export const deleteChallenge = async (
-  challenge: string
+  delChallenge: DeleteChallenge
 ): Promise<ServiceResponse<BaseChallenge>> => {
   const { data, error } = await supabaseServiceClient
     .from<BaseChallenge>("challenges")
     .delete()
-    .match({ id: challenge });
+    .match({ id: delChallenge.challenge });
 
   return { data: data && data[0], error };
 };
