@@ -4,6 +4,7 @@ import nc from "next-connect";
 import { fetchAllCategories } from "@/challenges/services/categoryAdmin";
 import { buildResponse } from "@/common/lib/ResponseBuilder";
 import type { ChallengeCategory } from "@/challenges/schemas/challenge-category";
+import { ResponseWithData } from "@/common/types/ResponseWithData";
 
 export default withApiAuth(
   nc<NextApiRequest, NextApiResponse>({
@@ -13,14 +14,24 @@ export default withApiAuth(
         .status(500)
         .json(buildResponse({ success: false, error: err.message }));
     },
-  }).get(async (req, res) => {
-    const { data: categoryData, error } = await fetchAllCategories();
+  }).get(
+    async (
+      req: NextApiRequest,
+      res: NextApiResponse<ResponseWithData<ChallengeCategory[]>>
+    ) => {
+      const { data, error } = await fetchAllCategories();
 
-    res.status(200).json(
-      buildResponse<ChallengeCategory[]>({
-        success: true,
-        data: categoryData || [],
-      })
-    );
-  })
+      if (error || data === null)
+        return res
+          .status(500)
+          .json(buildResponse({ success: false, error: error?.message }));
+
+      res.status(200).json(
+        buildResponse<ChallengeCategory[]>({
+          success: true,
+          data: data || [],
+        })
+      );
+    }
+  )
 );
