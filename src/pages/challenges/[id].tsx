@@ -1,20 +1,22 @@
-import { SyntheticEvent, useState } from "react";
+import { useState } from "react";
 import { supabaseServerClient } from "@supabase/auth-helpers-nextjs";
 import { GetServerSidePropsContext } from "next/types";
 import Link from "next/link";
 
-import { Challenge } from "@/challenges/types/Challenge";
+import { ChallengeWithCategories } from "@/challenges/schemas/challenge";
 import Modal from "@/common/components/Modal";
 import { useSubmitAttempt } from "@/challenges/queries/submissions";
 import { useQueryClient } from "@tanstack/react-query";
+import { Submission, submissionSchema } from "@/challenges/schemas/submission";
+import { Form } from "@/common/components/Form";
+import { FieldValues } from "react-hook-form";
+import { InputField } from "@/common/components/InputField";
 
-type ChallengeWithFiles = Challenge & {
+type ChallengeWithFiles = ChallengeWithCategories & {
   files: [{ fileName: string; publicUrl: string }];
 };
 
 const ChallengePage = ({ challenge }: { challenge: ChallengeWithFiles }) => {
-  const [flag, setFlag] = useState<string | null>(null);
-
   const [modalState, setModalState] = useState<{
     title?: string;
     text?: string | null;
@@ -25,17 +27,12 @@ const ChallengePage = ({ challenge }: { challenge: ChallengeWithFiles }) => {
   const queryClient = useQueryClient();
   const submitAttemptMutation = useSubmitAttempt();
 
-  const handleSubmitFlag = async (e: SyntheticEvent) => {
-    e.preventDefault();
+  const handleSubmitFlag = async (data: FieldValues) => {
+    const submissionResult = await submitAttemptMutation.mutateAsync(
+      data as Submission
+    );
 
-    if (!challenge || !challenge.id || !flag) return;
-
-    const submissionResult = await submitAttemptMutation.mutateAsync({
-      challengeId: challenge.id,
-      flag: flag,
-    });
-
-    if (submissionResult.correct) {
+    if (submissionResult.data?.correct) {
       queryClient.invalidateQueries(["challenges"]);
       setModalState({
         title: "Correct!",
@@ -65,21 +62,20 @@ const ChallengePage = ({ challenge }: { challenge: ChallengeWithFiles }) => {
           ))}
         </ul>
       </div>
-      <form className="form-control" onSubmit={handleSubmitFlag}>
-        <div className="flex gap-1">
-          <input
-            className="input bg-base-300"
-            type="text"
-            placeholder="Enter flag"
-            id="flag"
-            name="flag"
-            onChange={(e) => setFlag(e.target.value)}
-          ></input>
-          <button className="btn" type="submit">
-            Submit flag
-          </button>
-        </div>
-      </form>
+      <Form schema={submissionSchema} submitHandler={handleSubmitFlag}>
+        <InputField
+          type="hidden"
+          hidden={true}
+          name="challenge"
+          value={challenge?.id}
+          options={{ valueAsNumber: true }}
+        />
+
+        <InputField name="flag" type="text" />
+        <button className="btn" type="submit">
+          Submit flag
+        </button>
+      </Form>
       {modal ? (
         <Modal handleDismiss={handleDismiss}>
           <h3 className="font-bold text-lg">{modalState.title}</h3>
@@ -103,7 +99,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   const { data } = await supabaseServerClient(context)
-    .from<Challenge>("challenges")
+    .from<{ id: string; name: string; description: string }>("challenges")
     .select("id, name, description")
     .eq("id", challengeId)
     .limit(1)

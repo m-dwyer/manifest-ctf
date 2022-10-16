@@ -1,18 +1,29 @@
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
+import { Login } from "@/base/schemas/login";
+import type { Signup, SignupResponse } from "@/base/schemas/signup";
+import { apiClient } from "@/common/providers/apiClient";
 
-export const signUp = async (email: string, password: string) => {
-  const { user, session, error } = await supabaseClient.auth.signUp({
-    email: email,
-    password: password,
+export const signUp = async (credentials: Signup) => {
+  const result = await apiClient.post<SignupResponse>({
+    url: "/api/register",
+    body: JSON.stringify({
+      email: credentials.email,
+      password: credentials.password,
+      confirmPassword: credentials.confirmPassword,
+    }),
   });
 
-  return { user, session, error };
+  return {
+    user: result.data?.user,
+    session: result.data?.session,
+    error: result.error,
+  };
 };
 
-export const login = async (email: string, password: string) => {
+export const login = async (credentials: Login) => {
   const { error } = await supabaseClient.auth.signIn({
-    email: email,
-    password: password,
+    email: credentials.email,
+    password: credentials.password,
   });
 
   return { error };

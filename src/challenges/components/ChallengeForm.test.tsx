@@ -2,7 +2,7 @@ import ChallengeForm from "@/challenges/components/ChallengeForm";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import "@testing-library/jest-dom/extend-expect";
-import { ChallengeWithCategories } from "@/challenges/types/Challenge";
+import { ChallengeWithCategories } from "@/challenges/schemas/challenge";
 
 jest.mock("@tanstack/react-query", () => ({
   __esModule: true,
@@ -43,9 +43,7 @@ describe("ChallengeForm", () => {
       useFetchAllCategories: unknown;
     };
     mockCategoriesQuery.useFetchAllCategories = () => ({
-      data: {
-        data: [{ id: 1, name: "Default" }],
-      },
+      data: [{ id: 1, name: "Default" }],
     });
 
     const mockChallengesQuery = challengesQuery as {
@@ -58,7 +56,7 @@ describe("ChallengeForm", () => {
       description: "Can you decipher the text?",
       flag: "7h3_fl4g_15_h3r3",
       points: 123,
-      category: { id: 1, name: "Default" },
+      category: { id: 1, name: "Cryptography" },
     };
 
     render(<ChallengeForm challenge={challenge} handleDismiss={() => {}} />);
@@ -94,9 +92,7 @@ describe("ChallengeForm", () => {
       useFetchAllCategories: unknown;
     };
     mockCategoriesQuery.useFetchAllCategories = () => ({
-      data: {
-        data: [{ id: 1, name: "Default" }],
-      },
+      data: [{ id: 1, name: "Default" }],
     });
 
     const mockChallengesQuery = challengesQuery as {
@@ -139,6 +135,13 @@ describe("ChallengeForm", () => {
     const mockMutate = jest.fn(() => {});
     mockChallengesQuery.useUpsertChallenge = () => ({ mutate: mockMutate });
 
+    const mockCategoriesQuery = categoriesQuery as {
+      useFetchAllCategories: unknown;
+    };
+    mockCategoriesQuery.useFetchAllCategories = () => ({
+      data: [{ id: 1, name: "Default" }],
+    });
+
     const mockuploadFileToBucket = storageQuery as {
       uploadFileToBucket: unknown;
     };
@@ -177,17 +180,17 @@ describe("ChallengeForm", () => {
         target: { value: "7h15_15_my_fl4g" },
       });
       fireEvent.change(pointsInput, {
-        target: { value: "100" },
+        target: { valueAsNumber: 100 },
       });
       fireEvent.click(submitButton);
     });
 
     await waitFor(() => {
-      expect(mockuploadFileToBucket.uploadFileToBucket).toHaveBeenCalledWith(
-        "challenge_files",
-        "My_cool_challenge/my file.exe",
-        mockFile
-      );
+      expect(mockuploadFileToBucket.uploadFileToBucket).toHaveBeenCalledWith({
+        bucket: "challenge_files",
+        filePath: "My_cool_challenge/my file.exe",
+        file: mockFile,
+      });
 
       expect(mockMutate).toHaveBeenCalledWith(
         {
@@ -196,7 +199,7 @@ describe("ChallengeForm", () => {
           description: "My challenge description",
           category: "1",
           flag: "7h15_15_my_fl4g",
-          points: "100",
+          points: 100,
         },
         expect.anything()
       );

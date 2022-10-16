@@ -1,10 +1,11 @@
 import { SelectHTMLAttributes } from "react";
 import { LabelledField } from "@/common/components/LabelledField";
+import { useFormContext } from "react-hook-form";
 
 type SelectFieldProps = {
   name: string;
   label?: string;
-  options: { label: string; value: string }[];
+  options: { label: string; value: string }[] | undefined;
 } & SelectHTMLAttributes<HTMLSelectElement>;
 
 export const SelectField = ({
@@ -13,10 +14,17 @@ export const SelectField = ({
   options,
   ...props
 }: SelectFieldProps) => {
+  const { register } = useFormContext();
+
   return (
     <LabelledField name={name} label={label}>
-      <select name={name} id={name} className="select bg-base-200" {...props}>
-        {options.map((o) => {
+      <select
+        className="select select-primary bg-base-200"
+        id={name}
+        {...register(name)}
+        {...props}
+      >
+        {options?.map((o) => {
           return (
             <option data-testid="select-option" key={o.value} value={o.value}>
               {o.label}

@@ -59,7 +59,11 @@ describe("SignupForm", () => {
     });
 
     await waitFor(() => {
-      expect(mockAuth.signUp).toBeCalledWith("my@user.com", "MyPassword1");
+      expect(mockAuth.signUp).toBeCalledWith({
+        email: "my@user.com",
+        password: "MyPassword1",
+        confirmPassword: "MyPassword1",
+      });
     });
   });
 
@@ -96,7 +100,7 @@ describe("SignupForm", () => {
     mockAuth.signUp = jest.fn((email, password) => ({
       user: null,
       session: null,
-      error: { message: "something went wrong!" },
+      error: "something went wrong!",
     }));
 
     render(<SignupForm />);

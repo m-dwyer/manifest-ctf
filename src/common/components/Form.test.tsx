@@ -9,7 +9,7 @@ describe("Form", () => {
 
     render(
       <Form submitHandler={mockSubmitHandler}>
-        {(formData, setFormData) => <>it renders</>}
+        <>it renders</>
       </Form>
     );
 
@@ -17,15 +17,13 @@ describe("Form", () => {
   });
 
   it("submits", async () => {
-    const mockSubmitHandler = jest.fn((e) => e.preventDefault());
+    const mockSubmitHandler = jest.fn();
 
     render(
       <Form submitHandler={mockSubmitHandler}>
-        {(formData, setFormData) => (
-          <>
-            <button type="submit">click me</button>
-          </>
-        )}
+        <>
+          <button type="submit">click me</button>
+        </>
       </Form>
     );
 

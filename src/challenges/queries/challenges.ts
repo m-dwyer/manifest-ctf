@@ -2,50 +2,49 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 
-import {
-  Challenge,
-  ChallengeWithCategories,
-  ChallengeWithCompletion,
-} from "@/challenges/types/Challenge";
 import { ResponseWithData } from "@/common/types/ResponseWithData";
 import { apiClient } from "@/common/providers/apiClient";
-
-export const useUpsertChallenge = () => {
-  return useMutation({
-    mutationFn: (challenge: Challenge) => {
-      if (challenge.id) {
-        return updateChallenge(challenge);
-      } else {
-        return createChallenge(challenge);
-      }
-    },
-  });
-};
-
-const createChallenge = (challenge: Challenge) => {
-  return createOrUpdateChallenge(Operation.CREATE, challenge);
-};
-
-const updateChallenge = (challenge: Challenge) => {
-  return createOrUpdateChallenge(Operation.UPDATE, challenge);
-};
+import {
+  ChallengeToUpsert,
+  ChallengeWithCompletion,
+  ChallengeWithCategories,
+  DeleteChallenge,
+} from "@/challenges/schemas/challenge";
 
 enum Operation {
   CREATE,
   UPDATE,
 }
 
+export const useUpsertChallenge = () => {
+  return useMutation({
+    mutationFn: (challenge: ChallengeToUpsert) => {
+      if (challenge.id) {
+        return updateChallenge(challenge);
+      } else {
+        return createChallenge(challenge);
+      }
+    },
+    useErrorBoundary: true,
+  });
+};
+const createChallenge = (challenge: ChallengeToUpsert) => {
+  return createOrUpdateChallenge(Operation.CREATE, challenge);
+};
+const updateChallenge = (challenge: ChallengeToUpsert) => {
+  return createOrUpdateChallenge(Operation.UPDATE, challenge);
+};
 const createOrUpdateChallenge = async (
   operation: Operation,
-  challenge: Challenge
-): Promise<ResponseWithData<ChallengeWithCategories>> => {
+  challenge: ChallengeToUpsert
+): Promise<ResponseWithData<ChallengeToUpsert>> => {
   const result =
     operation === Operation.UPDATE
-      ? await apiClient.put<ChallengeWithCategories>({
+      ? await apiClient.put<ChallengeToUpsert>({
           url: "/api/challenges/admin",
           body: JSON.stringify(challenge),
         })
-      : await apiClient.post<ChallengeWithCategories>({
+      : await apiClient.post<ChallengeToUpsert>({
           url: "/api/challenges/admin",
           body: JSON.stringify(challenge),
         });
@@ -63,26 +62,10 @@ export const useFetchChallengesByRange = ({
   return useQuery({
     queryKey: ["challenges", rangeBegin, rangeEnd],
     queryFn: () => fetchChallengesByRange({ rangeBegin, rangeEnd }),
+    useErrorBoundary: true,
     staleTime: 60000,
   });
 };
-
-export const useFetchChallengesForAdmin = () => {
-  return useQuery({
-    queryKey: ["challengesForAdmin"],
-    queryFn: () => fetchChallengesForAdmin(),
-    staleTime: 60000,
-  });
-};
-
-const fetchChallengesForAdmin = async () => {
-  const result = await apiClient.get<ChallengeWithCategories[]>({
-    url: "/api/challenges/admin",
-  });
-
-  return result.data;
-};
-
 const fetchChallengesByRange = async ({
   rangeBegin,
   rangeEnd,
@@ -110,14 +93,37 @@ const fetchChallengesByRange = async ({
   return { challenges, count };
 };
 
-export const useDeleteChallenge = () => {
-  return useMutation((challengeId: number) => deleteChallenge(challengeId), {});
+export const useFetchChallengesForAdmin = () => {
+  return useQuery({
+    queryKey: ["challengesForAdmin"],
+    queryFn: () => fetchChallengesForAdmin(),
+    select: (response) => {
+      if (response) return response.data;
+    },
+    useErrorBoundary: true,
+    staleTime: 60000,
+  });
+};
+const fetchChallengesForAdmin = async () => {
+  const result = await apiClient.get<ChallengeWithCategories[]>({
+    url: "/api/challenges/admin",
+  });
+
+  return result;
 };
 
-const deleteChallenge = async (challengeId: number) => {
-  const result = await apiClient.delete<Record<string, never>>({
+export const useDeleteChallenge = () => {
+  return useMutation(
+    (delChallenge: DeleteChallenge) => deleteChallenge(delChallenge),
+    {
+      useErrorBoundary: true,
+    }
+  );
+};
+const deleteChallenge = async (delChallenge: DeleteChallenge) => {
+  const result = await apiClient.delete<DeleteChallenge>({
     url: "/api/challenges/admin",
-    body: JSON.stringify({ challenge: challengeId }),
+    body: JSON.stringify(delChallenge),
   });
 
   return result;

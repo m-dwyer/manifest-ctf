@@ -1,31 +1,25 @@
-import { useState, SyntheticEvent } from "react";
+import { useState } from "react";
 
-import { InputState } from "@/common/hooks/useMultiInputs";
 import { signUp } from "@/base/queries/authentication";
 import { Form } from "@/common/components/Form";
 import { InputField } from "@/common/components/InputField";
 import { useRouter } from "next/router";
+import { FieldValues } from "react-hook-form";
+import { signupSchema } from "@/base/schemas/signup";
+import type { Signup } from "@/base/schemas/signup";
+import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 
 const SignupForm = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleSignup = async (event: SyntheticEvent, formData: InputState) => {
-    event.preventDefault();
-
-    if (formData.confirm !== formData.password) {
-      setError("Passwords do not match");
-      return;
-    }
-
-    const { user, session, error } = await signUp(
-      formData.email,
-      formData.password
-    );
+  const handleSignup = async (data: FieldValues) => {
+    const { user, session, error } = await signUp(data as Signup);
 
     if (error) {
-      setError(error.message);
-    } else {
+      setError(error);
+    } else if (session && session.refresh_token) {
+      supabaseClient.auth.setSession(session.refresh_token);
       router.push("/");
     }
   };
@@ -36,37 +30,19 @@ const SignupForm = () => {
         <div className="card-body">
           <div className="card-title">Sign up</div>
           {error != null && <div>{error}</div>}
-          <Form submitHandler={handleSignup}>
-            {(formData, setFormData) => (
-              <>
-                <InputField
-                  name="email"
-                  type="email"
-                  value={formData.email || ""}
-                  onChange={(e) => {
-                    setFormData({ email: e.target.value });
-                  }}
-                />
-                <InputField
-                  name="password"
-                  type="password"
-                  value={formData.password || ""}
-                  onChange={(e) => {
-                    setFormData({ password: e.target.value });
-                  }}
-                />
-                <InputField
-                  name="confirmPassword"
-                  label="confirm"
-                  type="password"
-                  value={formData.confirm || ""}
-                  onChange={(e) => setFormData({ confirm: e.target.value })}
-                />
-                <button className="btn mt-10" type="submit">
-                  submit
-                </button>
-              </>
-            )}
+          <Form schema={signupSchema} submitHandler={handleSignup}>
+            <>
+              <InputField name="email" type="email" />
+              <InputField name="password" type="password" />
+              <InputField
+                name="confirmPassword"
+                label="confirm"
+                type="password"
+              />
+              <button className="btn mt-10" type="submit">
+                submit
+              </button>
+            </>
           </Form>
         </div>
       </div>

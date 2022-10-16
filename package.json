@@ -16,6 +16,7 @@
     "test:group:components": "jest --group=components"
   },
   "dependencies": {
+    "@hookform/resolvers": "^2.9.8",
     "@supabase/auth-helpers-nextjs": "^0.2.3",
     "@supabase/auth-helpers-react": "^0.2.2",
     "@supabase/supabase-js": "^1.35.4",
@@ -24,7 +25,9 @@
     "next-connect": "^0.13.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-icons": "^4.4.0"
+    "react-hook-form": "^7.36.0",
+    "react-icons": "^4.4.0",
+    "zod": "^3.19.1"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.4",

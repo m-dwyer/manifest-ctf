@@ -1,13 +1,10 @@
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
+import { Upload } from "@/base/schemas/upload";
 
-export const uploadFileToBucket = async (
-  bucket: string,
-  filePath: string,
-  file: File
-) => {
+export const uploadFileToBucket = async (upload: Upload) => {
   const { error } = await supabaseClient.storage
-    .from(bucket)
-    .upload(filePath, file);
+    .from(upload.bucket)
+    .upload(upload.filePath, upload.file);
 
   return { error };
 };

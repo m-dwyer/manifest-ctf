@@ -6,6 +6,7 @@ import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Layout from "@/base/components/Layout";
+import ErrorBoundary from "@/common/components/ErrorBoundary";
 
 const queryClient = new QueryClient();
 
@@ -14,7 +15,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     <UserProvider supabaseClient={supabaseClient}>
       <QueryClientProvider client={queryClient}>
         <Layout>
-          <Component {...pageProps} />
+          <ErrorBoundary>
+            <Component {...pageProps} />
+          </ErrorBoundary>
         </Layout>
       </QueryClientProvider>
     </UserProvider>

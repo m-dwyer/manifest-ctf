@@ -1,8 +1,12 @@
 import { supabaseServiceClient } from "@/common/providers/supabaseServiceClient";
+import { ChallengeCategory } from "@/challenges/schemas/challengeCategory";
+import { ServiceResponse } from "@/common/types/ServiceResponse";
 
-export const fetchAllCategories = async () => {
+export const fetchAllCategories = async (): Promise<
+  ServiceResponse<ChallengeCategory[]>
+> => {
   const { data, error } = await supabaseServiceClient
-    .from("categories")
+    .from<ChallengeCategory>("categories")
     .select("id, name");
 
   return { data, error };

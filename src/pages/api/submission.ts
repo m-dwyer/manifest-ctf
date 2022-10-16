@@ -1,49 +1,67 @@
 import { NextApiResponse, NextApiRequest } from "next";
 import { getUser, withApiAuth } from "@supabase/auth-helpers-nextjs";
+import nc from "next-connect";
 import {
   fetchChallengeWithAttempts,
   upsertChallengeAttempt,
 } from "@/challenges/services/serverSubmission";
 import { buildResponse } from "@/common/lib/ResponseBuilder";
+import { withValidation } from "@/common/lib/ApiValidator";
+import { Submission, submissionSchema } from "@/challenges/schemas/submission";
+import { ResponseWithData } from "@/common/types/ResponseWithData";
 
-export default withApiAuth(async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method != "POST") {
-    res
-      .status(405)
-      .json(buildResponse({ success: false, error: "Not allowed" }));
-    return;
-  }
+export default withApiAuth(
+  nc<NextApiRequest, NextApiResponse>({
+    onError: (err, req, res, next) => {
+      console.error(err.stack);
+      res
+        .status(500)
+        .json(buildResponse({ success: false, error: err.message }));
+    },
+  }).post(
+    withValidation(
+      submissionSchema,
+      async (
+        req: NextApiRequest,
+        res: NextApiResponse<ResponseWithData<Submission>>
+      ) => {
+        const submission = req.body as Submission;
 
-  const challenge = req.body.challenge;
-  const submittedFlag = req.body.flag;
+        const { data } = await fetchChallengeWithAttempts(submission.challenge);
 
-  const { challengeData } = await fetchChallengeWithAttempts(challenge);
+        const { user } = await getUser({ req, res });
+        const userId = user.id;
 
-  const { user } = await getUser({ req, res });
-  const userId = user.id;
+        const existingAttempts = data?.challenge_attempts[0]?.attempts || 0;
+        const shouldLogAttempt =
+          data?.challenge_attempts[0] === undefined ||
+          !data?.challenge_attempts[0]?.completed;
 
-  const existingAttempts = challengeData?.challenge_attempts[0]?.attempts || 0;
-  const shouldLogAttempt =
-    challengeData?.challenge_attempts[0] === undefined ||
-    !challengeData?.challenge_attempts[0]?.completed;
+        if (shouldLogAttempt && data && data.id) {
+          const flagCorrect = data?.flag === submission.flag;
+          const { data: upsertData, error: upsertError } =
+            await upsertChallengeAttempt(
+              userId,
+              data?.id,
+              flagCorrect,
+              existingAttempts,
+              data.points
+            );
+        }
 
-  if (shouldLogAttempt) {
-    const flagCorrect = challengeData?.flag === submittedFlag;
-    const { upsertData, upsertError } = await upsertChallengeAttempt(
-      userId,
-      challengeData?.id,
-      flagCorrect,
-      existingAttempts,
-      challengeData.points
-    );
-  }
+        const correct = data?.flag == submission.flag;
 
-  const correct = challengeData?.flag == submittedFlag;
-
-  return res
-    .status(201)
-    .json({ challenge: challenge, flag: submittedFlag, correct });
-});
+        return res.status(201).json(
+          buildResponse({
+            success: true,
+            data: {
+              challenge: submission.challenge,
+              flag: submission.flag,
+              correct,
+            },
+          })
+        );
+      }
+    )
+  )
+);
