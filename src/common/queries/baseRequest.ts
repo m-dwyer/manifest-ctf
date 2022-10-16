@@ -46,6 +46,7 @@ export const request = async <TResultType>({ url, options }: QueryOptions) => {
   try {
     result = await response.json();
   } catch (error) {
+    console.log("error: ", error);
     throw new Error("Error with response");
   }
 

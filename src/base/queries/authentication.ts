@@ -2,6 +2,7 @@ import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 import { Login } from "@/base/schemas/login";
 import type { Signup, SignupResponse } from "@/base/schemas/signup";
 import { apiClient } from "@/common/providers/apiClient";
+import { getCsrfToken, signIn } from "next-auth/react";
 
 export const signUp = async (credentials: Signup) => {
   const result = await apiClient.post<SignupResponse>({
@@ -15,18 +16,20 @@ export const signUp = async (credentials: Signup) => {
 
   return {
     user: result.data?.user,
-    session: result.data?.session,
     error: result.error,
   };
 };
 
-export const login = async (credentials: Login) => {
-  const { error } = await supabaseClient.auth.signIn({
+export const login = async (csrfToken: string, credentials: Login) => {
+  console.log("creds: ", credentials);
+
+  const result = await signIn("credentials", {
     email: credentials.email,
     password: credentials.password,
+    redirect: false,
   });
 
-  return { error };
+  return { error: result?.error };
 };
 
 export const logout = () => {

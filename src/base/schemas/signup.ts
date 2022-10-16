@@ -16,6 +16,6 @@ export type Signup = z.infer<typeof signupSchema>;
 
 export type SignupResponse = {
   user: User | null;
-  session: Session | null;
-  error: ApiError | null;
+  // session: Session | null;
+  // error: ApiError | null;
 };

@@ -8,14 +8,21 @@ import { login } from "@/base/queries/authentication";
 import { loginSchema } from "@/base/schemas/login";
 import type { Login } from "@/base/schemas/login";
 
-const LoginForm = () => {
+import { useSession, signIn } from "next-auth/react";
+
+type LoginFormProps = {
+  csrfToken: string;
+};
+
+const LoginForm = ({ csrfToken }: LoginFormProps) => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleLogin = async (data: FieldValues) => {
-    const { error } = await login(data as Login);
+    const { error } = await login(csrfToken, data as Login);
+
     if (error) {
-      setError(error.message);
+      setError(error);
     } else {
       router.push("/home");
     }
@@ -29,6 +36,7 @@ const LoginForm = () => {
           {error != null && <div data-testid="login-error">{error}</div>}
           <Form schema={loginSchema} submitHandler={handleLogin}>
             <>
+              <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
               <InputField type="text" name="email" />
               <InputField type="password" name="password" />
               <button className="btn mt-10" type="submit">

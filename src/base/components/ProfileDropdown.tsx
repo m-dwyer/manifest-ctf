@@ -1,20 +1,24 @@
 import Link from "next/link";
-import { useUser } from "@supabase/auth-helpers-react";
 
 import { logout } from "@/base/queries/authentication";
+import { Session } from "next-auth";
 
-const ProfileDropdown = () => {
-  const { user } = useUser();
+import { signOut } from "next-auth/react";
 
+type ProfileDropdownProps = {
+  session: Session;
+};
+
+const ProfileDropdown = ({ session }: ProfileDropdownProps) => {
   const handleLogout = () => {
-    logout();
+    signOut();
   };
 
   return (
     <div className="dropdown dropdown-end">
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
       <label tabIndex={0} className="btn m-1">
-        {user?.email}
+        {session.user?.email}
       </label>
       <ul
         // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex

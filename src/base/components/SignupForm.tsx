@@ -7,19 +7,17 @@ import { useRouter } from "next/router";
 import { FieldValues } from "react-hook-form";
 import { signupSchema } from "@/base/schemas/signup";
 import type { Signup } from "@/base/schemas/signup";
-import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 
 const SignupForm = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleSignup = async (data: FieldValues) => {
-    const { user, session, error } = await signUp(data as Signup);
+    const { user, error } = await signUp(data as Signup);
 
     if (error) {
       setError(error);
-    } else if (session && session.refresh_token) {
-      supabaseClient.auth.setSession(session.refresh_token);
+    } else {
       router.push("/");
     }
   };

@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { useUser } from "@supabase/auth-helpers-react";
+import { useSession } from "next-auth/react";
 
 import ProfileDropdown from "@/base/components/ProfileDropdown";
 
 const Header = () => {
-  const { user } = useUser();
+  const { data: session } = useSession();
 
   return (
     <header className="navbar bg-base-100 m-0">
@@ -17,8 +17,8 @@ const Header = () => {
         </Link>
       </div>
       <div className="navbar-end">
-        {user ? (
-          <ProfileDropdown />
+        {session ? (
+          <ProfileDropdown session={session} />
         ) : (
           <Link href="/login">
             <a className="btn">Sign In</a>
