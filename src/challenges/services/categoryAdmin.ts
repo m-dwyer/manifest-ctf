@@ -1,5 +1,5 @@
 import { supabaseServiceClient } from "@/common/providers/supabaseServiceClient";
-import { ChallengeCategory } from "@/challenges/schemas/challenge-category";
+import { ChallengeCategory } from "@/challenges/schemas/challengeCategory";
 import { ServiceResponse } from "@/common/types/ServiceResponse";
 
 export const fetchAllCategories = async (): Promise<

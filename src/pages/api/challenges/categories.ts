@@ -3,7 +3,7 @@ import { withApiAuth } from "@supabase/auth-helpers-nextjs";
 import nc from "next-connect";
 import { fetchAllCategories } from "@/challenges/services/categoryAdmin";
 import { buildResponse } from "@/common/lib/ResponseBuilder";
-import type { ChallengeCategory } from "@/challenges/schemas/challenge-category";
+import type { ChallengeCategory } from "@/challenges/schemas/challengeCategory";
 import { ResponseWithData } from "@/common/types/ResponseWithData";
 
 export default withApiAuth(

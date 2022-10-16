@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { challengeCategorySchema } from "@/challenges/schemas/challenge-category";
+import { challengeCategorySchema } from "@/challenges/schemas/challengeCategory";
 
 export const baseChallengeSchema = z.object({
   id: z.number().optional(),
