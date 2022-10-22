@@ -9,6 +9,7 @@
     "lint": "next lint",
     "format": "prettier --write \"./src/**/*.{js,jsx,ts,tsx}\"",
     "prisma:generate": "prisma generate",
+    "prisma:studio": "prisma studio",
     "test:cypress:open": "cypress open",
     "test:cypress:headless": "cypress run",
     "test:cypress": "start-server-and-test dev http://localhost:3000 test:cypress:headless",
