@@ -9,6 +9,7 @@ type ApiClientOptions =
   | {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       body: any;
+      headers?: any;
     } & BaseApiClientOptions;
 
 export const apiClient = {
@@ -19,10 +20,10 @@ export const apiClient = {
     }) as Promise<ResponseWithData<TResponse>>;
   },
 
-  post: <TResponse>({ url, body }: ApiClientOptions) => {
+  post: <TResponse>({ url, body, headers }: ApiClientOptions) => {
     return request<TResponse>({
       url,
-      options: { method: "POST", body },
+      options: { method: "POST", body, headers },
     }) as Promise<ResponseWithData<TResponse>>;
   },
 

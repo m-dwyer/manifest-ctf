@@ -40,6 +40,7 @@ export const request = async <TResultType>({ url, options }: QueryOptions) => {
   try {
     response = fetchOptions ? await fetch(url, fetchOptions) : await fetch(url);
   } catch (error) {
+    console.log("error: ", error);
     throw new Error("Network request error");
   }
 
