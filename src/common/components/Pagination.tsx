@@ -5,7 +5,6 @@ const Pagination = ({
   pathName,
   queryParam = "page",
   setFrom,
-  setTo,
   total,
   current = 1,
   perPage = 5,
@@ -13,7 +12,6 @@ const Pagination = ({
   pathName: string;
   queryParam?: string;
   setFrom: Dispatch<SetStateAction<number>>;
-  setTo: Dispatch<SetStateAction<number>>;
   total: number;
   current?: number;
   perPage?: number;
@@ -22,12 +20,11 @@ const Pagination = ({
 
   useEffect(() => {
     const rangeBegin = (current - 1) * perPage;
-    const rangeEnd = rangeBegin + (perPage - 1);
     setFrom(rangeBegin);
-    setTo(rangeEnd);
-  }, [setFrom, setTo, current, perPage]);
+  }, [setFrom, current, perPage]);
 
   const allPages = Array.from(Array(pageCount)).map((p, i) => i + 1);
+
   return (
     <div className="btn-group">
       {allPages.map((p) => (

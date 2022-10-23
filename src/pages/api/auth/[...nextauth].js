@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 // TODO: for some reason, aliased path isn't giving type completion
-import { prisma } from "../../../common/providers/prismaClient";
+import { prisma } from "@/common/providers/prismaClient";
 
 export const authOptions = {
   // logger: {

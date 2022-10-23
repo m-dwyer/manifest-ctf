@@ -1,4 +1,5 @@
 import { supabaseServiceClient } from "@/common/providers/supabaseServiceClient";
+import { prisma } from "@/common/providers/prismaClient";
 
 import {
   BaseChallenge,
@@ -7,6 +8,7 @@ import {
   DeleteChallenge,
 } from "@/challenges/schemas/challenge";
 import { ServiceResponse } from "@/common/types/ServiceResponse";
+import { Challenge, ChallengeAttempt } from "@prisma/client";
 
 export const upsertChallenge = async (
   challenge: ChallengeToUpsert
@@ -49,18 +51,38 @@ export const deleteChallenge = async (
   return { data: data && data[0], error };
 };
 
-export const fetchChallenges = async (): Promise<
-  ServiceResponse<BaseChallenge[]>
+export const fetchChallenges = async ({
+  rangeFrom,
+  count,
+}: {
+  rangeFrom: number;
+  count: number;
+}): Promise<
+  ServiceResponse<{
+    total: number;
+    challenges: (Challenge & { challengeAttempt: ChallengeAttempt[] })[];
+  }>
 > => {
-  const { data: challengeData, error } = await supabaseServiceClient
-    .from<BaseChallenge>("challenges")
-    .select(
-      `
-    *,
-    category(id, name)
-      `
-    )
-    .order("id", { ascending: true });
+  console.log("skip: ", Math.max(rangeFrom - 1, 0));
+  console.log("take: ", count);
 
-  return { data: challengeData, error };
+  const [total, challenges] = await prisma.$transaction([
+    prisma.challenge.count(),
+    prisma.challenge.findMany({
+      include: {
+        challengeAttempt: {
+          where: {
+            userId: 1,
+          },
+        },
+      },
+      skip: Math.max(rangeFrom, 0),
+      take: count,
+      orderBy: {
+        id: "asc",
+      },
+    }),
+  ]);
+
+  return { data: { total, challenges }, error: null };
 };

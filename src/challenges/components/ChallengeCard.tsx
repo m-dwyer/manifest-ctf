@@ -2,11 +2,12 @@ import Link from "next/link";
 import { FaCheck } from "react-icons/fa";
 
 import { ChallengeWithCompletion } from "@/challenges/schemas/challenge";
+import { Challenge, ChallengeAttempt } from "@prisma/client";
 
 const ChallengeCard = ({
   challenge,
 }: {
-  challenge: ChallengeWithCompletion;
+  challenge: Challenge & { challengeAttempt: ChallengeAttempt[] };
 }) => {
   return (
     <Link
@@ -20,7 +21,7 @@ const ChallengeCard = ({
             <div className="card-title">
               {challenge.name}
               <span className="tooltip" data-tip="Completed!">
-                {challenge.challenge_attempts[0]?.completed && (
+                {challenge.challengeAttempt[0]?.completed && (
                   <FaCheck title="completed" />
                 )}
               </span>
