@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useUpsertChallenge } from "@/challenges/queries/challenges";
 import { uploadFileToBucket } from "@/base/queries/storage";
-import type { ChallengeWithCategories } from "@/challenges/schemas/challenge";
 import FileUpload from "@/common/components/FileUpload";
 import { Form } from "@/common/components/Form";
 import { InputField } from "@/common/components/InputField";
@@ -13,17 +12,14 @@ import { FieldValues } from "react-hook-form";
 import { challengeToUpsertSchema } from "@/challenges/schemas/challenge";
 import type { ChallengeToUpsert } from "@/challenges/schemas/challenge";
 import { Upload } from "@/base/schemas/upload";
+import { Challenge } from "@prisma/client";
 
 type ChallengeFormProps = {
-  challenge?: ChallengeWithCategories | null;
+  challenge?: Challenge;
   handleDismiss: () => void;
 };
 
 const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
-  const existingChallenge = {
-    ...challenge,
-  };
-
   const [files, setFiles] = useState<File[]>([]);
   const [submitError, setSubmitError] = useState<string | null>();
 
@@ -85,13 +81,13 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
     <Form schema={challengeToUpsertSchema} submitHandler={handleSubmit}>
       <>
         <InputField
-          defaultValue={existingChallenge.name}
+          defaultValue={challenge?.name}
           name="name"
           label="name"
           type="text"
         />
         <TextAreaField
-          defaultValue={existingChallenge.description}
+          defaultValue={challenge?.description}
           name="description"
           label="description"
           rows={4}
@@ -105,7 +101,7 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
           }))}
           defaultValue={
             fetchAllCategoriesQuery.data?.find(
-              (c) => c.id === Number(existingChallenge.categoryId)
+              (c) => c.id === Number(challenge?.categoryId)
             )?.id || "1"
           }
         />
@@ -113,11 +109,7 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
           file
         </label>
         <FileUpload files={files} setFiles={setFiles} />
-        <InputField
-          name="flag"
-          type="text"
-          defaultValue={existingChallenge.flag}
-        />
+        <InputField name="flag" type="text" defaultValue={challenge?.flag} />
         <InputField
           name="points"
           type="number"
@@ -126,7 +118,7 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
           options={{
             valueAsNumber: true,
           }}
-          defaultValue={existingChallenge.points}
+          defaultValue={challenge?.points}
         />
         {submitError != null && <span className="mt-5">{submitError}</span>}
         <button className="btn mt-10" type="submit">
