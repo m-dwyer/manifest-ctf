@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { FaCheck } from "react-icons/fa";
 
-import { ChallengeWithCompletion } from "@/challenges/schemas/challenge";
 import { Challenge, ChallengeAttempt } from "@prisma/client";
 
 const ChallengeCard = ({
