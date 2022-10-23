@@ -5,15 +5,26 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/common/providers/prismaClient";
 
 export const authOptions = {
-  // logger: {
-  //   error(code, metadata) {
-  //     console.log(code, metadata);
-  //   },
-  //   debug(code, metadata) {
-  //     console.log(code, metadata);
-  //   },
-  // },
   debug: true,
+  secret: process.env.AUTH_SECRET,
+  callbacks: {
+    session: async ({ session, token }) => {
+      if (session?.user) {
+        session.user.id = token.uid;
+      }
+      return session;
+    },
+    jwt: async ({ user, token }) => {
+      if (user) {
+        token.uid = user.id;
+      }
+      return token;
+    },
+  },
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 day session
+  },
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -26,14 +37,14 @@ export const authOptions = {
         password: { label: "password", type: "password" },
       },
       async authorize(credentials, req) {
-        // console.log(`authing creds: ${credentials}`);
-        console.log("req: ", req);
-
-        // const user = { id: 1, email: "shit@fuck.com" };
-
         const user = await prisma.user.findUnique({
           where: {
             email: credentials.email,
+          },
+          select: {
+            id: true,
+            email: true,
+            password: true,
           },
         });
 

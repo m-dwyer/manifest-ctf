@@ -13,8 +13,6 @@ const Login = ({ csrfToken }: { csrfToken: string }) => {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const csrfToken = await getCsrfToken(context);
 
-  console.log("crsfToken: ", csrfToken);
-
   return {
     props: { csrfToken },
   };

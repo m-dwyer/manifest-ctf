@@ -12,6 +12,8 @@ import { Form } from "@/common/components/Form";
 import { FieldValues } from "react-hook-form";
 import { InputField } from "@/common/components/InputField";
 import { Challenge, ChallengeAttempt } from "@prisma/client";
+import { getSession } from "next-auth/react";
+import { GoTrueClient } from "@supabase/supabase-js";
 
 type ChallengeWithFiles = Challenge &
   ChallengeAttempt & {
@@ -91,7 +93,9 @@ const ChallengePage = ({ challenge }: { challenge: ChallengeWithFiles }) => {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const challengeId = Number(context.params?.id);
 
-  if (!challengeId) {
+  const session = await getSession({ req: context.req });
+
+  if (!challengeId || session === null) {
     context.res.setHeader("Location", "/challenges");
     context.res.statusCode = 302;
     context.res.end();
@@ -102,13 +106,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const result = await prisma.challenge.findFirst({
     select: {
+      id: true,
       name: true,
       description: true,
       flag: true,
       challengeAttempt: {
         where: {
           challengeId: challengeId,
-          userId: 1,
+          userId: Number(session?.user?.id),
         },
       },
     },

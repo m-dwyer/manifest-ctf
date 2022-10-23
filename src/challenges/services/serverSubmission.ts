@@ -1,29 +1,45 @@
-import { supabaseServiceClient } from "@/common/providers/supabaseServiceClient";
+import { prisma } from "../../common/providers/prismaClient";
 import { ServiceResponse } from "@/common/types/ServiceResponse";
 import {
   ChallengeCompletion,
   ChallengeWithCompletion,
 } from "@/challenges/schemas/challenge";
+import { ChallengeAttempt } from "@prisma/client";
 
 export const fetchChallengeWithAttempts = async (
-  challenge: number
-): Promise<ServiceResponse<ChallengeWithCompletion>> => {
-  const { data, error } = await supabaseServiceClient
-    .from<ChallengeWithCompletion>("challenges")
-    .select(
-      `
-        *,
-        challenge_attempts(
-            completed,
-            attempts
-        )
-    `
-    )
-    .eq("id", challenge)
-    .limit(1)
-    .single();
+  challenge: number,
+  userId: number
+): Promise<
+  ServiceResponse<
+    { challengeAttempt: { attempts: number; completed: boolean }[] } & {
+      id: number;
+      flag: string;
+      points: number;
+    }
+  >
+> => {
+  const result = await prisma.challenge.findFirst({
+    where: {
+      id: challenge,
+    },
+    select: {
+      id: true,
+      flag: true,
+      points: true,
+      challengeAttempt: {
+        where: {
+          challengeId: challenge,
+          userId: userId,
+        },
+        select: {
+          attempts: true,
+          completed: true,
+        },
+      },
+    },
+  });
 
-  return { data, error };
+  return { data: result, error: null };
 };
 
 export const upsertChallengeAttempt = async (
@@ -32,16 +48,29 @@ export const upsertChallengeAttempt = async (
   correct: boolean,
   existingAttempts: number,
   points: number
-): Promise<ServiceResponse<ChallengeCompletion>> => {
-  const { data, error } = await supabaseServiceClient
-    .from<ChallengeCompletion>("challenge_attempts")
-    .upsert({
-      user_id: userId,
-      challenge_id: challengeId,
+): Promise<ServiceResponse<ChallengeAttempt>> => {
+  const result = await prisma.challengeAttempt.upsert({
+    where: {
+      userId_challengeId: {
+        userId: Number(userId),
+        challengeId: challengeId,
+      },
+    },
+    create: {
+      userId: Number(userId),
+      challengeId: challengeId,
       completed: correct,
       attempts: existingAttempts + 1,
       points_scored: correct ? points : 0,
-    });
+    },
+    update: {
+      userId: Number(userId),
+      challengeId: challengeId,
+      completed: correct,
+      attempts: existingAttempts + 1,
+      points_scored: correct ? points : 0,
+    },
+  });
 
-  return { data: data && data[0], error };
+  return { data: result, error: null };
 };

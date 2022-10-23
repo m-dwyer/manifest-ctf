@@ -38,4 +38,5 @@ model ChallengeAttempt {
   Challenge     Challenge @relation(fields: [challengeId], references: [id])
 
   @@id([userId, challengeId])
+  @@unique([userId, challengeId])
 }

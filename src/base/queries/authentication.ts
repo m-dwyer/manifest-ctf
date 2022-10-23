@@ -21,8 +21,6 @@ export const signUp = async (credentials: Signup) => {
 };
 
 export const login = async (csrfToken: string, credentials: Login) => {
-  console.log("creds: ", credentials);
-
   const result = await signIn("credentials", {
     email: credentials.email,
     password: credentials.password,

@@ -23,11 +23,6 @@ const Challenges: NextPage = () => {
     return <>Loading..</>;
   }
 
-  console.log(
-    "fetchChallengesByRangeQuery.data?: ",
-    fetchChallengesByRangeQuery.data
-  );
-
   return (
     <div className="flex flex-col mx-auto items-center">
       <div className="container bg-base-200 w-100 p-2">

@@ -63,9 +63,6 @@ export const fetchChallenges = async ({
     challenges: (Challenge & { challengeAttempt: ChallengeAttempt[] })[];
   }>
 > => {
-  console.log("skip: ", Math.max(rangeFrom - 1, 0));
-  console.log("take: ", count);
-
   const [total, challenges] = await prisma.$transaction([
     prisma.challenge.count(),
     prisma.challenge.findMany({
