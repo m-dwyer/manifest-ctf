@@ -24,7 +24,18 @@ model Challenge {
   description      String             @db.VarChar(255)
   flag             String             @db.VarChar(255)
   points           Int                @default(0) @db.Integer
+  categoryId       Int
+  category         Category           @relation(fields: [categoryId], references: [id])
   challengeAttempt ChallengeAttempt[]
+}
+
+model Category {
+  id         Int         @id @default(autoincrement())
+  created_at DateTime    @default(now())
+  name       String      @db.VarChar(255)
+  Challenge  Challenge[]
+
+  @@unique([name])
 }
 
 model ChallengeAttempt {

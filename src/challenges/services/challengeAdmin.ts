@@ -51,6 +51,21 @@ export const deleteChallenge = async (
   return { data: data && data[0], error };
 };
 
+export const fetchAllChallenges = async (): Promise<
+  ServiceResponse<(Challenge & { category: { name: string } })[]>
+> => {
+  const result = await prisma.challenge.findMany({
+    include: {
+      category: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+  return { data: result, error: null };
+};
+
 export const fetchChallenges = async ({
   rangeFrom,
   count,
