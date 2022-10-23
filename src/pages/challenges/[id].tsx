@@ -13,7 +13,6 @@ import { FieldValues } from "react-hook-form";
 import { InputField } from "@/common/components/InputField";
 import { Challenge, ChallengeAttempt } from "@prisma/client";
 import { getSession } from "next-auth/react";
-import { GoTrueClient } from "@supabase/supabase-js";
 
 type ChallengeWithFiles = Challenge &
   ChallengeAttempt & {

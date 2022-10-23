@@ -3,10 +3,11 @@ import nc from "next-connect";
 
 import { buildResponse } from "@/common/lib/ResponseBuilder";
 import { withValidation } from "@/common/lib/ApiValidator";
-import { Signup, SignupResponse, signupSchema } from "@/base/schemas/signup";
+import { Signup, signupSchema } from "@/base/schemas/signup";
 import { prisma } from "@/common/providers/prismaClient";
 
 import { ResponseWithData } from "@/common/types/ResponseWithData";
+import { User } from "@prisma/client";
 
 export default nc<NextApiRequest, NextApiResponse>({
   onError: (err, req, res, next) => {
@@ -18,7 +19,7 @@ export default nc<NextApiRequest, NextApiResponse>({
     signupSchema,
     async (
       req: NextApiRequest,
-      res: NextApiResponse<ResponseWithData<SignupResponse>>
+      res: NextApiResponse<ResponseWithData<User>>
     ) => {
       const signup = req.body as Signup;
 
@@ -36,9 +37,7 @@ export default nc<NextApiRequest, NextApiResponse>({
             buildResponse({ success: false, error: "something went wrong" })
           );
 
-      return res
-        .status(200)
-        .json(buildResponse({ success: true, data: { user } }));
+      return res.status(200).json(buildResponse({ success: true, data: user }));
     }
   )
 );

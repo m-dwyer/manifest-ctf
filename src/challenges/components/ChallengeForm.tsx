@@ -20,7 +20,9 @@ type ChallengeFormProps = {
 };
 
 const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
-  const existingChallenge = { ...challenge, category: challenge?.category?.id };
+  const existingChallenge = {
+    ...challenge,
+  };
 
   const [files, setFiles] = useState<File[]>([]);
   const [submitError, setSubmitError] = useState<string | null>();
@@ -96,14 +98,14 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
           cols={60}
         />
         <SelectField
-          name="category"
+          name="categoryId"
           options={fetchAllCategoriesQuery.data?.map((c) => ({
             label: c.name,
             value: String(c.id),
           }))}
           defaultValue={
             fetchAllCategoriesQuery.data?.find(
-              (c) => c.id === Number(existingChallenge.category)
+              (c) => c.id === Number(existingChallenge.categoryId)
             )?.id || "1"
           }
         />

@@ -1,58 +1,51 @@
-import { supabaseServiceClient } from "@/common/providers/supabaseServiceClient";
 import { prisma } from "@/common/providers/prismaClient";
 
-import {
-  BaseChallenge,
-  ChallengeToUpsert,
-  ChallengeWithCategories,
-  DeleteChallenge,
-} from "@/challenges/schemas/challenge";
+import { BaseChallenge, DeleteChallenge } from "@/challenges/schemas/challenge";
 import { ServiceResponse } from "@/common/types/ServiceResponse";
 import { Challenge, ChallengeAttempt } from "@prisma/client";
 
 export const upsertChallenge = async (
-  challenge: ChallengeToUpsert
-): Promise<ServiceResponse<ChallengeWithCategories>> => {
-  const { data: challengeData, error: challengeError } =
-    await supabaseServiceClient.from("challenges").upsert([challenge]).select(`
-          id,
-          name,
-          description,
-          flag,
-          points,
-          category(id, name)
-        `);
+  challenge: Challenge
+): Promise<ServiceResponse<Challenge>> => {
+  const { id, categoryId, ...challengeToUpsert } = challenge;
 
-  if (challengeError) {
-    return { data: null, error: challengeError };
+  if (categoryId === null) {
+    return { data: null, error: null };
   }
 
-  const upsertedChallenge: ChallengeWithCategories =
-    challengeData[0] as ChallengeWithCategories;
+  const result = await prisma.challenge.upsert({
+    where: { name: challenge.name },
+    update: {
+      ...challengeToUpsert,
+      category: {
+        connect: { id: Number(categoryId) },
+      },
+    },
+    create: {
+      ...challengeToUpsert,
+      category: {
+        connect: { id: Number(categoryId) },
+      },
+    },
+  });
 
-  const { data: categoryData, error: categoryError } =
-    await supabaseServiceClient
-      .from("challenge_categories")
-      .upsert([
-        { challenge: upsertedChallenge.id, category: challenge.category },
-      ]);
-
-  return { data: challengeData[0], error: challengeError };
+  return { data: result, error: null };
 };
 
 export const deleteChallenge = async (
   delChallenge: DeleteChallenge
 ): Promise<ServiceResponse<BaseChallenge>> => {
-  const { data, error } = await supabaseServiceClient
-    .from<BaseChallenge>("challenges")
-    .delete()
-    .match({ id: delChallenge.challenge });
+  const result = await prisma.challenge.delete({
+    where: {
+      id: delChallenge.challenge,
+    },
+  });
 
-  return { data: data && data[0], error };
+  return { data: result, error: null };
 };
 
 export const fetchAllChallenges = async (): Promise<
-  ServiceResponse<(Challenge & { category: { name: string } })[]>
+  ServiceResponse<(Challenge & { category: { name: string } | null })[]>
 > => {
   const result = await prisma.challenge.findMany({
     include: {
@@ -61,6 +54,9 @@ export const fetchAllChallenges = async (): Promise<
           name: true,
         },
       },
+    },
+    orderBy: {
+      id: "asc",
     },
   });
   return { data: result, error: null };

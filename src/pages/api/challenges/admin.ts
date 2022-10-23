@@ -16,6 +16,7 @@ import {
 } from "@/challenges/schemas/challenge";
 import { withValidation } from "@/common/lib/ApiValidator";
 import { ResponseWithData } from "@/common/types/ResponseWithData";
+import { Challenge } from "@prisma/client";
 
 export default nc<NextApiRequest, NextApiResponse>({
   onError: (err, req, res, next) => {
@@ -87,7 +88,7 @@ export default nc<NextApiRequest, NextApiResponse>({
         req: NextApiRequest,
         res: NextApiResponse<ResponseWithData<ChallengeWithCategories>>
       ) => {
-        const challengeToUpsert = req.body as ChallengeToUpsert;
+        const challengeToUpsert = req.body as Challenge;
         const { data, error } = await upsertChallenge(challengeToUpsert);
 
         if (error || data === null)

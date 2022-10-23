@@ -6,25 +6,24 @@ A modern CTF platform to help inquisitive minds learn & grow.
 
 ### Setup
 
-Recommended setup is to install the supabase cli from https://github.com/supabase/cli
-Then:
-```
-supabase init
-supabase start
-```
-And create a .env file, filing in the details from the supbase CLI output:
-```
+Create a .env file:
+```bash
 cp .env.example .env
 ```
 
-You should now be able to access Supabase Studio via http://localhost:54323/
-Likewise, when running (see below), the app can be access via http://localhost:3000/
-
-### Alternate Setup
-
-First, run supabase within docker compose along with inbucket for emails:
+And spin up the postgres based stack:
+```bash
+docker compose -f docker/docker-compose.yml up
 ```
-docker compose -f docker/docker-compose.yml -f docker/docker-compose.override.yml up
+
+You can now migrate the database:
+```bash
+yarn prisma:migrate
+```
+
+Now, seed the database:
+```bash
+yarn prisma:seed
 ```
 
 ### Running
@@ -41,8 +40,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Development
 
-To SQL dump from postgres container, in case you wish to persist db schema beyond docker volume
-or otherwise need to recreate the database
-```
-docker exec CONTAINER pg_dump -h localhost -U postgres -Fp > db.sql
+You can use Prisma Studio to query and update the database directly:
+```bash
+yarn prisma:studio
 ```
