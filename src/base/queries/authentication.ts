@@ -1,8 +1,7 @@
-import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 import { Login } from "@/base/schemas/login";
 import type { Signup, SignupResponse } from "@/base/schemas/signup";
 import { apiClient } from "@/common/providers/apiClient";
-import { getCsrfToken, signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 
 export const signUp = async (credentials: Signup) => {
   const result = await apiClient.post<SignupResponse>({
@@ -31,5 +30,5 @@ export const login = async (csrfToken: string, credentials: Login) => {
 };
 
 export const logout = () => {
-  supabaseClient.auth.signOut();
+  signOut();
 };
