@@ -21,25 +21,23 @@ export default nc<NextApiRequest, NextApiResponse>({
 }).post(async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { fields, files } = await parseForm(req);
-    const file = files.media;
+    const mediaFiles = files.media;
 
-    const savedFiles = Array.isArray(file)
-      ? file.map((f) => f.filepath)
-      : [file.filepath];
+    const savedFiles = Array.isArray(mediaFiles)
+      ? mediaFiles.map((f) => f)
+      : [mediaFiles];
 
-    console.log("url: ", files);
+    savedFiles.forEach(async (f) => {
+      const fsFile = await fs.readFile(f.filepath);
 
-    savedFiles.forEach(async (u) => {
-      const fsFile = await fs.readFile(u);
-
-      const result = await prisma.files.create({
+      const result = await prisma.storage.create({
         data: {
-          path: "/foo",
+          bucket: fields.bucket[0],
+          path: fields.path[0],
+          mimeType: f.mimetype || "application/octet-stream",
           data: fsFile,
         },
       });
-
-      console.log("result: ", result);
     });
 
     return res.status(200).json({

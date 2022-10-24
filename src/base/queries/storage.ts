@@ -8,6 +8,8 @@ export const uploadFileToBucket = async (upload: Upload) => {
   console.log("do the thing!: ", upload);
 
   const data = new FormData();
+  data.append("bucket", upload.bucket);
+  data.append("path", upload.filePath);
   data.append("media", upload.file);
 
   const result = await apiClient.post({
