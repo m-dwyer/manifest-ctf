@@ -13,6 +13,7 @@ import { FieldValues } from "react-hook-form";
 import { InputField } from "@/common/components/InputField";
 import { Challenge, ChallengeAttempt } from "@prisma/client";
 import { getSession } from "next-auth/react";
+import path from "path";
 
 type ChallengeWithFiles = Challenge &
   ChallengeAttempt & {
@@ -131,9 +132,22 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   // TODO: Find challenge files for this challenge!
+  const challengeFiles = await prisma.storage.findMany({
+    where: {
+      bucket: "challenge_files",
+      path: {
+        startsWith: result.name.replace(/\s/g, "_"),
+      },
+    },
+  });
+
+  const files = challengeFiles.map((cf) => {
+    const publicUrl = `/api/files/download?bucket=challenge_files&path=${cf.path}`;
+    return { fileName: path.basename(cf.path), publicUrl: publicUrl };
+  });
 
   return {
-    props: { challenge: { files: [], ...result } },
+    props: { challenge: { files: files, ...result } },
   };
 }
 
