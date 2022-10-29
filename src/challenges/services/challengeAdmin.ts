@@ -65,9 +65,11 @@ export const fetchAllChallenges = async (): Promise<
 export const fetchChallenges = async ({
   rangeFrom,
   count,
+  userId,
 }: {
   rangeFrom: number;
   count: number;
+  userId: number;
 }): Promise<
   ServiceResponse<{
     total: number;
@@ -80,7 +82,7 @@ export const fetchChallenges = async ({
       include: {
         challengeAttempt: {
           where: {
-            userId: 1,
+            userId: userId,
           },
         },
       },
