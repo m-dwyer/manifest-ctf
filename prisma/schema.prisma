@@ -38,6 +38,7 @@ model Challenge {
   categoryId       Int
   category         Category           @relation(fields: [categoryId], references: [id])
   challengeAttempt ChallengeAttempt[]
+  deleted          DateTime?
 }
 
 model Category {
