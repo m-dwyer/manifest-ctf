@@ -28,10 +28,16 @@ const defaultOptions = {
 
 export const request = async <TResultType>({ url, options }: QueryOptions) => {
   let fetchOptions: FetchOptions | null = null;
+
+  const definedOptions = { ...options };
+  (Object.keys(definedOptions) as (keyof typeof definedOptions)[]).forEach(
+    (key) => definedOptions[key] === undefined && delete definedOptions[key]
+  );
+
   if (options) {
     fetchOptions = {
       ...defaultOptions,
-      ...options,
+      ...(definedOptions as NonNullable<FetchOptions>),
     };
   }
 
