@@ -4,7 +4,7 @@ import { fetchChallenges } from "@/challenges/services/challengeAdmin";
 import { buildResponse } from "@/common/lib/ResponseBuilder";
 import { ChallengeWithCompletion } from "@/challenges/schemas/challenge";
 import { withValidation } from "@/common/lib/ApiValidator";
-import { ResponseWithData } from "@/common/types/ResponseWithData";
+import { ResponseWithData } from "@/common/dto/ResponseWithData";
 import { Challenge, ChallengeAttempt } from "@prisma/client";
 import { NextAuthOptions, Session, unstable_getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";

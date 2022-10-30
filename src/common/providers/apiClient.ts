@@ -1,5 +1,5 @@
 import { request } from "@/common/queries/baseRequest";
-import { ResponseWithData } from "@/common/types/ResponseWithData";
+import { ResponseWithData } from "@/common/dto/ResponseWithData";
 
 type BaseApiClientOptions = {
   url: string;

@@ -5,8 +5,8 @@ import { Form } from "@/common/components/Form";
 import { InputField } from "@/common/components/InputField";
 import { FieldValues } from "react-hook-form";
 import { login } from "@/base/queries/authentication";
-import { loginSchema } from "@/base/schemas/login";
-import type { Login } from "@/base/schemas/login";
+import { loginSchema } from "@/base/dto/login";
+import type { Login } from "@/base/dto/login";
 
 import { useSession, signIn } from "next-auth/react";
 

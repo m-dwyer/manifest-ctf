@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { ResponseWithData } from "@/common/types/ResponseWithData";
+import { ResponseWithData } from "@/common/dto/ResponseWithData";
 import { apiClient } from "@/common/providers/apiClient";
 import {
   ChallengeToUpsert,

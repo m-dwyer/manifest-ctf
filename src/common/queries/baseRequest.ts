@@ -1,4 +1,4 @@
-import { ResponseWithData } from "@/common/types/ResponseWithData";
+import { ResponseWithData } from "@/common/dto/ResponseWithData";
 
 type FetchMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 

@@ -1,5 +1,5 @@
-import { Login } from "@/base/schemas/login";
-import type { Signup } from "@/base/schemas/signup";
+import { Login } from "@/base/dto/Login";
+import type { Signup } from "@/base/dto/Signup";
 import { apiClient } from "@/common/providers/apiClient";
 import { User } from "@prisma/client";
 import { signIn, signOut } from "next-auth/react";
@@ -20,7 +20,7 @@ export const signUp = async (credentials: Signup) => {
   };
 };
 
-export const login = async (csrfToken: string, credentials: Login) => {
+export const login = async (credentials: Login) => {
   const result = await signIn("credentials", {
     email: credentials.email,
     password: credentials.password,

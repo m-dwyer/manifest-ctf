@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import nc from "next-connect";
 import { fetchAllCategories } from "@/challenges/services/categoryAdmin";
 import { buildResponse } from "@/common/lib/ResponseBuilder";
-import { ResponseWithData } from "@/common/types/ResponseWithData";
+import { ResponseWithData } from "@/common/dto/ResponseWithData";
 import { Category } from "@prisma/client";
 
 export default nc<NextApiRequest, NextApiResponse>({

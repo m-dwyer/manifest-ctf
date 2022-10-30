@@ -5,8 +5,8 @@ import { Form } from "@/common/components/Form";
 import { InputField } from "@/common/components/InputField";
 import { useRouter } from "next/router";
 import { FieldValues } from "react-hook-form";
-import { signupSchema } from "@/base/schemas/signup";
-import type { Signup } from "@/base/schemas/signup";
+import { signupSchema } from "@/base/dto/signup";
+import type { Signup } from "@/base/dto/signup";
 
 const SignupForm = () => {
   const [error, setError] = useState<string | null>(null);

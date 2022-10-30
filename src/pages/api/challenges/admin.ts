@@ -15,7 +15,7 @@ import {
   deleteChallengeSchema,
 } from "@/challenges/schemas/challenge";
 import { withValidation } from "@/common/lib/ApiValidator";
-import { ResponseWithData } from "@/common/types/ResponseWithData";
+import { ResponseWithData } from "@/common/dto/ResponseWithData";
 import { Challenge } from "@prisma/client";
 
 export default nc<NextApiRequest, NextApiResponse>({

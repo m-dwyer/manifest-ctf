@@ -11,8 +11,8 @@ jest.mock("@/common/providers/apiClient", () => ({
   post: null,
 }));
 import * as apiClientHelper from "@/common/providers/apiClient";
-import { ResponseWithData } from "@/common/types/ResponseWithData";
-import { SignupResponse } from "../schemas/signup";
+import { ResponseWithData } from "@/common/dto/ResponseWithData";
+import { SignupResponse } from "../dto/Signup";
 
 describe("authentication", () => {
   it("successfully signs up", async () => {

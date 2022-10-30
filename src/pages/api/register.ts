@@ -3,14 +3,16 @@ import nc from "next-connect";
 
 import { buildResponse } from "@/common/lib/ResponseBuilder";
 import { withValidation } from "@/common/lib/ApiValidator";
-import { Signup, signupSchema } from "@/base/schemas/signup";
-import { prisma } from "@/common/providers/prismaClient";
+import { Signup, signupSchema } from "@/base/dto/Signup";
+import { ResponseWithData } from "@/common/dto/ResponseWithData";
 
-import { ResponseWithData } from "@/common/types/ResponseWithData";
+import { prisma } from "@/common/providers/prismaClient";
 import { User } from "@prisma/client";
 
+import * as bcrypt from "bcrypt";
+
 export default nc<NextApiRequest, NextApiResponse>({
-  onError: (err, req, res, next) => {
+  onError: (err, req, res) => {
     console.error(err.stack);
     res.status(500).json(buildResponse({ success: false, error: err.message }));
   },
@@ -23,10 +25,12 @@ export default nc<NextApiRequest, NextApiResponse>({
     ) => {
       const signup = req.body as Signup;
 
+      const hashedPassword = bcrypt.hashSync(signup.password, 10);
+
       const user = await prisma.user.create({
         data: {
           email: signup.email,
-          password: signup.password,
+          password: hashedPassword,
         },
       });
 
@@ -34,7 +38,7 @@ export default nc<NextApiRequest, NextApiResponse>({
         return res
           .status(401)
           .json(
-            buildResponse({ success: false, error: "something went wrong" })
+            buildResponse({ success: false, error: "Something went wrong" })
           );
 
       return res.status(200).json(buildResponse({ success: true, data: user }));

@@ -11,7 +11,7 @@ import { useFetchAllCategories } from "@/challenges/queries/categories";
 import { FieldValues } from "react-hook-form";
 import { challengeToUpsertSchema } from "@/challenges/schemas/challenge";
 import type { ChallengeToUpsert } from "@/challenges/schemas/challenge";
-import { Upload } from "@/base/schemas/upload";
+import { Upload } from "@/base/dto/Upload";
 import { Challenge } from "@prisma/client";
 
 type ChallengeFormProps = {

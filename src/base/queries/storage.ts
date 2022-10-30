@@ -1,11 +1,9 @@
-import { Upload } from "@/base/schemas/upload";
+import { Upload } from "@/base/dto/Upload";
 
 import { apiClient } from "@/common/providers/apiClient";
 
 export const uploadFileToBucket = async (upload: Upload) => {
   const { error } = { error: "unimplemented" };
-
-  console.log("do the thing!: ", upload);
 
   const data = new FormData();
   data.append("bucket", upload.bucket);
