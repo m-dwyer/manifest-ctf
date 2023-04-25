@@ -5,8 +5,8 @@ import { Form } from "@/common/components/Form";
 import { InputField } from "@/common/components/InputField";
 import { FieldValues } from "react-hook-form";
 import { login } from "@/base/queries/authentication";
-import { loginSchema } from "@/base/dto/login";
-import type { Login } from "@/base/dto/login";
+import { loginSchema } from "@/base/dto/Login";
+import type { Login } from "@/base/dto/Login";
 
 import { useSession, signIn } from "next-auth/react";
 
@@ -19,7 +19,7 @@ const LoginForm = ({ csrfToken }: LoginFormProps) => {
   const router = useRouter();
 
   const handleLogin = async (data: FieldValues) => {
-    const { error } = await login(csrfToken, data as Login);
+    const { error } = await login(data as Login);
 
     if (error) {
       setError(error);
