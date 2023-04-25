@@ -4,17 +4,11 @@ import "@testing-library/jest-dom";
 import singletonRouter from "next/router";
 import { act } from "react-test-renderer";
 
-jest.mock("@/base/queries/authentication", () => ({
+jest.mock("next-auth/react", () => ({
   __esModule: true,
-  logout: null,
+  signOut: jest.fn(),
 }));
-import * as auth from "@/base/queries/authentication";
-
-jest.mock("@supabase/auth-helpers-react", () => ({
-  __esModule: true,
-  useUser: null,
-}));
-import * as authHelper from "@supabase/auth-helpers-react";
+import * as nextAuthReact from "next-auth/react";
 
 /**
  * @group unit
@@ -22,20 +16,27 @@ import * as authHelper from "@supabase/auth-helpers-react";
  */
 describe("ProfileDropdown", () => {
   it("renders", () => {
-    const mockUseUser = authHelper as { useUser: unknown };
-    mockUseUser.useUser = () => ({ user: { email: "user@example.com" } });
+    const mockSession = {
+      expires: new Date(Date.now() + 2 * 86400).toISOString(),
+      user: { email: "user@example.com", id: "1" },
+    };
 
-    render(<ProfileDropdown />);
+    render(<ProfileDropdown session={mockSession} />);
 
     const userEmailText = screen.getByText("user@example.com");
     expect(userEmailText).toBeInTheDocument();
   });
 
   it("successfully logs out", async () => {
-    const mockLogout = auth as { logout: unknown };
-    mockLogout.logout = jest.fn();
+    const mockSession = {
+      expires: new Date(Date.now() + 2 * 86400).toISOString(),
+      user: { email: "user@example.com", id: "1" },
+    };
 
-    render(<ProfileDropdown />);
+    const mockNextAuthReact = nextAuthReact as { signOut: unknown };
+    mockNextAuthReact.signOut = jest.fn();
+
+    render(<ProfileDropdown session={mockSession} />);
 
     const logoutLink = screen.getByText("Logout");
 
@@ -44,7 +45,7 @@ describe("ProfileDropdown", () => {
     });
 
     await waitFor(() => {
-      expect(mockLogout.logout).toBeCalled();
+      expect(mockNextAuthReact.signOut).toBeCalled();
       expect(singletonRouter).toMatchObject({ asPath: "/" });
     });
   });

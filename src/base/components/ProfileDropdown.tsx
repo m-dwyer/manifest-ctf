@@ -1,8 +1,6 @@
 import Link from "next/link";
 
-import { logout } from "@/base/queries/authentication";
 import { Session } from "next-auth";
-
 import { signOut } from "next-auth/react";
 
 type ProfileDropdownProps = {
