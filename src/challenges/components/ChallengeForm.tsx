@@ -95,6 +95,7 @@ const ChallengeForm = ({ challenge, handleDismiss }: ChallengeFormProps) => {
         />
         <SelectField
           name="categoryId"
+          label="category"
           options={fetchAllCategoriesQuery.data?.map((c) => ({
             label: c.name,
             value: String(c.id),

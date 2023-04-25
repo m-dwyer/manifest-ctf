@@ -29,6 +29,7 @@ jest.mock("@/base/queries/storage", () => ({
 import * as storageQuery from "@/base/queries/storage";
 
 import { act } from "react-test-renderer";
+import { Challenge } from "@prisma/client";
 
 /**
  * @group unit
@@ -51,12 +52,15 @@ describe("ChallengeForm", () => {
     };
     mockChallengesQuery.useUpsertChallenge = () => ({ mutate: jest.fn() });
 
-    const challenge: ChallengeWithCategories = {
+    const challenge: Challenge = {
+      id: 1,
+      created_at: new Date(),
+      deleted: null,
       name: "My cool crypto challenge",
       description: "Can you decipher the text?",
       flag: "7h3_fl4g_15_h3r3",
       points: 123,
-      category: { id: 1, name: "Cryptography" },
+      categoryId: 1,
     };
 
     render(<ChallengeForm challenge={challenge} handleDismiss={() => {}} />);
@@ -197,7 +201,7 @@ describe("ChallengeForm", () => {
           id: undefined,
           name: "My cool challenge",
           description: "My challenge description",
-          category: "1",
+          categoryId: "1",
           flag: "7h15_15_my_fl4g",
           points: 100,
         },
