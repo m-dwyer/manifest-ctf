@@ -8,8 +8,6 @@ import { login } from "@/base/queries/authentication";
 import { loginSchema } from "@/base/dto/Login";
 import type { Login } from "@/base/dto/Login";
 
-import { useSession, signIn } from "next-auth/react";
-
 type LoginFormProps = {
   csrfToken: string;
 };

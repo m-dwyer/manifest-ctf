@@ -16,7 +16,7 @@ import * as auth from "@/base/queries/authentication";
  */
 describe("LoginForm", () => {
   it("renders", () => {
-    render(<LoginForm />);
+    render(<LoginForm csrfToken="my_token" />);
 
     const emailInput = screen.getByLabelText("email");
     const passwordInput = screen.getByLabelText("password");
@@ -31,7 +31,7 @@ describe("LoginForm", () => {
     const mockAuth = auth as { login: unknown };
     mockAuth.login = () => ({ error: null });
 
-    render(<LoginForm />);
+    render(<LoginForm csrfToken="my_token" />);
 
     const emailInput = screen.getByLabelText("email");
     const passwordInput = screen.getByLabelText("password");
@@ -50,7 +50,7 @@ describe("LoginForm", () => {
 
   it("displays an error as required", async () => {
     const mockAuth = auth as { login: unknown };
-    mockAuth.login = () => ({ error: { message: "something went wrong" } });
+    mockAuth.login = () => ({ error: "something went wrong" });
 
     render(<LoginForm />);
 
