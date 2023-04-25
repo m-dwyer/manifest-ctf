@@ -2,6 +2,8 @@ import ChallengeCard from "@/challenges/components/ChallengeCard";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { ChallengeWithCompletion } from "@/challenges/schemas/challenge";
+import { Challenge, ChallengeAttempt } from "@prisma/client";
+import "@testing-library/jest-dom";
 
 /**
  * @group unit
@@ -9,15 +11,23 @@ import { ChallengeWithCompletion } from "@/challenges/schemas/challenge";
  */
 describe("ChallengeCard", () => {
   it("renders", () => {
-    const challenge: ChallengeWithCompletion = {
+    const challenge: Challenge & { challengeAttempt: ChallengeAttempt[] } = {
+      id: 1,
+      created_at: new Date(),
       name: "My cool crypto challenge",
       description: "Can you decipher the text?",
       flag: "7h3_fl4g_15_h3r3",
       points: 123,
-      challenge_attempts: [
+      categoryId: 123,
+      deleted: null,
+      challengeAttempt: [
         {
           completed: false,
           attempts: 1,
+          created_at: new Date(),
+          challengeId: 1,
+          userId: 1,
+          points_scored: 1,
         },
       ],
     };
@@ -36,15 +46,23 @@ describe("ChallengeCard", () => {
   });
 
   it("renders with completion", () => {
-    const challenge: ChallengeWithCompletion = {
+    const challenge: Challenge & { challengeAttempt: ChallengeAttempt[] } = {
+      id: 1,
+      created_at: new Date(),
       name: "My cool crypto challenge",
-      category: "Cryptography",
       description: "Can you decipher the text?",
       flag: "7h3_fl4g_15_h3r3",
       points: 123,
-      challenge_attempts: [
+      categoryId: 123,
+      deleted: null,
+      challengeAttempt: [
         {
           completed: true,
+          attempts: 1,
+          created_at: new Date(),
+          challengeId: 1,
+          userId: 1,
+          points_scored: 1,
         },
       ],
     };
@@ -57,15 +75,23 @@ describe("ChallengeCard", () => {
   });
 
   it("it does not reveal the flag", () => {
-    const challenge: ChallengeWithCompletion = {
+    const challenge: Challenge & { challengeAttempt: ChallengeAttempt[] } = {
+      id: 1,
+      created_at: new Date(),
       name: "My cool crypto challenge",
-      category: "Cryptography",
       description: "Can you decipher the text?",
       flag: "7h3_fl4g_15_h3r3",
       points: 123,
-      challenge_attempts: [
+      categoryId: 123,
+      deleted: null,
+      challengeAttempt: [
         {
           completed: true,
+          attempts: 1,
+          created_at: new Date(),
+          challengeId: 1,
+          userId: 1,
+          points_scored: 1,
         },
       ],
     };
