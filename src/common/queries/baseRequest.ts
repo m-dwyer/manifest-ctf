@@ -1,4 +1,4 @@
-import { ResponseWithData } from "@/common/types/ResponseWithData";
+import { ResponseWithData } from "@/common/dto/ResponseWithData";
 
 type FetchMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
@@ -28,10 +28,16 @@ const defaultOptions = {
 
 export const request = async <TResultType>({ url, options }: QueryOptions) => {
   let fetchOptions: FetchOptions | null = null;
+
+  const definedOptions = { ...options };
+  (Object.keys(definedOptions) as (keyof typeof definedOptions)[]).forEach(
+    (key) => definedOptions[key] === undefined && delete definedOptions[key]
+  );
+
   if (options) {
     fetchOptions = {
       ...defaultOptions,
-      ...options,
+      ...(definedOptions as NonNullable<FetchOptions>),
     };
   }
 
@@ -40,12 +46,14 @@ export const request = async <TResultType>({ url, options }: QueryOptions) => {
   try {
     response = fetchOptions ? await fetch(url, fetchOptions) : await fetch(url);
   } catch (error) {
+    console.log("error: ", error);
     throw new Error("Network request error");
   }
 
   try {
     result = await response.json();
   } catch (error) {
+    console.log("error: ", error);
     throw new Error("Error with response");
   }
 

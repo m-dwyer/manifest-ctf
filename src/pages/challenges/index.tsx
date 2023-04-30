@@ -13,11 +13,10 @@ const Challenges: NextPage = () => {
   const currentPage: number = Number(query.page) || 1;
 
   const [rangeBegin, setRangeBegin] = useState(0);
-  const [rangeEnd, setRangeEnd] = useState(PAGE_LIMIT - 1);
 
   const fetchChallengesByRangeQuery = useFetchChallengesByRange({
     rangeBegin,
-    rangeEnd,
+    rangeCount: PAGE_LIMIT,
   });
 
   if (fetchChallengesByRangeQuery.isLoading) {
@@ -41,7 +40,6 @@ const Challenges: NextPage = () => {
       <Pagination
         current={currentPage}
         setFrom={setRangeBegin}
-        setTo={setRangeEnd}
         pathName="/challenges"
         total={fetchChallengesByRangeQuery.data?.count || 0}
         perPage={PAGE_LIMIT}

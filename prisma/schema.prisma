@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                Int                @id @default(autoincrement())
+  email             String             @unique @db.VarChar(255)
+  password          String             @db.VarChar(255)
+  challengeAttempts ChallengeAttempt[]
+}
+
+model Storage {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  bucket    String   @db.VarChar(255)
+  path      String   @unique @db.VarChar(255)
+  mimeType  String   @db.VarChar(50)
+  data      Bytes
+
+  @@unique([bucket, path])
+}
+
+model Challenge {
+  id               Int                @id @default(autoincrement())
+  created_at       DateTime           @default(now())
+  name             String             @unique @db.VarChar(255)
+  description      String             @db.VarChar(255)
+  flag             String             @db.VarChar(255)
+  points           Int                @default(0) @db.Integer
+  categoryId       Int
+  category         Category           @relation(fields: [categoryId], references: [id])
+  challengeAttempt ChallengeAttempt[]
+  deleted          DateTime?
+}
+
+model Category {
+  id         Int         @id @default(autoincrement())
+  created_at DateTime    @default(now())
+  name       String      @db.VarChar(255)
+  Challenge  Challenge[]
+
+  @@unique([name])
+}
+
+model ChallengeAttempt {
+  created_at    DateTime  @default(now())
+  challengeId   Int
+  user          User      @relation(fields: [userId], references: [id])
+  userId        Int
+  attempts      Int       @default(0)
+  completed     Boolean   @default(false)
+  points_scored Int       @default(0)
+  Challenge     Challenge @relation(fields: [challengeId], references: [id])
+
+  @@id([userId, challengeId])
+  @@unique([userId, challengeId])
+}

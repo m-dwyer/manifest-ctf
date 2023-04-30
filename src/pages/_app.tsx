@@ -1,18 +1,18 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 
-import { UserProvider } from "@supabase/auth-helpers-react";
-import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+import { SessionProvider } from "next-auth/react";
 
 import Layout from "@/base/components/Layout";
 import ErrorBoundary from "@/common/components/ErrorBoundary";
 
 const queryClient = new QueryClient();
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
-    <UserProvider supabaseClient={supabaseClient}>
+    <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
         <Layout>
           <ErrorBoundary>
@@ -20,7 +20,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           </ErrorBoundary>
         </Layout>
       </QueryClientProvider>
-    </UserProvider>
+    </SessionProvider>
   );
 }
 

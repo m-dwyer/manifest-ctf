@@ -1,13 +1,11 @@
-import { supabaseServiceClient } from "@/common/providers/supabaseServiceClient";
-import { ChallengeCategory } from "@/challenges/schemas/challengeCategory";
 import { ServiceResponse } from "@/common/types/ServiceResponse";
+import { prisma } from "@/common/providers/prismaClient";
+import { Category } from "@prisma/client";
 
 export const fetchAllCategories = async (): Promise<
-  ServiceResponse<ChallengeCategory[]>
+  ServiceResponse<Category[]>
 > => {
-  const { data, error } = await supabaseServiceClient
-    .from<ChallengeCategory>("categories")
-    .select("id, name");
+  const result = await prisma.category.findMany();
 
-  return { data, error };
+  return { data: result, error: null };
 };

@@ -1,6 +1,4 @@
-import { PostgrestError } from "@supabase/supabase-js";
-
 export type ServiceResponse<T> = {
-  error: PostgrestError | null;
+  error: string | null;
   data: T | null;
 };

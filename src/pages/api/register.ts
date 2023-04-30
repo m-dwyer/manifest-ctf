@@ -3,12 +3,16 @@ import nc from "next-connect";
 
 import { buildResponse } from "@/common/lib/ResponseBuilder";
 import { withValidation } from "@/common/lib/ApiValidator";
-import { Signup, SignupResponse, signupSchema } from "@/base/schemas/signup";
-import { supabaseServiceClient } from "@/common/providers/supabaseServiceClient";
-import { ResponseWithData } from "@/common/types/ResponseWithData";
+import { Signup, signupSchema } from "@/base/dto/Signup";
+import { ResponseWithData } from "@/common/dto/ResponseWithData";
+
+import { prisma } from "@/common/providers/prismaClient";
+import { User } from "@prisma/client";
+
+import * as bcrypt from "bcrypt";
 
 export default nc<NextApiRequest, NextApiResponse>({
-  onError: (err, req, res, next) => {
+  onError: (err, req, res) => {
     console.error(err.stack);
     res.status(500).json(buildResponse({ success: false, error: err.message }));
   },
@@ -17,23 +21,27 @@ export default nc<NextApiRequest, NextApiResponse>({
     signupSchema,
     async (
       req: NextApiRequest,
-      res: NextApiResponse<ResponseWithData<SignupResponse>>
+      res: NextApiResponse<ResponseWithData<User>>
     ) => {
       const signup = req.body as Signup;
 
-      const { user, session, error } = await supabaseServiceClient.auth.signUp({
-        email: signup.email,
-        password: signup.password,
+      const hashedPassword = bcrypt.hashSync(signup.password, 10);
+
+      const user = await prisma.user.create({
+        data: {
+          email: signup.email,
+          password: hashedPassword,
+        },
       });
 
-      if (error)
+      if (!user)
         return res
           .status(401)
-          .json(buildResponse({ success: false, error: error.message }));
+          .json(
+            buildResponse({ success: false, error: "Something went wrong" })
+          );
 
-      return res
-        .status(200)
-        .json(buildResponse({ success: true, data: { user, session, error } }));
+      return res.status(200).json(buildResponse({ success: true, data: user }));
     }
   )
 );

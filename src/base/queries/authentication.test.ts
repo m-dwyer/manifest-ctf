@@ -1,18 +1,23 @@
-import * as auth from "@/base/queries/authentication";
+import * as nextAuthReact from "next-auth/react";
+const mockNextAuthHelper = nextAuthReact as {
+  signIn: unknown;
+  signOut: unknown;
+};
 
-jest.mock("@supabase/auth-helpers-nextjs", () => ({
-  __esModule: true,
-  signUp: null,
-}));
-import * as authHelper from "@supabase/auth-helpers-nextjs";
+mockNextAuthHelper.signIn = jest.fn();
+mockNextAuthHelper.signOut = jest.fn();
+
+import * as auth from "@/base/queries/authentication";
 
 jest.mock("@/common/providers/apiClient", () => ({
   __esModule: true,
   post: null,
 }));
+
 import * as apiClientHelper from "@/common/providers/apiClient";
-import { ResponseWithData } from "@/common/types/ResponseWithData";
-import { SignupResponse } from "../schemas/signup";
+import { ResponseWithData } from "@/common/dto/ResponseWithData";
+import { SignupResponse } from "@/base/dto/Signup";
+import { expect, jest } from "@jest/globals";
 
 describe("authentication", () => {
   it("successfully signs up", async () => {
@@ -21,9 +26,9 @@ describe("authentication", () => {
     const mockSignUp = jest.fn(
       () =>
         ({
+          success: true,
           data: {
             user: { email: "foo@bar.com" },
-            session: { refresh_token: "abcd" },
           },
         } as ResponseWithData<SignupResponse>)
     );
@@ -39,42 +44,51 @@ describe("authentication", () => {
     });
 
     expect(result).toMatchObject({
-      user: { email: "foo@bar.com" },
-      session: { refresh_token: "abcd" },
+      success: true,
+      data: { user: { email: "foo@bar.com" } },
+      error: undefined,
     });
   });
 
   it("successfully logs in", async () => {
-    const mockAuthHelper = authHelper as { supabaseClient: unknown };
-    const mockSignIn = jest.fn(() => ({
-      error: null,
+    mockNextAuthHelper.signIn = jest.fn(() => ({
+      status: 200,
+      ok: true,
     }));
-
-    mockAuthHelper.supabaseClient = {
-      auth: {
-        signIn: mockSignIn,
-      },
-    };
 
     const result = await auth.login({
       email: "foo@bar.com",
       password: "MyPassword1!",
     });
-    expect(result).toMatchObject({ error: null });
-    expect(mockSignIn).toBeCalled();
+    expect(result).toMatchObject({
+      success: true,
+      data: { status: 200, ok: true },
+    });
+    expect(mockNextAuthHelper.signIn).toBeCalled();
   });
 
   it("successfully logs out", async () => {
-    const mockAuthHelper = authHelper as { supabaseClient: unknown };
-    const mockSignOut = jest.fn();
-    mockAuthHelper.supabaseClient = {
-      auth: {
-        signOut: mockSignOut,
-      },
-    };
-
     const result = await auth.logout();
     expect(result).toBeUndefined();
-    expect(mockSignOut).toBeCalled();
+    expect(mockNextAuthHelper.signOut).toBeCalled();
+  });
+
+  it("returns an error on unsuccessful login", async () => {
+    mockNextAuthHelper.signIn = jest.fn(() => ({
+      status: 401,
+      ok: false,
+      error: "CredentialsSignin",
+    }));
+
+    const result = await auth.login({
+      email: "foo@bar.com",
+      password: "MyPassword1!",
+    });
+    expect(result).toMatchObject({
+      success: false,
+      error: "Invalid credentials",
+      data: { status: 401, ok: false },
+    });
+    expect(mockNextAuthHelper.signIn).toBeCalled();
   });
 });

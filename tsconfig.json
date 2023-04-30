@@ -11,7 +11,8 @@
       "@/services/*": ["services/*"],
       "@/styles/*": ["styles/*"],
       "@/test/*": ["test/*"],
-      "@/types/*": ["types/*"]
+      "@/types/*": ["types/*"],
+      "@/api/*": ["pages/api/*"]
     },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],

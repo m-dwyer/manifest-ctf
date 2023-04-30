@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { supabaseServerClient } from "@supabase/auth-helpers-nextjs";
 import { GetServerSidePropsContext } from "next/types";
 import Link from "next/link";
 
-import { ChallengeWithCategories } from "@/challenges/schemas/challenge";
+import { prisma } from "@/common/providers/prismaClient";
+
 import Modal from "@/common/components/Modal";
 import { useSubmitAttempt } from "@/challenges/queries/submissions";
 import { useQueryClient } from "@tanstack/react-query";
@@ -11,10 +11,14 @@ import { Submission, submissionSchema } from "@/challenges/schemas/submission";
 import { Form } from "@/common/components/Form";
 import { FieldValues } from "react-hook-form";
 import { InputField } from "@/common/components/InputField";
+import { Challenge, ChallengeAttempt } from "@prisma/client";
+import { getSession } from "next-auth/react";
+import path from "path";
 
-type ChallengeWithFiles = ChallengeWithCategories & {
-  files: [{ fileName: string; publicUrl: string }];
-};
+type ChallengeWithFiles = Challenge &
+  ChallengeAttempt & {
+    files?: [{ fileName: string; publicUrl: string }];
+  };
 
 const ChallengePage = ({ challenge }: { challenge: ChallengeWithFiles }) => {
   const [modalState, setModalState] = useState<{
@@ -87,9 +91,11 @@ const ChallengePage = ({ challenge }: { challenge: ChallengeWithFiles }) => {
 };
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const challengeId: string = context.params?.id as string;
+  const challengeId = Number(context.params?.id);
 
-  if (!challengeId) {
+  const session = await getSession({ req: context.req });
+
+  if (!challengeId || session === null) {
     context.res.setHeader("Location", "/challenges");
     context.res.statusCode = 302;
     context.res.end();
@@ -98,14 +104,25 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-  const { data } = await supabaseServerClient(context)
-    .from<{ id: string; name: string; description: string }>("challenges")
-    .select("id, name, description")
-    .eq("id", challengeId)
-    .limit(1)
-    .single();
+  const result = await prisma.challenge.findFirst({
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      flag: true,
+      challengeAttempt: {
+        where: {
+          challengeId: challengeId,
+          userId: Number(session?.user?.id),
+        },
+      },
+    },
+    where: {
+      id: challengeId,
+    },
+  });
 
-  if (data === null) {
+  if (result === null) {
     context.res.setHeader("Location", "/");
     context.res.statusCode = 302;
     context.res.end();
@@ -114,25 +131,23 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-  const { data: fileList, error } = await supabaseServerClient(context)
-    .storage.from("challenge_files")
-    .list(`${data.name.replace(/\s/g, "_")}`, {
-      sortBy: { column: "name", order: "asc" },
-    });
-
-  const publicUrlPromises = Array.from(fileList || []).map(async (f) => {
-    const file = await supabaseServerClient(context)
-      .storage.from("challenge_files")
-      .getPublicUrl(`${data.name.replace(/\s/g, "_")}/${f.name}`);
-    return { fileName: f.name, publicUrl: file.data?.publicURL };
+  // TODO: Find challenge files for this challenge!
+  const challengeFiles = await prisma.storage.findMany({
+    where: {
+      bucket: "challenge_files",
+      path: {
+        startsWith: result.name.replace(/\s/g, "_"),
+      },
+    },
   });
 
-  const fileUrls = await (
-    await Promise.all(publicUrlPromises)
-  ).map((r) => ({ fileName: r.fileName, publicUrl: r.publicUrl }));
+  const files = challengeFiles.map((cf) => {
+    const publicUrl = `/api/files/download?bucket=challenge_files&path=${cf.path}`;
+    return { fileName: path.basename(cf.path), publicUrl: publicUrl };
+  });
 
   return {
-    props: { challenge: { files: fileUrls, ...data } },
+    props: { challenge: { files: files, ...result } },
   };
 }
 

@@ -1,5 +1,4 @@
-import { User } from "@supabase/auth-helpers-nextjs";
-import { ApiError, Session } from "@supabase/supabase-js";
+import { User } from "@prisma/client";
 import { z } from "zod";
 
 export const signupSchema = z
@@ -16,6 +15,4 @@ export type Signup = z.infer<typeof signupSchema>;
 
 export type SignupResponse = {
   user: User | null;
-  session: Session | null;
-  error: ApiError | null;
 };

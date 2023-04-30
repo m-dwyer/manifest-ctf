@@ -14,7 +14,7 @@ export type BaseChallenge = z.infer<typeof baseChallengeSchema>;
 
 export const challengeToUpsertSchema = baseChallengeSchema.and(
   z.object({
-    category: z.string().min(1),
+    categoryId: z.string().min(1),
   })
 );
 export type ChallengeToUpsert = z.infer<typeof challengeToUpsertSchema>;

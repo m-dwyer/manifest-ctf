@@ -1,8 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { supabaseClient } from "@supabase/auth-helpers-nextjs";
-
-import { ResponseWithData } from "@/common/types/ResponseWithData";
+import { ResponseWithData } from "@/common/dto/ResponseWithData";
 import { apiClient } from "@/common/providers/apiClient";
 import {
   ChallengeToUpsert,
@@ -10,6 +8,7 @@ import {
   ChallengeWithCategories,
   DeleteChallenge,
 } from "@/challenges/schemas/challenge";
+import { Challenge, ChallengeAttempt } from "@prisma/client";
 
 enum Operation {
   CREATE,
@@ -54,41 +53,37 @@ const createOrUpdateChallenge = async (
 
 export const useFetchChallengesByRange = ({
   rangeBegin,
-  rangeEnd,
+  rangeCount,
 }: {
   rangeBegin: number;
-  rangeEnd: number;
+  rangeCount: number;
 }) => {
   return useQuery({
-    queryKey: ["challenges", rangeBegin, rangeEnd],
-    queryFn: () => fetchChallengesByRange({ rangeBegin, rangeEnd }),
+    queryKey: ["challenges", rangeBegin, rangeCount],
+    queryFn: () => fetchChallengesByRange({ rangeBegin, rangeCount }),
     useErrorBoundary: true,
     staleTime: 60000,
   });
 };
 const fetchChallengesByRange = async ({
   rangeBegin,
-  rangeEnd,
+  rangeCount,
 }: {
   rangeBegin: number;
-  rangeEnd: number;
-}): Promise<{ challenges: ChallengeWithCompletion[]; count: number }> => {
-  let { data: challenges, count } = await supabaseClient
-    .from<ChallengeWithCompletion>("challenges")
-    .select(
-      `
-        *,
-        challenge_attempts(
-          completed
-        )
-      `,
-      { count: "exact" }
-    )
-    .order("id", { ascending: true })
-    .range(rangeBegin, rangeEnd);
+  rangeCount: number;
+}): Promise<{
+  challenges: (Challenge & { challengeAttempt: ChallengeAttempt[] })[];
+  count: number;
+}> => {
+  const result = await apiClient.get<{
+    total: number;
+    challenges: (Challenge & { challengeAttempt: ChallengeAttempt[] })[];
+  }>({
+    url: `/api/challenges?from=${rangeBegin}&count=${rangeCount}`,
+  });
 
-  challenges ||= [];
-  count ||= 0;
+  const challenges = result.data?.challenges || [];
+  const count = result.data?.total || 0;
 
   return { challenges, count };
 };
