@@ -3,7 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 // TODO: for some reason, aliased path isn't giving type completion
 import { prisma } from "@/common/providers/prismaClient";
-import { compare, compareSync } from "bcrypt";
+import { compareSync } from "bcrypt";
 
 export const authOptions = {
   debug: true,
@@ -48,6 +48,10 @@ export const authOptions = {
             password: true,
           },
         });
+
+        if (!user) {
+          return null;
+        }
 
         const checkPassword = compareSync(credentials.password, user.password);
 

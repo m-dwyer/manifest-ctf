@@ -72,4 +72,23 @@ describe("authentication", () => {
     expect(result).toBeUndefined();
     expect(mockNextAuthHelper.signOut).toBeCalled();
   });
+
+  it("returns an error on unsuccessful login", async () => {
+    mockNextAuthHelper.signIn = jest.fn(() => ({
+      status: 401,
+      ok: false,
+      error: "CredentialsSignin",
+    }));
+
+    const result = await auth.login({
+      email: "foo@bar.com",
+      password: "MyPassword1!",
+    });
+    expect(result).toMatchObject({
+      success: false,
+      error: "Invalid credentials",
+      data: { status: 401, ok: false },
+    });
+    expect(mockNextAuthHelper.signIn).toBeCalled();
+  });
 });

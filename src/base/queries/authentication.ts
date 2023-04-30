@@ -33,7 +33,12 @@ export const login = async (
     redirect: false,
   });
 
-  return { success: true, data: result };
+  return {
+    success: result?.ok || false,
+    error:
+      result?.error === "CredentialsSignin" ? "Invalid credentials" : undefined,
+    data: result,
+  };
 };
 
 export const logout = () => {

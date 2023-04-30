@@ -52,7 +52,7 @@ describe("LoginForm", () => {
     const mockAuth = auth as { login: unknown };
     mockAuth.login = () => ({ error: "something went wrong" });
 
-    render(<LoginForm />);
+    render(<LoginForm csrfToken="my_token" />);
 
     const emailInput = screen.getByLabelText("email");
     const passwordInput = screen.getByLabelText("password");
