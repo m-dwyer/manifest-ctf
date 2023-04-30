@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { hashSync } from "bcrypt";
 const prisma = new PrismaClient();
 
 async function createCategory({ name }: { name: string }) {
@@ -28,8 +29,11 @@ async function main() {
   createCategory({ name: "Binary exploitation" });
   createCategory({ name: "Crytography" });
 
-  createUser({ email: "foo@bar.com", password: "aaaaaaaa" });
-  createUser({ email: "bar@baz.com", password: "bbbbbbbb" });
+  createUser({
+    email: "foo@bar.com",
+    password: hashSync("aaaaaaaa", 10),
+  });
+  createUser({ email: "bar@baz.com", password: hashSync("aaaaaaaa", 10) });
 
   for (let i = 1; i <= 50; i++) {
     const challenge = await prisma.challenge.upsert({
