@@ -1,21 +1,24 @@
-import NextAuth from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-
-// TODO: for some reason, aliased path isn't giving type completion
 import { prisma } from "@/common/providers/prismaClient";
 import { compareSync } from "bcrypt";
 
-export const authOptions = {
-  debug: true,
-  secret: process.env.NEXTAUTH_SECRET,
+export const authOptions: AuthOptions = {
   callbacks: {
-    session: async ({ session, token }) => {
+    session({ session, token, user }) {
+      //   console.log("session is: ", session);
+      //   console.log("token is: ", token);
+      //   console.log("user is: ", user);
+
       if (session?.user) {
-        session.user.id = token.uid;
+        session.user.id = token.uid as string;
       }
+
       return session;
     },
-    jwt: async ({ user, token }) => {
+    jwt({ user, token }) {
+      //   console.log("jwt-user: ", user);
+      //   console.log("jwt-token: ", token);
       if (user) {
         token.uid = user.id;
       }
@@ -24,23 +27,18 @@ export const authOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 day session
   },
   providers: [
     CredentialsProvider({
-      name: "credentials",
-      id: "credentials",
-      pages: {
-        signIn: "/login",
-      },
+      type: "credentials",
       credentials: {
         email: { label: "email", type: "text" },
         password: { label: "password", type: "password" },
       },
-      async authorize(credentials, req) {
+      authorize: async (credentials, request) => {
         const user = await prisma.user.findUnique({
           where: {
-            email: credentials.email,
+            email: credentials?.email,
           },
           select: {
             id: true,
@@ -53,16 +51,22 @@ export const authOptions = {
           return null;
         }
 
-        const checkPassword = compareSync(credentials.password, user.password);
+        const checkPassword = compareSync(
+          credentials?.password || "",
+          user.password
+        );
 
         if (checkPassword) {
-          return user;
+          return { id: user.id.toString(), email: user.email };
         }
 
         return null;
       },
     }),
   ],
+  pages: {
+    signIn: "/login",
+  },
 };
 
 export default NextAuth(authOptions);
