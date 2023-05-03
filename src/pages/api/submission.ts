@@ -8,7 +8,6 @@ import { buildResponse } from "@/common/lib/ResponseBuilder";
 import { withValidation } from "@/common/lib/ApiValidator";
 import { Submission, submissionSchema } from "@/challenges/schemas/submission";
 import { ResponseWithData } from "@/common/dto/ResponseWithData";
-import { getSession } from "next-auth/react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
 

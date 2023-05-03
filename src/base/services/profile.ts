@@ -12,9 +12,12 @@ export const fetchProfile = async (
       id: true,
       challengeAttempts: {
         where: {
-          completed: true,
+          completed: {
+            not: null,
+          },
         },
         select: {
+          completed: true,
           points_scored: true,
         },
       },

@@ -4,7 +4,8 @@ import nc from "next-connect";
 import { fetchProfile } from "@/base/services/profile";
 import { buildResponse } from "@/common/lib/ResponseBuilder";
 import { ResponseWithData } from "@/common/dto/ResponseWithData";
-import { getSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]";
 
 export default nc<NextApiRequest, NextApiResponse>({
   onError: (err, req, res, next) => {
@@ -12,9 +13,9 @@ export default nc<NextApiRequest, NextApiResponse>({
     res.status(500).json(buildResponse({ success: false, error: err.message }));
   },
 }).get(async (req, res: NextApiResponse<ResponseWithData<any>>) => {
-  const session = await getSession({ req });
+  const session = await getServerSession(req, res, authOptions);
 
-  if (session === null || session.user === null || session.user?.id === null) {
+  if (session === null || session.user === null) {
     return res.status(500).json(
       buildResponse({
         success: false,
@@ -23,7 +24,7 @@ export default nc<NextApiRequest, NextApiResponse>({
     );
   }
 
-  const { data, error } = await fetchProfile(session.user?.id);
+  const { data, error } = await fetchProfile(session.user?.id || "");
 
   if (error)
     return res
