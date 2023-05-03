@@ -7,7 +7,7 @@ import { compareSync } from "bcrypt";
 
 export const authOptions = {
   debug: true,
-  secret: process.env.AUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     session: async ({ session, token }) => {
       if (session?.user) {
