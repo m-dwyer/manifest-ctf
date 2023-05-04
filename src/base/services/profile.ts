@@ -20,6 +20,9 @@ export const fetchProfile = async (
           completed: true,
           points_scored: true,
         },
+        orderBy: {
+          completed: "asc",
+        },
       },
     },
   });
