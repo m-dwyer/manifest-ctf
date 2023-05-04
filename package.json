@@ -28,6 +28,8 @@
     "babel-plugin-superjson-next": "^0.4.4",
     "bcrypt": "^5.1.0",
     "chart.js": "^4.3.0",
+    "chartjs-adapter-date-fns": "^3.0.0",
+    "date-fns": "^2.30.0",
     "formidable": "v3",
     "next": "12.2.0",
     "next-auth": "^4.22.1",

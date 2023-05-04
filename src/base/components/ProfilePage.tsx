@@ -1,19 +1,23 @@
 import { useQueryClient } from "@tanstack/react-query";
+import "chartjs-adapter-date-fns";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   PointElement,
+  TimeSeriesScale,
   LineElement,
   Tooltip,
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { useFetchProfileOverview } from "../queries/profile";
+import { useState } from "react";
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
+  TimeSeriesScale,
   PointElement,
   LineElement,
   Tooltip,
@@ -22,6 +26,14 @@ ChartJS.register(
 
 export const options = {
   responsive: true,
+  scales: {
+    x: {
+      type: "timeseries",
+      time: {
+        unit: "month",
+      },
+    },
+  },
 };
 
 const ProfilePage = () => {
@@ -47,6 +59,10 @@ const ProfilePage = () => {
     <section>
       <h1>User Progress</h1>
       <Line options={options} data={chartData} />
+      <button className={`btn`}>1W</button>
+      <button className={`btn`}>1M</button>
+      <button className={`btn`}>3M</button>
+      <button className={`btn`}>1Y</button>
       <div className="flex-initial card w-96 bg-base-200 shadow-xl">
         <div className="card-body">
           <div className="card-title">
@@ -57,10 +73,6 @@ const ProfilePage = () => {
           <div>total points</div>
         </div>
       </div>
-      id:
-      {fetchProfileOverview.data?.challengeAttempts.map((c) => (
-        <div>{c.points_scored}</div>
-      ))}
     </section>
   );
 };
