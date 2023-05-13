@@ -43,7 +43,7 @@ const ProfilePage = () => {
     ).map(([key]) => key),
     datasets: [
       {
-        label: "Points",
+        label: "Total points",
         data: Object.entries(
           fetchProfileOverview?.data?.attemptsByPeriod || []
         ).reduce((accum, currentVal, index) => {
@@ -53,6 +53,14 @@ const ProfilePage = () => {
         }, [] as Array<number>),
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
+      },
+      {
+        label: "Points",
+        data: Object.entries(
+          fetchProfileOverview?.data?.attemptsByPeriod || []
+        ).map(([, val]) => val),
+        borderColor: "rgb(120, 120, 255)",
+        backgroundColor: "rgba(120, 99, 255, 0.5)",
       },
     ],
   };
