@@ -26,29 +26,28 @@ ChartJS.register(
 
 export const options = {
   responsive: true,
-  scales: {
-    x: {
-      type: "timeseries",
-      time: {
-        unit: "month",
-      },
-    },
-  },
 };
 
 const ProfilePage = () => {
-  const fetchProfileOverview = useFetchProfileOverview();
+  const [period, setPeriod] = useState("1W");
+  const fetchProfileOverview = useFetchProfileOverview({ period: period });
+
+  if (fetchProfileOverview.data) {
+    Object.entries(fetchProfileOverview.data.attemptsByPeriod).map(
+      ([key]) => key
+    );
+  }
 
   const chartData = {
-    labels: fetchProfileOverview.data?.challengeAttempts.map(
-      (c) => c.completed
-    ),
+    labels: Object.entries(
+      fetchProfileOverview?.data?.attemptsByPeriod || []
+    ).map(([key]) => key),
     datasets: [
       {
         label: "Points",
-        data: fetchProfileOverview.data?.challengeAttempts.map(
-          (c) => c.points_scored
-        ),
+        data: Object.entries(
+          fetchProfileOverview?.data?.attemptsByPeriod || []
+        ).map(([key, val]) => val[0].points_scored),
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
@@ -59,10 +58,18 @@ const ProfilePage = () => {
     <section>
       <h1>User Progress</h1>
       <Line options={options} data={chartData} />
-      <button className={`btn`}>1W</button>
-      <button className={`btn`}>1M</button>
-      <button className={`btn`}>3M</button>
-      <button className={`btn`}>1Y</button>
+      <button className={`btn`} onClick={() => setPeriod("1W")}>
+        1W
+      </button>
+      <button className={`btn`} onClick={() => setPeriod("1M")}>
+        1M
+      </button>
+      <button className={`btn`} onClick={() => setPeriod("3M")}>
+        3M
+      </button>
+      <button className={`btn`} onClick={() => setPeriod("1Y")}>
+        1Y
+      </button>
       <div className="flex-initial card w-96 bg-base-200 shadow-xl">
         <div className="card-body">
           <div className="card-title">

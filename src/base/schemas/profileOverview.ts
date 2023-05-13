@@ -2,11 +2,13 @@ import { z } from "zod";
 
 export const profileOverviewSchema = z.object({
   id: z.number(),
-  challengeAttempts: z.array(
-    z.object({
-      completed: z.date(),
-      points_scored: z.number().positive(),
-    })
+  attemptsByPeriod: z.record(
+    z.array(
+      z.object({
+        completed: z.date().or(z.null()),
+        points_scored: z.number().positive(),
+      })
+    )
   ),
 });
 

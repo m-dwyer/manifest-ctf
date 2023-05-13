@@ -7,6 +7,8 @@ import { ResponseWithData } from "@/common/dto/ResponseWithData";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 
+type Period = "1W" | "1M" | "3M" | "1Y";
+
 export default nc<NextApiRequest, NextApiResponse>({
   onError: (err, req, res, next) => {
     console.error(err.stack);
@@ -24,7 +26,12 @@ export default nc<NextApiRequest, NextApiResponse>({
     );
   }
 
-  const { data, error } = await fetchProfile(session.user?.id || "");
+  const { period } = req.query;
+
+  const { data, error } = await fetchProfile(
+    session.user?.id || "",
+    period as Period
+  );
 
   if (error)
     return res

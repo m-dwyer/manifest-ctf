@@ -6,10 +6,6 @@ import { compareSync } from "bcrypt";
 export const authOptions: AuthOptions = {
   callbacks: {
     session({ session, token, user }) {
-      //   console.log("session is: ", session);
-      //   console.log("token is: ", token);
-      //   console.log("user is: ", user);
-
       if (session?.user) {
         session.user.id = token.uid as string;
       }
@@ -17,8 +13,6 @@ export const authOptions: AuthOptions = {
       return session;
     },
     jwt({ user, token }) {
-      //   console.log("jwt-user: ", user);
-      //   console.log("jwt-token: ", token);
       if (user) {
         token.uid = user.id;
       }
