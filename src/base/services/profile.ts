@@ -4,11 +4,15 @@ import {
   eachDayOfInterval,
   eachMonthOfInterval,
   eachWeekOfInterval,
+  format,
   getDay,
   getMonth,
   getQuarter,
+  getWeek,
   getYear,
   startOfDay,
+  startOfMonth,
+  startOfWeek,
   sub,
 } from "date-fns";
 import { ProfileOverview } from "@/base/schemas/profileOverview";
@@ -56,10 +60,10 @@ const getDateRangeForPeriod = ({ period }: { period: Period }) => {
       earliest = sub(today, { days: 7 - 1 });
       break;
     case "1M":
-      earliest = sub(today, { weeks: 4 - 1 });
+      earliest = sub(today, { weeks: 4 });
       break;
     case "3M":
-      earliest = sub(today, { months: 3 - 1 });
+      earliest = sub(today, { months: 3 });
       break;
     case "1Y":
       earliest = sub(today, { months: 12 - 1 });
@@ -73,10 +77,6 @@ export const fetchProfile = async (
   userId: string,
   period: Period
 ): Promise<ServiceResponse<ProfileOverview>> => {
-  const dateBuckets = eachPeriodOfInterval({
-    period,
-  });
-
   const [earliest, latest] = getDateRangeForPeriod({ period });
 
   const result = await prisma.user.findFirst({
@@ -102,15 +102,25 @@ export const fetchProfile = async (
     },
   });
 
+  const buckets = eachPeriodOfInterval({ period }).reduce(
+    (buckets, currentDate) => {
+      const bucketName = String(
+        getBucketForPeriod({ date: currentDate, period: period })
+      );
+      buckets[bucketName] = 0;
+      return buckets;
+    },
+    {} as Record<string, number>
+  );
+
   const bucketedResults = result?.challengeAttempts.reduce((accum, current) => {
     const key = getBucketForPeriod({
       date: current.completed!,
       period: period,
     });
-    accum[key!] = accum[key!] || [];
-    accum[key!].push(current);
+    accum[key!] += current.points_scored;
     return accum;
-  }, {} as Record<string, [{ completed: Date | null; points_scored: number }]>);
+  }, buckets);
 
   if (result?.id === undefined || bucketedResults === undefined) {
     return { error: "Invalid profile", data: null };
@@ -131,12 +141,12 @@ const getBucketForPeriod = ({
 }) => {
   switch (period) {
     case "1W":
-      return getDay(date);
+      return format(date, "yyyy-MM-dd");
     case "1M":
-      return getMonth(date);
+      return format(startOfWeek(date), "yyyy-MM-dd");
     case "3M":
-      return getQuarter(date);
+      return format(startOfWeek(date), "yyyy-MM-dd");
     case "1Y":
-      return getYear(date);
+      return format(startOfMonth(date), "yyyy-MM-dd");
   }
 };

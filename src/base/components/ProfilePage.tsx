@@ -1,4 +1,3 @@
-import { useQueryClient } from "@tanstack/react-query";
 import "chartjs-adapter-date-fns";
 import {
   Chart as ChartJS,
@@ -47,7 +46,11 @@ const ProfilePage = () => {
         label: "Points",
         data: Object.entries(
           fetchProfileOverview?.data?.attemptsByPeriod || []
-        ).map(([key, val]) => val[0].points_scored),
+        ).reduce((accum, currentVal, index) => {
+          const [, val] = currentVal;
+          accum[index] = (accum[index - 1] || 0) + val;
+          return accum;
+        }, [] as Array<number>),
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
