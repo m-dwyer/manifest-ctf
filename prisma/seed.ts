@@ -50,14 +50,16 @@ async function createChallengeAttempt({
 async function createUser({
   email,
   password,
+  role,
 }: {
   email: string;
   password: string;
+  role: "ADMIN" | "USER";
 }) {
   await prisma.user.upsert({
     where: { email },
-    create: { email, password },
-    update: { email, password },
+    create: { email, password, role },
+    update: { email, password, role },
   });
 }
 
@@ -69,8 +71,13 @@ async function main() {
   createUser({
     email: "foo@bar.com",
     password: hashSync("aaaaaaaa", 10),
+    role: "USER",
   });
-  createUser({ email: "bar@baz.com", password: hashSync("aaaaaaaa", 10) });
+  createUser({
+    email: "bar@baz.com",
+    password: hashSync("aaaaaaaa", 10),
+    role: "ADMIN",
+  });
 
   const CHALLENGE_COUNT = 50;
 
