@@ -14,7 +14,11 @@ const customJestConfig = {
     "^@/challenges/(.*)$": "<rootDir>/src/challenges/$1",
     "^@/common/(.*)$": "<rootDir>/src/common/$1",
   },
-  setupFiles: ["<rootDir>/.jest/setEnvVars.ts", "<rootDir>/.jest/setMocks.ts"],
+  setupFiles: [
+    "<rootDir>/.jest/setEnvVars.ts",
+    "<rootDir>/.jest/setMocks.ts",
+    "jest-canvas-mock",
+  ],
   collectCoverage: false,
   coverageReporters: ["json", "html"],
   coverageDirectory: "coverage",

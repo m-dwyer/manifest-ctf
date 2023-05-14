@@ -10,7 +10,7 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { useFetchProfileOverview } from "../queries/profile";
+import { useFetchProfileOverview } from "@/base/queries/profile";
 import { useState } from "react";
 
 ChartJS.register(
@@ -68,7 +68,7 @@ const ProfilePage = () => {
   return (
     <section>
       <h1>User Progress</h1>
-      <Line options={options} data={chartData} />
+      <Line data-testid="canvas" options={options} data={chartData} />
       <div className="flex justify-center gap-0.5">
         <button className={`btn`} onClick={() => setPeriod("1W")}>
           1W
