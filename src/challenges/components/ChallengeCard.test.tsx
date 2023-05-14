@@ -22,7 +22,7 @@ describe("ChallengeCard", () => {
       deleted: null,
       challengeAttempt: [
         {
-          completed: false,
+          completed: new Date(),
           attempts: 1,
           created_at: new Date(),
           challengeId: 1,
@@ -57,7 +57,7 @@ describe("ChallengeCard", () => {
       deleted: null,
       challengeAttempt: [
         {
-          completed: true,
+          completed: new Date(),
           attempts: 1,
           created_at: new Date(),
           challengeId: 1,
@@ -86,7 +86,7 @@ describe("ChallengeCard", () => {
       deleted: null,
       challengeAttempt: [
         {
-          completed: true,
+          completed: new Date(),
           attempts: 1,
           created_at: new Date(),
           challengeId: 1,

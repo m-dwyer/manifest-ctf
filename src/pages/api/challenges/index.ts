@@ -6,7 +6,7 @@ import { ChallengeWithCompletion } from "@/challenges/schemas/challenge";
 import { withValidation } from "@/common/lib/ApiValidator";
 import { ResponseWithData } from "@/common/dto/ResponseWithData";
 import { Challenge, ChallengeAttempt } from "@prisma/client";
-import { NextAuthOptions, Session, unstable_getServerSession } from "next-auth";
+import { NextAuthOptions, Session, getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 
 export default nc<NextApiRequest, NextApiResponse>({
@@ -24,7 +24,7 @@ export default nc<NextApiRequest, NextApiResponse>({
       }>
     >
   ) => {
-    const session = (await unstable_getServerSession(
+    const session = (await getServerSession(
       req,
       res,
       authOptions as NextAuthOptions

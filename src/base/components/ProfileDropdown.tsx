@@ -12,6 +12,8 @@ const ProfileDropdown = ({ session }: ProfileDropdownProps) => {
     signOut();
   };
 
+  const handleProfile = () => {};
+
   return (
     <div className="dropdown dropdown-end">
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
@@ -23,6 +25,11 @@ const ProfileDropdown = ({ session }: ProfileDropdownProps) => {
         tabIndex={0}
         className="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-52"
       >
+        <li>
+          <Link href="/profile">
+            <button>Profile</button>
+          </Link>
+        </li>
         <li>
           <Link href="/">
             <button onClick={handleLogout}>Logout</button>

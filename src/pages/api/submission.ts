@@ -8,7 +8,8 @@ import { buildResponse } from "@/common/lib/ResponseBuilder";
 import { withValidation } from "@/common/lib/ApiValidator";
 import { Submission, submissionSchema } from "@/challenges/schemas/submission";
 import { ResponseWithData } from "@/common/dto/ResponseWithData";
-import { getSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./auth/[...nextauth]";
 
 export default nc<NextApiRequest, NextApiResponse>({
   onError: (err, req, res, next) => {
@@ -24,7 +25,8 @@ export default nc<NextApiRequest, NextApiResponse>({
     ) => {
       const submission = req.body as Submission;
 
-      const session = await getSession({ req });
+      const session = await getServerSession(req, res, authOptions);
+
       if (session === null || session.user === null) {
         return res.status(500).json(
           buildResponse({
@@ -36,7 +38,7 @@ export default nc<NextApiRequest, NextApiResponse>({
 
       const { data } = await fetchChallengeWithAttempts(
         submission.challenge,
-        session.user?.id
+        Number(session.user?.id)
       );
 
       const existingAttempts = data?.challengeAttempt[0]?.attempts || 0;

@@ -11,7 +11,7 @@ export const fetchChallengeWithAttempts = async (
   userId: number
 ): Promise<
   ServiceResponse<
-    { challengeAttempt: { attempts: number; completed: boolean }[] } & {
+    { challengeAttempt: { attempts: number; completed: Date | null }[] } & {
       id: number;
       flag: string;
       points: number;
@@ -59,14 +59,14 @@ export const upsertChallengeAttempt = async (
     create: {
       userId: Number(userId),
       challengeId: challengeId,
-      completed: correct,
+      completed: correct ? new Date() : null,
       attempts: existingAttempts + 1,
       points_scored: correct ? points : 0,
     },
     update: {
       userId: Number(userId),
       challengeId: challengeId,
-      completed: correct,
+      completed: correct ? new Date() : null,
       attempts: existingAttempts + 1,
       points_scored: correct ? points : 0,
     },

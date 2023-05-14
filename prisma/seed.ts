@@ -10,6 +10,43 @@ async function createCategory({ name }: { name: string }) {
   });
 }
 
+async function createChallengeAttempt({
+  userId,
+  challengeId,
+  pointsScored,
+  completed,
+  attempts,
+}: {
+  userId: string;
+  challengeId: string;
+  pointsScored: number;
+  completed: Date;
+  attempts: number;
+}) {
+  await prisma.challengeAttempt.upsert({
+    where: {
+      userId_challengeId: {
+        userId: Number(userId),
+        challengeId: Number(challengeId),
+      },
+    },
+    update: {
+      userId: Number(userId),
+      challengeId: Number(challengeId),
+      points_scored: pointsScored,
+      completed: completed.toISOString(),
+      attempts: attempts,
+    },
+    create: {
+      userId: Number(userId),
+      challengeId: Number(challengeId),
+      points_scored: pointsScored,
+      completed: completed.toISOString(),
+      attempts: attempts,
+    },
+  });
+}
+
 async function createUser({
   email,
   password,
@@ -35,7 +72,9 @@ async function main() {
   });
   createUser({ email: "bar@baz.com", password: hashSync("aaaaaaaa", 10) });
 
-  for (let i = 1; i <= 50; i++) {
+  const CHALLENGE_COUNT = 50;
+
+  for (let i = 1; i <= CHALLENGE_COUNT; i++) {
     const challenge = await prisma.challenge.upsert({
       where: { id: i },
       update: {},
@@ -48,7 +87,22 @@ async function main() {
         categoryId: 1,
       },
     });
-    console.log("created challenge: ", challenge);
+    console.log(`Created challenges`);
+  }
+
+  for (let i = 1; i <= 2; i++) {
+    const completedDate = new Date("2023-04-01 11:00:00");
+    for (let j = 1; j <= 10; j++) {
+      createChallengeAttempt({
+        userId: i.toString(),
+        challengeId: j.toString(),
+        pointsScored: 50 + j * 50,
+        completed: completedDate,
+        attempts: 1 + j,
+      });
+      completedDate.setDate(completedDate.getDate() + 1);
+    }
+    console.log(`Created completed challenge attempts for user id ${i}`);
   }
 }
 

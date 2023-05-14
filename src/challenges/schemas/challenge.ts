@@ -23,7 +23,7 @@ export const challengeWithCompletionSchema = baseChallengeSchema.and(
   z.object({
     challenge_attempts: z.tuple([
       z.object({
-        completed: z.boolean(),
+        completed: z.date(),
         attempts: z.number(),
       }),
     ]),
@@ -36,7 +36,7 @@ export type ChallengeWithCompletion = z.infer<
 export const challengeCompletionSchema = z.object({
   user_id: z.string(),
   challenge_id: z.number(),
-  completed: z.boolean(),
+  completed: z.date(),
   attempts: z.number().positive(),
   points_scored: z.number(),
 });
