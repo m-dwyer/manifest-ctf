@@ -7,11 +7,11 @@ export async function middleware(req: NextRequest) {
   const token = await getToken({ req: req });
 
   if (
-    pathname.startsWith("/_next") ||
     pathname === "/favicon.ico" ||
     pathname === "/" ||
     pathname === "/signup" ||
-    pathname === "/api/register"
+    pathname === "/api/register" ||
+    pathname === "/login"
   )
     return NextResponse.next();
 
@@ -29,5 +29,10 @@ export async function middleware(req: NextRequest) {
 
   if (token) return NextResponse.next();
 
-  return NextResponse.next();
+  const url = new URL("/login", process.env.NEXTAUTH_URL);
+  return NextResponse.redirect(url);
 }
+
+export const config = {
+  matcher: ["/((?!_next|api/auth).*)(.+)"],
+};
