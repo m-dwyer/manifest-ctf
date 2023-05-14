@@ -15,6 +15,12 @@ model User {
   email             String             @unique @db.VarChar(255)
   password          String             @db.VarChar(255)
   challengeAttempts ChallengeAttempt[]
+  role              Role               @default(USER)
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 model Storage {

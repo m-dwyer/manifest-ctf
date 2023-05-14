@@ -77,7 +77,7 @@ describe("authentication", () => {
     mockNextAuthHelper.signIn = jest.fn(() => ({
       status: 401,
       ok: false,
-      error: "CredentialsSignin",
+      error: "Invalid email or password",
     }));
 
     const result = await auth.login({
@@ -86,7 +86,7 @@ describe("authentication", () => {
     });
     expect(result).toMatchObject({
       success: false,
-      error: "Invalid credentials",
+      error: "Invalid email or password",
       data: { status: 401, ok: false },
     });
     expect(mockNextAuthHelper.signIn).toBeCalled();

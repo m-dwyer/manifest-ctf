@@ -35,8 +35,7 @@ export const login = async (
 
   return {
     success: result?.ok || false,
-    error:
-      result?.error === "CredentialsSignin" ? "Invalid credentials" : undefined,
+    error: result?.error,
     data: result,
   };
 };
