@@ -69,18 +69,20 @@ const ProfilePage = () => {
     <section>
       <h1>User Progress</h1>
       <Line options={options} data={chartData} />
-      <button className={`btn`} onClick={() => setPeriod("1W")}>
-        1W
-      </button>
-      <button className={`btn`} onClick={() => setPeriod("1M")}>
-        1M
-      </button>
-      <button className={`btn`} onClick={() => setPeriod("3M")}>
-        3M
-      </button>
-      <button className={`btn`} onClick={() => setPeriod("1Y")}>
-        1Y
-      </button>
+      <div className="flex justify-center gap-0.5">
+        <button className={`btn`} onClick={() => setPeriod("1W")}>
+          1W
+        </button>
+        <button className={`btn`} onClick={() => setPeriod("1M")}>
+          1M
+        </button>
+        <button className={`btn`} onClick={() => setPeriod("3M")}>
+          3M
+        </button>
+        <button className={`btn`} onClick={() => setPeriod("1Y")}>
+          1Y
+        </button>
+      </div>
     </section>
   );
 };
