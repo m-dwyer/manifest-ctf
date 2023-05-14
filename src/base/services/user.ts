@@ -1,6 +1,5 @@
 import { prisma } from "@/common/providers/prismaClient";
 import { compareSync } from "bcrypt";
-
 import { User } from "next-auth";
 
 export const authorizeUser = async ({
@@ -22,6 +21,7 @@ export const authorizeUser = async ({
       id: true,
       email: true,
       password: true,
+      role: true,
     },
   });
 
@@ -32,7 +32,7 @@ export const authorizeUser = async ({
   const checkPassword = compareSync(password, user.password);
 
   if (checkPassword) {
-    return { id: user.id.toString(), email: email };
+    return { ...user, id: user.id.toString() };
   }
 
   throw new Error("Invalid email or password");

@@ -7,6 +7,7 @@ export const authOptions: AuthOptions = {
     session({ session, token, user }) {
       if (session?.user) {
         session.user.id = token.uid as string;
+        session.user.role = token.role;
       }
 
       return session;
@@ -14,6 +15,7 @@ export const authOptions: AuthOptions = {
     jwt({ user, token }) {
       if (user) {
         token.uid = user.id;
+        token.role = user.role;
       }
       return token;
     },
